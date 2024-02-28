@@ -7,7 +7,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
 import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 import { StyledDrawer, StyledDrawerHeader } from "./StyledDrawer"
 import { Collapse, ListSubheader } from "@mui/material"
-import { PLATFORMS_ITEMS, SidebarListItem, TOOLS_ITEMS } from "./consts"
+import { PLATFORMS_ITEMS, SidebarListItem, TOOLS_ITEMS,ADMIN_ITEMS } from "./consts"
 import SidebarItem from "./SidebarItem"
 import { useState } from "react"
 
@@ -20,6 +20,7 @@ export default function Sidebar({ open, toggleSide }: Props) {
   const theme = useTheme()
   const [platformItems, setPlatformItems] = useState(PLATFORMS_ITEMS)
   const [toolsItems, setToolsItems] = useState(TOOLS_ITEMS)
+  const [adminItems, setAdminItems] = useState(ADMIN_ITEMS)
 
   const handleSetItemOpen = (
     title: string,
@@ -54,7 +55,7 @@ export default function Sidebar({ open, toggleSide }: Props) {
             <ListSubheader
               component="div"
               id="platforms-subheader">
-              {"Platforms"}
+              {"Execution"}
             </ListSubheader>
           </Collapse>
         }>
@@ -82,7 +83,7 @@ export default function Sidebar({ open, toggleSide }: Props) {
               className="test"
               component="div"
               id="tools-subheader">
-              {"Tools"}
+              {"Account Management"}
             </ListSubheader>
           </Collapse>
         }>
@@ -92,6 +93,34 @@ export default function Sidebar({ open, toggleSide }: Props) {
             item={item}
             open={item.open}
             setOpen={open => handleSetItemOpen(item.title, toolsItems, open, newItems => setToolsItems(newItems))}
+            isSidebarOpened={open}
+          />
+        ))}
+      </List>
+      <Divider />
+      <List
+        sx={{ width: "100%", bgcolor: "background.paper" }}
+        component="nav"
+        onClick={() => toggleSide(true)}
+        aria-labelledby="tools-subheader"
+        subheader={
+          <Collapse
+            orientation="vertical"
+            in={open}>
+            <ListSubheader
+              className="test"
+              component="div"
+              id="tools-subheader">
+              {"Admin"}
+            </ListSubheader>
+          </Collapse>
+        }>
+        {adminItems.map(item => (
+          <SidebarItem
+            key={item.title}
+            item={item}
+            open={item.open}
+            setOpen={open => handleSetItemOpen(item.title, adminItems, open, newItems => setAdminItems(newItems))}
             isSidebarOpened={open}
           />
         ))}
