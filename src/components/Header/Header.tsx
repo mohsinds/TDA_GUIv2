@@ -39,7 +39,7 @@ function Header({ open, toggleSide }: Props) {
             variant="h6"
             noWrap
             component="div">
-            Elan Insights
+            Trillion Digital Assets
           </Typography>
           <Box
             display={"flex"}

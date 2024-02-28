@@ -1,8 +1,6 @@
-import AutoGraphIcon from '@mui/icons-material/AutoGraph'
-import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange'
 import TrendingUpIcon from '@mui/icons-material/TrendingUp'
-import BarChartIcon from '@mui/icons-material/BarChart'
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
+import AdminIcon from '@mui/icons-material/AdminPanelSettings'
 import HomeIcon from '@mui/icons-material/Home'
 import React from 'react'
 
@@ -27,67 +25,79 @@ const PLATFORMS_ITEMS: SidebarListItem[] = [
     href: '/',
   },
   {
-    title: 'Investing',
-    icon: <AutoGraphIcon />,
-    open: false,
-    children: [
-      {
-        title: 'Market Cap Weighted',
-        href: '/investing/marketCapWeighted',
-      },
-      {
-        title: 'Market Cap Equal Weight',
-        href: '/investing/marketCapEqualWeighted',
-      },
-    ],
-  },
-  {
     title: 'Trading',
     icon: <TrendingUpIcon />,
     open: false,
     children: [
       {
-        title: 'Trading subpage',
-        href: '/trading',
+        title: 'Spot',
+        href: '/trading/spot',
+      },
+      {
+        title: 'Spot RFQ',
+        href: '/trading/spotrfq',
       },
     ],
   },
+
+]
+
+
+const ADMIN_ITEMS: SidebarListItem[] = [
   {
-    title: 'Income',
-    icon: <CurrencyExchangeIcon />,
+    title: 'Accounting',
+    icon: <AdminIcon />,
     open: false,
     children: [
       {
-        title: 'Income subpage',
-        href: '/income',
+        title: 'Fireblocks',
+        href: '/accounting/fireblocks',
       },
     ],
   },
-  {
-    title: 'Arbitrage',
-    icon: <BarChartIcon />,
-    open: false,
-    children: [
-      {
-        title: 'Arbitrage subpage',
-        href: '/arbitrage',
-      },
-    ],
-  },
+
 ]
 
 const TOOLS_ITEMS: SidebarListItem[] = [
   {
-    title: 'Portfolios',
+    title: 'Account History',
     icon: <AccountBalanceWalletIcon />,
     open: false,
     children: [
       {
-        title: 'My Wallets',
-        href: '/myWallets',
+        title: 'Execution',
+        href: '/accounthistory/execution',
+      },
+      {
+        title: 'Historic',
+        href: '/accounthistory/historic',
+      },
+      {
+        title: 'Statement Generation',
+        href: '/accounthistory/statement',
+      },
+    ],
+  },
+
+  {
+    title: 'Account Funding',
+    icon: <AccountBalanceWalletIcon />,
+    open: false,
+    children: [
+      {
+        title: 'Balances',
+        href: '/accountfunding/balances',
+      },
+      {
+        title: 'Funding',
+        href: '/accountfunding/funding',
+      },
+      {
+        title: 'Instructions',
+        href: '/accountfunding/instructions',
       },
     ],
   },
 ]
 
-export { PLATFORMS_ITEMS, TOOLS_ITEMS }
+export { PLATFORMS_ITEMS, TOOLS_ITEMS,ADMIN_ITEMS }
