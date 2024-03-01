@@ -3,11 +3,12 @@ import Toolbar from "@mui/material/Toolbar"
 import Typography from "@mui/material/Typography"
 import IconButton from "@mui/material/IconButton"
 import MenuIcon from "@mui/icons-material/Menu"
-import { Box } from "@mui/material"
+import { Box, Avatar } from "@mui/material"
 import { StyledAppBar } from "./StyledAppBar"
 import ThemeToggle from "./ThemeToggle"
 import UserMenu from "./UserMenu"
 import MenuOpenIcon from "@mui/icons-material/MenuOpen"
+import { CustomThemeContext } from "@/themes/CustomThemeContext";
 
 interface Props {
   open: boolean
@@ -15,6 +16,7 @@ interface Props {
 }
 
 function Header({ open, toggleSide }: Props) {
+  const themes = React.useContext(CustomThemeContext);
   return (
     <StyledAppBar
       position="fixed"
@@ -29,7 +31,13 @@ function Header({ open, toggleSide }: Props) {
             marginRight: 5,
           }}>
           {open ? <MenuOpenIcon /> : <MenuIcon />}
+          
         </IconButton>
+        <Avatar alt="1" src={themes.currentTheme === 'dark' ? "/static/images/dark.png" : "/static/images/Light.png"} sx={{
+            width:35,
+            height:35,
+            marginRight:3
+          }} />
         <Box
           display={"flex"}
           alignItems={"center"}
