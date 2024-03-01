@@ -1,7 +1,7 @@
 import PageTitle from "@/components/TextDisplay/PageTitle";
 import SubTitle from "@/components/TextDisplay/SubTitle";
 import Tile from "@/components/RFQ Tile/Tile";   
-import { Box, CardMedia, IconButton, SvgIcon, Paper } from "@mui/material";
+import { Box, CardMedia, IconButton, SvgIcon, Paper, Avatar } from "@mui/material";
 // import Image from 'mui-image'
 // import Hlogo from "../../../Images/Logo_dark.jpg"
 // import HLOGO from "@/Images/dark.png"
@@ -50,9 +50,11 @@ export default function SpotRFQPage() {
       <Box>
       {/* <Image src="https://app.condorcash.com/Logo.png"/> */}
       </Box>
-      {/* <div>
-        <img src="../../../Images/ug.jpeg"/>
-      </div> */}
+      <div>
+        {/* <img src="../../../Images/ug.jpeg"/> */}
+      </div>
+        <Avatar alt="" src="vercel.svg" />
+
     </>
   );
 }

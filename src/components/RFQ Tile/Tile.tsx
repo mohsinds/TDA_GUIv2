@@ -367,7 +367,7 @@ export default function Tile() {
           </div>
         )}
         {/* <Avatar alt="" src="/components/Images/commitment.jpg" /> */}
-        <Avatar alt="" src="vercel.svg" />
+        {/* <Avatar alt="" src="vercel.svg" /> */}
       </>
     </Card>
   );
