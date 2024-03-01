@@ -16,10 +16,10 @@ import { CustomThemeContext } from "@/themes/CustomThemeContext";
 
 export default function Tile() {
   const themes = React.useContext(CustomThemeContext);
-  const [inputValue, setInputValue] = React.useState(false);
-  const [InitiateRq, setInitRq] = React.useState(false);
-  const [hideRQ, setHideRq] = React.useState(false);
-  const [rejet, setRejet] = React.useState(false);
+  const [inputValue, setInputValue] = React.useState<boolean>(false);
+  const [InitiateRq, setInitRq] = React.useState<boolean>(false);
+  const [hideRQ, setHideRq] = React.useState<boolean>(false);
+  const [rejet, setRejet] = React.useState<boolean>(false);
   const [buyValue, setBuyValue] = React.useState("0.28376");
   const [sellValue, setSellValue] = React.useState("1.028476");
   const [iniNum, setInitNumb] = React.useState("");
@@ -27,7 +27,7 @@ export default function Tile() {
   const [buySell, setBuySell] = React.useState(false);
   const [buySellValue, setBuySellValue] = React.useState("");
 
-  const formatNumber = (value) => {
+  const formatNumber = (value:string) => {
     // Remove non-numeric characters
     const numericValue = value.replace(/[^0-9]/g, "");
     // Format the number as desired
@@ -38,7 +38,7 @@ export default function Tile() {
     return numericValue;
   };
 
-  const inlargedNum = (value, valueOf) => {
+  const inlargedNum = (value:string, valueOf:string) => {
     // if (value === "sell") {
     //   return ""; // Return empty string if sellValue is "sell"
     // }
@@ -86,7 +86,7 @@ export default function Tile() {
     };
   };
 
-  const buySellCard = (val, call) => {
+  const buySellCard = (val:string, call:string) => {
     return (
       <div
         style={{
