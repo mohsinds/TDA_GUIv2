@@ -53,7 +53,8 @@ export default function SpotRFQPage() {
       <div>
         {/* <img src="../../../Images/ug.jpeg"/> */}
       </div>
-        <Avatar alt="" src="vercel.svg" />
+        <Avatar alt="1" src="/static/images/vercel.svg" />
+        <Avatar alt="2" src="/static/images/2.png" />
 
     </>
   );
