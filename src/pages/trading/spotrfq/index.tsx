@@ -35,7 +35,7 @@ export default function SpotRFQPage() {
           display: "flex",
         }}
       >
-        Click Initiate RFQ to intantly receive a quote
+        Click Initiate RFQ to instantly receive a quote
       </SubTitle>
       <Box
       sx={{
