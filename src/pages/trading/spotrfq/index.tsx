@@ -2,17 +2,8 @@ import PageTitle from "@/components/TextDisplay/PageTitle";
 import SubTitle from "@/components/TextDisplay/SubTitle";
 import Tile from "@/components/RFQ Tile/Tile";   
 import { Box, CardMedia, IconButton, SvgIcon, Paper, Avatar } from "@mui/material";
-// import Image from 'mui-image'
-// import Hlogo from "../../../Images/Logo_dark.jpg"
-// import HLOGO from "@/Images/dark.png"
 import HLOGO from "../../../../src/Images/dark.png"
-// import Image from 'material-ui-image'
-
-// import { ReactComponent as MySvg } from "../../../Images/ec_logo.svg"; 
 export default function SpotRFQPage() {
-  // const imagin = () => {
-  //   // return <Image src="../../../Images/dark.png"/>
-  // }
   return (
     <>
       <PageTitle
@@ -47,16 +38,7 @@ export default function SpotRFQPage() {
       >
       <Tile />
       </Box>
-      <Box>
-      {/* <Image src="https://app.condorcash.com/Logo.png"/> */}
-      </Box>
-      <div>
-        {/* <img src="../../../Images/ug.jpeg"/> */}
-      </div>
-        <Avatar alt="1" src="/static/images/vercel.svg" />
-        <Avatar alt="2" src="/static/images/2.png" />
 
     </>
   );
 }
-// Click Initiate RFQ to intantly receive a quote 
