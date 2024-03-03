@@ -3,15 +3,12 @@ import {
   Card,
   CardActionArea,
   CardContent,
-  Avatar
 } from "@mui/material";
 import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import Input from "@mui/material/Input";
 import LinearProgress from "@mui/material/LinearProgress";
 import { CustomThemeContext } from "@/themes/CustomThemeContext";
-// import asd from '../../components/Images/commitment.jpg'
-// import "../../components/Images/ec_logo-removebg-preview.png"
 
 
 export default function Tile() {
@@ -19,15 +16,15 @@ export default function Tile() {
   const [inputValue, setInputValue] = React.useState<boolean>(false);
   const [InitiateRq, setInitRq] = React.useState<boolean>(false);
   const [hideRQ, setHideRq] = React.useState<boolean>(false);
-  const [rejet, setRejet] = React.useState<boolean>(false);
   const [buyValue, setBuyValue] = React.useState("0.28376");
   const [sellValue, setSellValue] = React.useState("1.028476");
-  const [iniNum, setInitNumb] = React.useState("");
-  const [progress, setProgress] = React.useState(0);
+  const [iniNum, setInitNumb] = React.useState("1000");
+  const [progress, setProgress] = React.useState(100);
   const [buySell, setBuySell] = React.useState(false);
   const [buySellValue, setBuySellValue] = React.useState("");
+  const [secondCounter, setSecCounter] = React.useState(0)
 
-  const formatNumber = (value:string) => {
+  const formatNumber = (value: string) => {
     // Remove non-numeric characters
     const numericValue = value.replace(/[^0-9]/g, "");
     // Format the number as desired
@@ -38,10 +35,7 @@ export default function Tile() {
     return numericValue;
   };
 
-  const inlargedNum = (value:string, valueOf:string) => {
-    // if (value === "sell") {
-    //   return ""; // Return empty string if sellValue is "sell"
-    // }
+  const inlargedNum = (value: string, valueOf: string) => {
     console.log("value", value, "valueof", valueOf);
     const xxx = value?.split(".")[1];
     const yyy = value?.split(".")[0];
@@ -53,7 +47,8 @@ export default function Tile() {
             fontSize: 15,
             alignItems: "end",
             marginTop: -3,
-            color: valueOf === "BUY" ? "green" : "red",
+            color: secondCounter > 70 ? "white" : valueOf === "BUY" ? "#26BAFC" : "red",
+            "&:hover": { color: "white" }
           }}
         >
           {yyy + "." + xxx?.substr(0, 2)}
@@ -71,29 +66,47 @@ export default function Tile() {
   };
 
   const progBar = () => {
+    const decreaseAmount = 100 / (10); // Decrease amount per second to reach 0 in 10 seconds
+
     const timer = setInterval(() => {
       setProgress((oldProgress) => {
-        if (oldProgress === 100) {
-          return 100;
-        }
-        const diff = Math.random() * 10;
-        return Math.min(oldProgress + diff, 100);
-      });
-    }, 500);
+        // If progress reaches 0, clear the interval
+        if (oldProgress === 0) {
 
+          clearInterval(timer);
+          setInitRq(false)
+          setHideRq(false)
+          setBuySell(false)
+          setInputValue(false)
+          return 0;
+        }
+        // Decrease the progress by the calculated amount
+        console.log('counter', Math.max(oldProgress - decreaseAmount, 0))
+        setSecCounter(Math.max(oldProgress - decreaseAmount, 0))
+        return (Math.max(oldProgress - decreaseAmount, 0))
+
+
+      });
+    }, 1000); // Run every second
+
+    // Set the initial progress to 100 when starting the progress bar
+    setProgress(100);
+
+    // Return the cleanup function for the interval
     return () => {
       clearInterval(timer);
     };
   };
 
-  const buySellCard = (val:string, call:string) => {
+
+  const buySellCard = (val: string) => {
+    console.log('sellbuyvalue', buySellValue)
     return (
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          // backgroundColor:'yellow',
           height: 130,
         }}
       >
@@ -105,26 +118,60 @@ export default function Tile() {
         >
           USDT/USD
         </Typography>
-        <Typography>
-          You {call} {" USDT " + iniNum} at a rate of {val}
+        <Typography
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            fontWeight: '600',
+          }}
+        >
+          You {" " + buySellValue + " "}
+          <Typography
+            sx={{
+              backgroundColor: 'white',
+              color: buySellValue === "buy" ? "green" : "#F64A69",
+              fontSize: 10,
+              fontWeight: '600',
+              justifyContent: 'center',
+              alignItems: 'center',
+              display: 'flex',
+              width: 60,
+              marginX: 2
+            }}
+          >
+            {" USDT " + iniNum}
+          </Typography>
+          at a rate of
+          <Typography
+            sx={{
+              backgroundColor: 'white',
+              color: buySellValue === "buy" ? "green" : "#F64A69",
+              fontSize: 10,
+              fontWeight: '600',
+              justifyContent: 'center',
+              alignItems: 'center',
+              display: 'flex',
+              width: 40,
+              marginX: 1,
+            }}
+          >
+            {val}
+          </Typography>
+
         </Typography>
         <Button
           sx={{
             color: "white",
             alignSelf: "center",
-            backgroundColor: buySellValue === "sell" ? "green" : "#F64A69",
+            backgroundColor: buySellValue === "buy" ? "green" : "#F64A69",
             borderRadius: 50,
             padding: 1,
             fontSize: 10,
           }}
           onClick={() => {
             setBuySell(false);
-            // setRejet(true);
-            // setInputValue(true);
+            setBuySellValue("")
             inlargedNum("1.23457", "SELL");
-            // iniNum !== "" && setInputValue(true);
-            // setRejet(true);
-            // inlargedNum(sellValue, "SELL");
           }}
         >
           Close
@@ -140,74 +187,85 @@ export default function Tile() {
     setTimeout(() => {
       setInitRq(false);
       setHideRq(true);
-    }, 2000);
+    }, 1000);
   };
+
 
   return buySell ? (
     <Card
       sx={{
         display: "flex",
-        height: 210,
-        width: 380,
+        height: 190,
+        width: 350,
         paddingX: 3,
         paddingY: 2,
         flexDirection: "column",
         backgroundColor: buySell
-          ? buySellValue === "sell"
+          ? buySellValue === "buy"
             ? "green"
             : "#F5264B"
           : "",
       }}
     >
-      <CardContent>{buySellCard(sellValue, "sold")}</CardContent>
+      <CardContent>{buySellCard(sellValue)}</CardContent>
     </Card>
   ) : (
     <Card
       sx={{
         display: "flex",
-        height: 210,
-        width: 380,
+        height: 190,
+        width: 350,
         paddingX: 3,
-        paddingY: 2,
+        paddingY: 1,
         flexDirection: "column",
-        backgroundColor: buySell
-          ? buySellValue === "sell"
-            ? "green"
-            : "#F5264B"
-          : "",
       }}
     >
       <>
-        <Typography>USDT/USD</Typography>
+        <Typography
+          sx={{
+            fontWeight: 'bold'
+          }}
+        >
+          USDT/USD
+        </Typography>
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
-            // backgroundColor: "blue",
             marginTop: 5.5,
           }}
         >
           <CardActionArea
             sx={{
-              backgroundColor:
-                themes.currentTheme === "dark" ? "#47474c" : "#f2f2f2",
-              width: 100,
+              backgroundColor: hideRQ && secondCounter > 70 ? 'red' : themes.currentTheme === "dark" ? '#47474c' : '#f2f2f2',
+              width: 110,
               height: 60,
               paddingX: 1.5,
+              paddingY: 1.5,
+              display: 'flex',
+              justifyContent: 'flex-start',
+              alignItems: 'flex-start',
+              flexDirection: 'column',
+              "&:hover": { backgroundColor: hideRQ ? "red" : '' }
             }}
             onClick={() => {
-              // setSellValue("sell");
-              iniNum !== '' && setBuySellValue("buy");
-              iniNum !== '' && setBuySell(true);
+              hideRQ && setBuySellValue("sell");
+              hideRQ && setBuySell(true);
             }}
           >
             {InitiateRq ? (
-              <Typography>Requesting</Typography>
+              <Typography
+                sx={{
+                  marginTop: 1,
+                  fontSize: 12,
+                  alignSelf: 'center'
+                }}
+              >Requesting</Typography>
             ) : (
               <>
                 <Typography
                   sx={{
-                    fontSize: 13,
+                    fontSize: 11,
                   }}
                 >
                   SELL
@@ -216,6 +274,7 @@ export default function Tile() {
                   sx={{
                     fontSize: 20,
                     alignSelf: "center",
+                    marginTop: 0.5
                   }}
                 >
                   {inputValue && inlargedNum(sellValue, "SELL")}
@@ -223,15 +282,13 @@ export default function Tile() {
               </>
             )}
           </CardActionArea>
-          {!hideRQ && (
+          {secondCounter < 10 && hideRQ ? (
             <Button
               onClick={() => {
-                iniNum !== "" && cancelRequest();
-                iniNum !== "" && setInputValue(true);
-                iniNum !== "" && setRejet(true);
-                setBuyValue("0.23476");
-                setSellValue("1.23745");
-                progBar();
+                setInitRq(false)
+                setHideRq(false)
+                setBuySell(false)
+                setInputValue(false)
               }}
               sx={{
                 bgcolor: "#5F94F5",
@@ -242,32 +299,77 @@ export default function Tile() {
                 textTransform: "capitalize",
                 placeSelf: "center",
                 lineHeight: 1.5,
-                marginTop: 1.5,
+                // marginTop: 1.5,
                 "&:hover": {
                   backgroundColor: "#85aff7",
                   color: "#3c52b2",
                 },
               }}
             >
-              {InitiateRq ? "Cancel RFQ" : "Initiate RFQ"}
+              {"Requote"}
             </Button>
-          )}
+          )
+            :
+            (
+              !hideRQ &&
+              <Button
+                onClick={() => {
+                  InitiateRq ? setInitRq(false)
+                    :
+                    iniNum !== "" && cancelRequest(),
+                    iniNum !== "" && setInputValue(true),
+                    setBuyValue("0.23476"),
+                    setSellValue("1.23745"),
+                    progBar()
+                }}
+                sx={{
+                  bgcolor: "#5F94F5",
+                  height: 50,
+                  width: 40,
+                  color: "#e8e8e8",
+                  fontSize: 9,
+                  textTransform: "capitalize",
+                  placeSelf: "center",
+                  lineHeight: 1.5,
+                  // marginTop: 1.5,
+                  "&:hover": {
+                    backgroundColor: "#85aff7",
+                    color: "#3c52b2",
+                  },
+                }}
+              >
+                {InitiateRq ? "Cancel RFQ" : "Initiate RFQ"}
+              </Button>
+            )
+          }
           <CardActionArea
             sx={{
-              backgroundColor:
-                themes.currentTheme === "dark" ? "#47474c" : "#f2f2f2",
-              width: 100,
+              backgroundColor: hideRQ && secondCounter > 70 ? '#26BAFC' : themes.currentTheme === "dark" ? '#47474c' : '#f2f2f2',
+              width: 110,
               height: 60,
               paddingX: 1.5,
+              paddingY: 1.5,
+              display: 'flex',
+              justifyContent: 'flex-start',
+              alignItems: 'flex-start',
+              flexDirection: 'column',
+              "&:hover": { backgroundColor: hideRQ ? "#26BAFC" : ''}
             }}
             onClick={() => {
-              // setSellValue("sell");
-              iniNum !== '' && setBuySell(true);
-              iniNum !== '' && setBuySellValue("sell");
+              hideRQ && setBuySellValue("buy");
+              hideRQ && setBuySell(true);
             }}
           >
             {InitiateRq ? (
-              <Typography>Requesting</Typography>
+              <Typography
+                sx={{
+                  marginTop: 1,
+                  fontSize: 12,
+                  alignSelf: 'center'
+                }}
+              >
+                Requesting
+              </Typography>
             ) : (
               <>
                 <Typography
@@ -311,63 +413,65 @@ export default function Tile() {
             USDT{" "}
           </Typography>
           <Input
-            sx={{ marginLeft: 1, width: 80 }}
+            sx={{
+              marginLeft: 1,
+              width: 100,
+              paddingLeft:2
+            }}
             value={iniNum && parseInt(iniNum).toLocaleString("en-US")}
             placeholder="1,000,000"
             onChange={(e) => setInitNumb(formatNumber(e.target.value))}
           />
         </div>
-        {rejet && hideRQ && (
+        {hideRQ && (
           <div
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "space-evenly",
+              marginTop: 10
             }}
           >
+            <Typography
+              sx={{
+                fontSize: 10,
+                color: 'gray'
+              }}
+            >
+              {secondCounter.toString().substr(0, 1) + " seconds"}
+            </Typography>
             <LinearProgress
-              sx={{ width: 150, marginTop: 2, borderRadius: 50 }}
+              sx={{ width: 150, marginTop: 0, borderRadius: 50 }}
               variant="determinate"
               value={progress}
             />
-            {/* {progress < 100 && ( */}
-              <Button
-                onClick={() => {
-                  setInputValue(false);
-                  setRejet(false);
-                  setProgress(0);
-                  setInitNumb("");
-                  // setInitRq(false)
-                  setHideRq(false);
-                }}
-                sx={{
-                  backgroundColor:
-                    themes.currentTheme === "dark" ? "#47474c" : "#f2f2f2",
-                  // height:30,
-                  // width:30,
-                  //   color: "#000",
-                  color: themes.currentTheme === "dark" ? "white" : "#000000",
-                  fontSize: 8,
-                  textTransform: "capitalize",
-                  placeSelf: "end",
-                  lineHeight: 1.5,
-                  marginTop: 1.5,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  display: "flex",
-                  "&:hover": {
-                    backgroundColor: "#3f3f3f",
-                    color: "gray",
-                  },
-                }}
-              >
-                Reject
-              </Button>
-            {/* )} */}
+            <Button
+              onClick={() => {
+                setProgress(100);
+                setInputValue(false);
+                setHideRq(false);
+              }}
+              sx={{
+                backgroundColor:
+                  themes.currentTheme === "dark" ? "#47474c" : "#f2f2f2",
+                color: themes.currentTheme === "dark" ? "white" : "#000000",
+                fontSize: 8,
+                textTransform: "capitalize",
+                placeSelf: "end",
+                lineHeight: 1.5,
+                justifyContent: "center",
+                alignItems: "center",
+                display: "flex",
+                "&:hover": {
+                  backgroundColor: "#3f3f3f",
+                  color: "gray",
+                },
+              }}
+            >
+              Reject
+            </Button>
           </div>
         )}
-        {/* <Avatar alt="" src="/components/Images/commitment.jpg" /> */}
-        {/* <Avatar alt="" src="vercel.svg" /> */}
       </>
     </Card>
   );
