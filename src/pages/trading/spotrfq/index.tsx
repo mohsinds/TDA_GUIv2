@@ -1,9 +1,26 @@
 import PageTitle from "@/components/TextDisplay/PageTitle";
 import SubTitle from "@/components/TextDisplay/SubTitle";
-import Tile from "@/components/RFQ Tile/Tile";   
+// import Tile from "@/components/RFQ Tile/Tile";
 import { Box, CardMedia, IconButton, SvgIcon, Paper, Avatar } from "@mui/material";
 import HLOGO from "../../../../src/Images/dark.png"
+import {CurrencyPair} from "@/services/currencyPairs";
+import { combineLatest, merge } from "rxjs"
+import { combineKeys } from "@react-rxjs/utils"
+import { map } from "rxjs/operators"
+import { Tile, tile$ } from "@/components/Tile"
+import {currencyPairs$} from "@/services/currencyPairs/currencyPairs.service-mock";
 export default function SpotRFQPage() {
+    const tiles$ = merge(
+        combineKeys(currencyPairs$.pipe(map(Object.keys)), tile$),
+    )
+    const currencyPairMock: CurrencyPair = {
+        symbol: "EURUSD",
+        base: "EUR",
+        terms: "USD",
+        ratePrecision: 5,
+        pipsPosition: 4,
+        defaultNotional: 1_000_000,
+    }
   return (
     <>
       <PageTitle
@@ -36,7 +53,11 @@ export default function SpotRFQPage() {
         marginTop:3,
       }}
       >
-      <Tile />
+      {/*<Tile />*/}
+          <Tile
+              currencyPair={currencyPairMock}
+              isAnalytics={false}
+          />
       </Box>
 
     </>
