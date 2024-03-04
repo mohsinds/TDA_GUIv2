@@ -1,21 +1,10 @@
 import * as React from "react";
-import {
-  Card,
-  CardActionArea,
-  CardContent,
-} from "@mui/material";
-import { Typography } from "@mui/material";
+import {Card, CardActionArea, CardContent, Typography,} from "@mui/material";
 import Button from "@mui/material/Button";
 import Input from "@mui/material/Input";
 import LinearProgress from "@mui/material/LinearProgress";
-import { CustomThemeContext } from "@/themes/CustomThemeContext";
-import { bind } from "@react-rxjs/core"
-import { createSignal } from "@react-rxjs/utils"
+import {CustomThemeContext} from "@/themes/CustomThemeContext";
 
-
-
-const [textChange$, setText] = createSignal<string>();
-const [useText, text$] = bind(textChange$, "1000")
 
 export default function Tile() {
   const themes = React.useContext(CustomThemeContext);
@@ -26,8 +15,7 @@ export default function Tile() {
   const [buyValue, setBuyValue] = React.useState("0.28376");
   const [sellValue, setSellValue] = React.useState("1.028476");
   const [iniNum, setInitNumb] = React.useState("1000");
-
-  const text = useText()
+  const [iniNum2, setInitNumb2] = React.useState("1000");
   const [progress, setProgress] = React.useState(100);
   const [buySell, setBuySell] = React.useState(false);
   const [buySellValue, setBuySellValue] = React.useState("");
@@ -512,9 +500,9 @@ export default function Tile() {
             },
            
           }}
-            value={text && parseInt(text).toLocaleString("en-US")}
+            value={iniNum2 && parseInt(iniNum2).toLocaleString("en-US")}
             placeholder="1,000,000"
-            onChange={(e) => setText(formatNumber(e.target.value))}
+            onChange={(e) => setInitNumb2(formatNumber(e.target.value))}
           />
         </div>
         {hideRQ && (
