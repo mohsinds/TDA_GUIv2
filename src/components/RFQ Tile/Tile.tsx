@@ -50,7 +50,7 @@ export default function Tile() {
             marginTop: -3,
             // backgroundColor:'green',
             width: 90,
-            color: secondCounter > 70 ? "white" : valueOf === "BUY" ? "#26BAFC" : "red",
+            color: secondCounter > 50 ? "white" : valueOf === "BUY" ? "#26BAFC" : "red",
             "&:hover": { color: "white" }
           }}
         >
@@ -264,7 +264,7 @@ export default function Tile() {
         >
           <CardActionArea
             sx={{
-              backgroundColor: hideRQ && secondCounter > 70 ? 'red' : onHov ? themes.currentTheme === "dark" ? '#434354' : '#f9f9f9' : 'transparent',
+              backgroundColor: hideRQ && secondCounter > 50 ? 'red' : onHov ? themes.currentTheme === "dark" ? '#434354' : '#f9f9f9' : 'transparent',
               width: 110,
               height:55,
               borderRadius: 1,
@@ -295,7 +295,7 @@ export default function Tile() {
                 <Typography
                   sx={{
                     fontSize: 9,
-                    color:hideRQ && secondCounter > 70 ? 'white' : '#949596',
+                    color:hideRQ && secondCounter > 50 ? 'white' : '#949596',
                     // fontWeight: 'bold',
 
                   }}
@@ -390,7 +390,7 @@ export default function Tile() {
           }
           <CardActionArea
             sx={{
-              backgroundColor: hideRQ && secondCounter > 70 ? '#26BAFC' : onHov ? themes.currentTheme === "dark" ? '#434354' : '#f9f9f9' : 'transparent',
+              backgroundColor: hideRQ && secondCounter > 50 ? '#26BAFC' : onHov ? themes.currentTheme === "dark" ? '#434354' : '#f9f9f9' : 'transparent',
               width: 110,
               height: 55,
               borderRadius: 1,
@@ -423,7 +423,7 @@ export default function Tile() {
                 <Typography
                   sx={{
                     fontSize: 9,
-                    color: hideRQ && secondCounter > 70 ? 'white' : '#949596',
+                    color: hideRQ && secondCounter > 50 ? 'white' : '#949596',
                     // fontWeight: 'bold'
                   }}
                 >
