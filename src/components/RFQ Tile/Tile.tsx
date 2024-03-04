@@ -9,7 +9,13 @@ import Button from "@mui/material/Button";
 import Input from "@mui/material/Input";
 import LinearProgress from "@mui/material/LinearProgress";
 import { CustomThemeContext } from "@/themes/CustomThemeContext";
+import { bind } from "@react-rxjs/core"
+import { createSignal } from "@react-rxjs/utils"
 
+
+
+const [textChange$, setText] = createSignal<string>();
+const [useText, text$] = bind(textChange$, "1000")
 
 export default function Tile() {
   const themes = React.useContext(CustomThemeContext);
@@ -20,6 +26,8 @@ export default function Tile() {
   const [buyValue, setBuyValue] = React.useState("0.28376");
   const [sellValue, setSellValue] = React.useState("1.028476");
   const [iniNum, setInitNumb] = React.useState("1000");
+
+  const text = useText()
   const [progress, setProgress] = React.useState(100);
   const [buySell, setBuySell] = React.useState(false);
   const [buySellValue, setBuySellValue] = React.useState("");
@@ -108,9 +116,13 @@ export default function Tile() {
 
     // Return the cleanup function for the interval
     return () => {
+      console.log("clear")
       clearInterval(timer);
     };
   };
+
+
+
 
 
   const buySellCard = (val: string) => {
@@ -227,7 +239,7 @@ export default function Tile() {
     <Card
       sx={{
         display: "flex",
-        height: hideRQ ? 200 : 170,
+        height: 170,
         width: 340,
         paddingX: 3,
         // paddingY: 1,
@@ -458,11 +470,12 @@ export default function Tile() {
           style={{
             display: "flex",
             placeSelf: "center",
-            marginTop: 20,
+            marginRight: 25,
+            marginTop: 8,
+            // backgroundColor: "red",
             justifyContent: "center",
             // alignItems: "center",
             // border: "1px solid gray",
-            width: 200,
           }}
         >
           <Typography
@@ -473,7 +486,7 @@ export default function Tile() {
               fontSize: 10,
             }}
           >
-            USDT{" "}
+            USDT {" "}
           </Typography>
           <Input
           sx={{
@@ -483,16 +496,16 @@ export default function Tile() {
             fontSize: 10,
             '& input': {
               // backgroundColor: 'gray',
-              marginBottom: -0.2,
+              // marginBottom: -0.2,
               textAlign: 'center', // Center the text inside the input field
               border: 'none', // Set border-bottom color to gray
 
             },
            
           }}
-            value={iniNum && parseInt(iniNum).toLocaleString("en-US")}
+            value={text && parseInt(text).toLocaleString("en-US")}
             placeholder="1,000,000"
-            onChange={(e) => setInitNumb(formatNumber(e.target.value))}
+            onChange={(e) => setText(formatNumber(e.target.value))}
           />
         </div>
         {hideRQ && (
