@@ -15,6 +15,7 @@ export default function Tile() {
   const themes = React.useContext(CustomThemeContext);
   const [inputValue, setInputValue] = React.useState<boolean>(false);
   const [InitiateRq, setInitRq] = React.useState<boolean>(false);
+  const [onHov, setOnHov] = React.useState<boolean>(false);
   const [hideRQ, setHideRq] = React.useState<boolean>(false);
   const [buyValue, setBuyValue] = React.useState("0.28376");
   const [sellValue, setSellValue] = React.useState("1.028476");
@@ -44,22 +45,30 @@ export default function Tile() {
         <Typography
           sx={{
             display: "flex",
-            fontSize: 15,
-            alignItems: "end",
+            fontSize: 11,
+            alignItems: "center",
             marginTop: -3,
             color: secondCounter > 70 ? "white" : valueOf === "BUY" ? "#26BAFC" : "red",
             "&:hover": { color: "white" }
           }}
         >
-          {yyy + "." + xxx?.substr(0, 2)}
+          <div style={{ paddingTop:'12px',fontWeight:500 }}>
+            {yyy + "." + xxx?.substr(0, 2)}
+          </div>
           <Typography
             sx={{
-              fontSize: 30,
+              fontSize: 32,
+              fontWeight: "semibold",
+              paddingX:0.2
+              // marginBottom: -3,
             }}
           >
-            {xxx?.substr(2, 2)}
+          
+              {xxx?.substr(2, 2)}
           </Typography>
+          <div style={{ paddingTop:'12px',fontWeight:500 }}>
           {xxx?.substr(4, 10)}
+          </div>
         </Typography>
       </>
     );
@@ -213,17 +222,30 @@ export default function Tile() {
     <Card
       sx={{
         display: "flex",
-        height: 190,
-        width: 350,
+        height: hideRQ ? 200 : 170,
+        width: 340,
         paddingX: 3,
-        paddingY: 1,
+        // paddingY: 1,
+        justifyContent:'center',
         flexDirection: "column",
+        transition: 'background-color 0.1s', // Optional: Add a transition effect for smoother color change
+        '&:hover': {
+          backgroundColor: themes.currentTheme === "dark" ? '#32323f' : '', 
+          boxShadow: onHov ? themes.currentTheme === "dark" ? '' : '0px 0px 10px 0px rgba(0,0,0,0.2)' : 'none',// Change this to the desired hover background color
+        },
+        
+        
       }}
+      onMouseEnter={() => setOnHov(true)} // Set onHov to true on mouse enter
+      onMouseLeave={() => setOnHov(false)} // Set onHov to false on mouse leave
     >
       <>
         <Typography
           sx={{
-            fontWeight: 'bold'
+            // fontWeight: 'bold'
+            fontSize: 13,
+            color: themes.currentTheme === "dark" ? "#FFFFFF" : 'black',
+            marginBottom: 1
           }}
         >
           USDT/USD
@@ -232,15 +254,16 @@ export default function Tile() {
           style={{
             display: "flex",
             justifyContent: "space-between",
-            marginTop: 5.5,
+            marginTop: 5,
           }}
         >
           <CardActionArea
             sx={{
-              backgroundColor: hideRQ && secondCounter > 70 ? 'red' : themes.currentTheme === "dark" ? '#47474c' : '#f2f2f2',
+              backgroundColor: hideRQ && secondCounter > 70 ? 'red' : onHov ? themes.currentTheme === "dark" ? '#434354' : '#f9f9f9' : 'transparent',
               width: 110,
-              height: 60,
-              paddingX: 1.5,
+              height: 55,
+              borderRadius: 1,
+              paddingX: 2,
               paddingY: 1.5,
               display: 'flex',
               justifyContent: 'flex-start',
@@ -265,7 +288,10 @@ export default function Tile() {
               <>
                 <Typography
                   sx={{
-                    fontSize: 11,
+                    fontSize: 9,
+                    color:hideRQ && secondCounter > 70 ? 'white' : '#949596',
+                    // fontWeight: 'bold',
+
                   }}
                 >
                   SELL
@@ -273,7 +299,7 @@ export default function Tile() {
                 <Typography
                   sx={{
                     fontSize: 20,
-                    alignSelf: "center",
+                    // alignSelf: "center",
                     marginTop: 0.5
                   }}
                 >
@@ -292,8 +318,9 @@ export default function Tile() {
               }}
               sx={{
                 bgcolor: "#5F94F5",
-                height: 50,
+                height: 40,
                 width: 40,
+                marginX: 0.9,
                 color: "#e8e8e8",
                 fontSize: 9,
                 textTransform: "capitalize",
@@ -324,13 +351,14 @@ export default function Tile() {
                 }}
                 sx={{
                   bgcolor: "#5F94F5",
-                  height: 50,
+                  height: 40,
                   width: 40,
                   color: "#e8e8e8",
                   fontSize: 9,
+                  marginX: 0.9,
                   textTransform: "capitalize",
                   placeSelf: "center",
-                  lineHeight: 1.5,
+                  lineHeight: 1.4,
                   // marginTop: 1.5,
                   "&:hover": {
                     backgroundColor: "#85aff7",
@@ -344,10 +372,11 @@ export default function Tile() {
           }
           <CardActionArea
             sx={{
-              backgroundColor: hideRQ && secondCounter > 70 ? '#26BAFC' : themes.currentTheme === "dark" ? '#47474c' : '#f2f2f2',
+              backgroundColor: hideRQ && secondCounter > 70 ? '#26BAFC' : onHov ? themes.currentTheme === "dark" ? '#434354' : '#f9f9f9' : 'transparent',
               width: 110,
-              height: 60,
-              paddingX: 1.5,
+              height: 55,
+              borderRadius: 1,
+              paddingX: 2,
               paddingY: 1.5,
               display: 'flex',
               justifyContent: 'flex-start',
@@ -374,7 +403,9 @@ export default function Tile() {
               <>
                 <Typography
                   sx={{
-                    fontSize: 13,
+                    fontSize: 9,
+                    color: hideRQ && secondCounter > 70 ? 'white' : '#949596',
+                    // fontWeight: 'bold'
                   }}
                 >
                   BUY
@@ -382,7 +413,8 @@ export default function Tile() {
                 <Typography
                   sx={{
                     fontSize: 20,
-                    alignSelf: "center",
+                    // alignSelf: "center",
+                    marginTop: 0.5
                   }}
                 >
                   {inputValue && inlargedNum(sellValue, "BUY")}
@@ -398,26 +430,36 @@ export default function Tile() {
             placeSelf: "center",
             marginTop: 20,
             justifyContent: "center",
-            alignItems: "center",
+            // alignItems: "center",
+            // border: "1px solid gray",
             width: 200,
           }}
         >
           <Typography
             sx={{
               placeSelf: "center",
-              marginTop: 1.5,
+              marginTop:0,
               color: "gray",
-              fontSize: 11,
+              fontSize: 10,
             }}
           >
             USDT{" "}
           </Typography>
           <Input
-            sx={{
-              marginLeft: 1,
-              width: 100,
-              paddingLeft:2
-            }}
+          sx={{
+            // marginLeft: 1,
+            width: 80,
+
+            fontSize: 10,
+            '& input': {
+              // backgroundColor: 'gray',
+              marginBottom: -0.4,
+              textAlign: 'center', // Center the text inside the input field
+              border: 'none', // Set border-bottom color to gray
+
+            },
+           
+          }}
             value={iniNum && parseInt(iniNum).toLocaleString("en-US")}
             placeholder="1,000,000"
             onChange={(e) => setInitNumb(formatNumber(e.target.value))}
