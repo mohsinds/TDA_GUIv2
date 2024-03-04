@@ -48,6 +48,8 @@ export default function Tile() {
             fontSize: 11,
             alignItems: "center",
             marginTop: -3,
+            // backgroundColor:'green',
+            width: 90,
             color: secondCounter > 70 ? "white" : valueOf === "BUY" ? "#26BAFC" : "red",
             "&:hover": { color: "white" }
           }}
@@ -69,7 +71,10 @@ export default function Tile() {
           <div style={{ paddingTop:'12px',fontWeight:500 }}>
           {xxx?.substr(4, 10)}
           </div>
+          
+         
         </Typography>
+    
       </>
     );
   };
@@ -261,15 +266,16 @@ export default function Tile() {
             sx={{
               backgroundColor: hideRQ && secondCounter > 70 ? 'red' : onHov ? themes.currentTheme === "dark" ? '#434354' : '#f9f9f9' : 'transparent',
               width: 110,
-              height: 55,
+              height:55,
               borderRadius: 1,
               paddingX: 2,
-              paddingY: 1.5,
+              paddingY: 1,
+              transition: 'background-color 0.8s',
               display: 'flex',
               justifyContent: 'flex-start',
               alignItems: 'flex-start',
               flexDirection: 'column',
-              "&:hover": { backgroundColor: hideRQ ? "red" : '' }
+              "&:hover": { backgroundColor: hideRQ ? "red" : ''},
             }}
             onClick={() => {
               hideRQ && setBuySellValue("sell");
@@ -304,7 +310,19 @@ export default function Tile() {
                   }}
                 >
                   {inputValue && inlargedNum(sellValue, "SELL")}
+                  
                 </Typography>
+                {secondCounter < 10 && hideRQ && ( <Typography
+                  sx={{
+                    fontSize: 8,
+                    color:'red',
+                    textAlign: 'center',
+                    width: 80,
+                    marginTop: -1
+                  }}
+                >
+                  Expired  
+                </Typography>)}
               </>
             )}
           </CardActionArea>
@@ -378,6 +396,7 @@ export default function Tile() {
               borderRadius: 1,
               paddingX: 2,
               paddingY: 1.5,
+              transition: 'background-color 0.8s',
               display: 'flex',
               justifyContent: 'flex-start',
               alignItems: 'flex-start',
@@ -419,6 +438,17 @@ export default function Tile() {
                 >
                   {inputValue && inlargedNum(sellValue, "BUY")}
                 </Typography>
+                {secondCounter < 10 && hideRQ && ( <Typography
+                  sx={{
+                    fontSize: 8,
+                    color:'red',
+                    textAlign: 'center',
+                    width: 80,
+                    marginTop: -1.5
+                  }}
+                >
+                  Expired  
+                </Typography>)}
               </>
             )}
           </CardActionArea>
@@ -453,7 +483,7 @@ export default function Tile() {
             fontSize: 10,
             '& input': {
               // backgroundColor: 'gray',
-              marginBottom: -0.4,
+              marginBottom: -0.2,
               textAlign: 'center', // Center the text inside the input field
               border: 'none', // Set border-bottom color to gray
 
@@ -492,6 +522,7 @@ export default function Tile() {
                 setProgress(100);
                 setInputValue(false);
                 setHideRq(false);
+                setSecCounter(0);
               }}
               sx={{
                 backgroundColor:
