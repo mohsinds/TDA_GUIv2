@@ -105,7 +105,6 @@ export default function Tile() {
       setProgress((oldProgress) => {
         // If progress reaches 0, clear the interval
         if (oldProgress === 0) {
-          console.log("time to reject")
           // clearInterval(timer);
           setInitRq(false)
           setHideRq(false)
