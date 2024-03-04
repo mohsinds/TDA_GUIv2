@@ -88,6 +88,14 @@ export default function Tile() {
     );
   };
 
+  const handleReject = ()=>{
+    setProgress(100);
+    setInputValue(false);
+    setHideRq(false);
+    setSecCounter(0);
+    stopProgressBar()
+  }
+
 
 
   const progBar = () => {
@@ -97,12 +105,13 @@ export default function Tile() {
       setProgress((oldProgress) => {
         // If progress reaches 0, clear the interval
         if (oldProgress === 0) {
-
+          console.log("time to reject")
           // clearInterval(timer);
           setInitRq(false)
           setHideRq(false)
           setBuySell(false)
           setInputValue(false)
+          handleReject()
           return 0;
         }
         // Decrease the progress by the calculated amount
@@ -532,13 +541,7 @@ export default function Tile() {
               value={progress}
             />
             <Button
-              onClick={() => {
-                setProgress(100);
-                setInputValue(false);
-                setHideRq(false);
-                setSecCounter(0);
-                stopProgressBar()
-              }}
+              onClick={handleReject}
               sx={{
                 backgroundColor:
                   themes.currentTheme === "dark" ? "#47474c" : "#f2f2f2",
