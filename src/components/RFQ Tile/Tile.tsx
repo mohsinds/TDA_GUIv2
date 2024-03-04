@@ -101,7 +101,7 @@ export default function Tile() {
 
 
       });
-    }, 1000); // Run every second
+    }, 500); // Run every second
 
     // Set the initial progress to 100 when starting the progress bar
     setProgress(100);
@@ -477,7 +477,7 @@ export default function Tile() {
           </Typography>
           <Input
           sx={{
-            // marginLeft: 1,
+            marginLeft: 0.5,
             width: 80,
 
             fontSize: 10,
