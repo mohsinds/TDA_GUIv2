@@ -31,7 +31,8 @@ export default function Tile() {
   const [progress, setProgress] = React.useState(100);
   const [buySell, setBuySell] = React.useState(false);
   const [buySellValue, setBuySellValue] = React.useState("");
-  const [secondCounter, setSecCounter] = React.useState(0)
+  const [secondCounter, setSecCounter] = React.useState(100)
+  const intervalRef = React.useRef<number | null>(null);
 
   const formatNumber = (value: string) => {
     // Remove non-numeric characters
@@ -87,15 +88,17 @@ export default function Tile() {
     );
   };
 
+
+
   const progBar = () => {
     const decreaseAmount = 100 / (10); // Decrease amount per second to reach 0 in 10 seconds
 
-    const timer = setInterval(() => {
+    intervalRef.current = window.setInterval(() => {
       setProgress((oldProgress) => {
         // If progress reaches 0, clear the interval
         if (oldProgress === 0) {
 
-          clearInterval(timer);
+          // clearInterval(timer);
           setInitRq(false)
           setHideRq(false)
           setBuySell(false)
@@ -113,16 +116,14 @@ export default function Tile() {
 
     // Set the initial progress to 100 when starting the progress bar
     setProgress(100);
-
-    // Return the cleanup function for the interval
-    return () => {
-      console.log("clear")
-      clearInterval(timer);
-    };
   };
 
 
 
+  const stopProgressBar = () => {
+    clearInterval(intervalRef.current!);
+    console.log("Interval cleared");
+  };
 
 
   const buySellCard = (val: string) => {
@@ -536,6 +537,7 @@ export default function Tile() {
                 setInputValue(false);
                 setHideRq(false);
                 setSecCounter(0);
+                stopProgressBar()
               }}
               sx={{
                 backgroundColor:
