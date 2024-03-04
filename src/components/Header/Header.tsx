@@ -3,7 +3,7 @@ import Toolbar from "@mui/material/Toolbar"
 import Typography from "@mui/material/Typography"
 import IconButton from "@mui/material/IconButton"
 import MenuIcon from "@mui/icons-material/Menu"
-import { Box, Avatar } from "@mui/material"
+import { Box, Avatar, Card, Paper } from "@mui/material"
 import { StyledAppBar } from "./StyledAppBar"
 import ThemeToggle from "./ThemeToggle"
 import UserMenu from "./UserMenu"
@@ -31,13 +31,18 @@ function Header({ open, toggleSide }: Props) {
             marginRight: 5,
           }}>
           {open ? <MenuOpenIcon /> : <MenuIcon />}
-          
+
         </IconButton>
-        <Avatar alt="1" src={themes.currentTheme === 'dark' ? "/static/images/dark.png" : "/static/images/Light.png"} sx={{
-            width:35,
-            height:35,
-            marginRight:3
-          }} />
+        {/* <Avatar alt="1" src={themes.currentTheme === 'dark' ? "/static/images/dark.png" : "/static/images/Light.png"} sx={{
+          width: 35,
+          height: 35,
+          marginRight: 3
+        }} /> */}
+        <Card variant="outlined" sx={{
+          backgroundColor:'transparent', border:'none', marginRight:3
+        }}>
+          <img height={40} width={40} src={themes.currentTheme === 'dark' ? "/static/images/dark.png" : "/static/images/Light.png"} />
+        </Card>
         <Box
           display={"flex"}
           alignItems={"center"}
