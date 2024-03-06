@@ -11,7 +11,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { CustomThemeContext } from "@/themes/CustomThemeContext";
 import { bind } from "@react-rxjs/core"
 import { createSignal } from "@react-rxjs/utils"
-
+import axios from "axios";
 
 
 const [textChange$, setText] = createSignal<string>();
@@ -23,9 +23,10 @@ export default function Tile() {
   const [InitiateRq, setInitRq] = React.useState<boolean>(false);
   const [onHov, setOnHov] = React.useState<boolean>(false);
   const [hideRQ, setHideRq] = React.useState<boolean>(false);
-  const [buyValue, setBuyValue] = React.useState("0.28376");
-  const [sellValue, setSellValue] = React.useState("1.028476");
+  const [buyValue, setBuyValue] = React.useState("00000");
+  const [sellValue, setSellValue] = React.useState("00000");
   const [iniNum, setInitNumb] = React.useState("1000");
+  const [cancelToken, setCancelToken] = React.useState(null);
 
   const text = useText()
   const [progress, setProgress] = React.useState(100);
@@ -225,6 +226,66 @@ export default function Tile() {
     }, 1000);
   };
 
+   // InitiateRq ? setInitRq(false)
+    // :
+    // iniNum !== "" && cancelRequest(),
+    // iniNum !== "" && setInputValue(true),
+    // setBuyValue("0.23476"),
+    // setSellValue("1.23745"),
+    // progBar()
+
+  const handleInitiateRFQ = async()=>{
+      if(text){
+        try {
+          if (cancelToken) {
+            cancelToken.cancel('Request canceled');
+          }
+  
+          // Create a new cancel token
+          const source = axios.CancelToken.source();
+          setCancelToken(source);
+
+          setInitRq(true);
+        const response = await axios.get(`http://192.168.8.102:5000/customer/rfq?symbol=BTC-USD&currency=BTC&orderQty=${text}`,{
+          cancelToken: source.token,
+        });
+        if(response.data?.length > 0){
+          let obj = response?.data[0]
+          console.log("obj==>",obj)
+          setInputValue(true)
+          setInitRq(false);
+          setHideRq(true);
+           setBuyValue(obj?.BidPx ? obj?.BidPx : "00000"),
+           setSellValue(obj?.OfferPx ? obj?.OfferPx : "00000"),
+          progBar()
+        }else{
+          alert("request failed")
+          setTimeout(() => {
+            setInitRq(false);
+          }, 2000);
+        }
+      } catch (error) {
+        if (axios.isCancel(error)) {
+          // Request was canceled
+          console.log('Request canceled:', error.message);
+        } else {
+          console.error('Error:', error.message);
+        }
+      } finally {
+        setInitRq(false);
+      }
+    }else{
+      alert("Currency is required")
+    }
+  }
+
+  const handleCancelRequest = async()=>{
+    if (cancelToken) {
+      cancelToken.cancel('Request canceled by user');
+    }
+    setInitRq(false)
+  }
+
 
   return buySell ? (
     <Card
@@ -378,16 +439,9 @@ export default function Tile() {
             :
             (
               !hideRQ &&
+              InitiateRq ? (
               <Button
-                onClick={() => {
-                  InitiateRq ? setInitRq(false)
-                    :
-                    iniNum !== "" && cancelRequest(),
-                    iniNum !== "" && setInputValue(true),
-                    setBuyValue("0.23476"),
-                    setSellValue("1.23745"),
-                    progBar()
-                }}
+                onClick={handleCancelRequest}
                 sx={{
                   bgcolor: "#5F94F5",
                   height: 40,
@@ -405,8 +459,54 @@ export default function Tile() {
                   },
                 }}
               >
-                {InitiateRq ? "Cancel RFQ" : "Initiate RFQ"}
+                Cancel RFQ
               </Button>
+              ) : (
+                <Button
+                onClick={handleInitiateRFQ}
+                sx={{
+                  bgcolor: "#5F94F5",
+                  height: 40,
+                  width: 40,
+                  color: "#e8e8e8",
+                  fontSize: 9,
+                  marginX: 0.9,
+                  textTransform: "capitalize",
+                  placeSelf: "center",
+                  lineHeight: 1.4,
+                  // marginTop: 1.5,
+                  "&:hover": {
+                    backgroundColor: "#85aff7",
+                    color: "#3c52b2",
+                  },
+                }}
+              >
+                Initiate RFQ
+              </Button>
+              )
+              // <Button
+              //   onClick={handleInitiateRFQ}
+              //   sx={{
+              //     bgcolor: "#5F94F5",
+              //     height: 40,
+              //     width: 40,
+              //     color: "#e8e8e8",
+              //     fontSize: 9,
+              //     marginX: 0.9,
+              //     textTransform: "capitalize",
+              //     placeSelf: "center",
+              //     lineHeight: 1.4,
+              //     // marginTop: 1.5,
+              //     "&:hover": {
+              //       backgroundColor: "#85aff7",
+              //       color: "#3c52b2",
+              //     },
+              //   }}
+              // >
+              //   {InitiateRq ? "Cancel RFQ" : "Initiate RFQ"}
+              // </Button>
+
+
             )
           }
           <CardActionArea
@@ -457,7 +557,7 @@ export default function Tile() {
                     marginTop: 0.5
                   }}
                 >
-                  {inputValue && inlargedNum(sellValue, "BUY")}
+                  {inputValue && inlargedNum(buyValue, "BUY")}
                 </Typography>
                 {secondCounter < 10 && hideRQ && ( <Typography
                   sx={{

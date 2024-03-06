@@ -24,6 +24,7 @@
     "@react-rxjs/core": "^0.10.7",
     "@react-rxjs/utils": "^0.9.7",
     "apexcharts": "^3.46.0",
+    "axios": "^1.6.7",
     "date-fns": "^3.3.1",
     "dayjs": "^1.11.10",
     "formik": "^2.4.5",
