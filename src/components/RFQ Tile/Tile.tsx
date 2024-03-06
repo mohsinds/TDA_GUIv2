@@ -1,16 +1,11 @@
 import * as React from "react";
-import { Card, CardActionArea, CardContent } from "@mui/material";
-import { Typography } from "@mui/material";
+import {Card, CardActionArea, CardContent, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 import Input from "@mui/material/Input";
 import LinearProgress from "@mui/material/LinearProgress";
-import { CustomThemeContext } from "@/themes/CustomThemeContext";
-import { bind } from "@react-rxjs/core";
-import { createSignal } from "@react-rxjs/utils";
+import {CustomThemeContext} from "@/themes/CustomThemeContext";
 import axios from "axios";
 
-const [textChange$, setText] = createSignal<string>();
-const [useText, text$] = bind(textChange$, "1000");
 
 export default function Tile() {
   const themes = React.useContext(CustomThemeContext);
@@ -21,9 +16,10 @@ export default function Tile() {
   const [buyValue, setBuyValue] = React.useState("0.00000");
   const [sellValue, setSellValue] = React.useState("0.00000");
   const [iniNum, setInitNumb] = React.useState("10");
+  const [text, setText] = React.useState("1000");
   const [cancelToken, setCancelToken] = React.useState<any>(null);
 
-  const text = useText();
+  
   const [progress, setProgress] = React.useState(100);
   const [buySell, setBuySell] = React.useState(false);
   const [buySellValue, setBuySellValue] = React.useState("");
