@@ -94,7 +94,7 @@ export default function Tile() {
   };
 
   const progBar = () => {
-    const decreaseAmount = 100 / 10; // Decrease amount per second to reach 0 in 10 seconds
+    const decreaseAmount = 100 / 50; // Decrease amount per second to reach 0 in 10 seconds
 
     intervalRef.current = window.setInterval(() => {
       setProgress((oldProgress) => {
@@ -236,7 +236,7 @@ export default function Tile() {
 
         setInitRq(true);
         const response = await axios.get(
-          `http://192.168.0.108:5000/customer/rfq?symbol=BTC-USD&currency=BTC&orderQty=${text}`,
+          `http://192.168.0.108:5000/customer/rfq?symbol=USDT-USD&currency=USDT&orderQty=${text}`,
           {
             cancelToken: source.token,
           }
@@ -335,7 +335,7 @@ export default function Tile() {
             marginBottom: 1,
           }}
         >
-          {symbolName}
+          {symbolName?.replace('-', '/')}
         </Typography>
         <div
           style={{
@@ -641,7 +641,7 @@ export default function Tile() {
                 color: "gray",
               }}
             >
-              {secondCounter.toString().substr(0, 1) + " seconds"}
+              {(secondCounter/4)?.toFixed(0) + " seconds"}
             </Typography>
             <LinearProgress
               sx={{ width: 150, marginTop: 0, borderRadius: 50 }}
