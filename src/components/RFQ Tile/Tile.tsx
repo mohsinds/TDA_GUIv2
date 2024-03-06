@@ -44,6 +44,7 @@ export default function Tile() {
     const val = parseFloat(value).toFixed(5).toString()
     const xxx = val?.split(".")[1];
     const yyy = val?.split(".")[0];
+    
     return (
       <>
         <Typography
