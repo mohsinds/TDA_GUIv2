@@ -1,21 +1,16 @@
 import * as React from "react";
-import {
-  Card,
-  CardActionArea,
-  CardContent,
-} from "@mui/material";
+import { Card, CardActionArea, CardContent } from "@mui/material";
 import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import Input from "@mui/material/Input";
 import LinearProgress from "@mui/material/LinearProgress";
 import { CustomThemeContext } from "@/themes/CustomThemeContext";
-import { bind } from "@react-rxjs/core"
-import { createSignal } from "@react-rxjs/utils"
+import { bind } from "@react-rxjs/core";
+import { createSignal } from "@react-rxjs/utils";
 import axios from "axios";
 
-
 const [textChange$, setText] = createSignal<string>();
-const [useText, text$] = bind(textChange$, "1000")
+const [useText, text$] = bind(textChange$, "10");
 
 export default function Tile() {
   const themes = React.useContext(CustomThemeContext);
@@ -23,16 +18,16 @@ export default function Tile() {
   const [InitiateRq, setInitRq] = React.useState<boolean>(false);
   const [onHov, setOnHov] = React.useState<boolean>(false);
   const [hideRQ, setHideRq] = React.useState<boolean>(false);
-  const [buyValue, setBuyValue] = React.useState("00000");
-  const [sellValue, setSellValue] = React.useState("00000");
-  const [iniNum, setInitNumb] = React.useState("1000");
-  const [cancelToken, setCancelToken] = React.useState(null);
+  const [buyValue, setBuyValue] = React.useState("00000.0");
+  const [sellValue, setSellValue] = React.useState("00000.0");
+  const [iniNum, setInitNumb] = React.useState("10");
+  const [cancelToken, setCancelToken] = React.useState<any>(null);
 
-  const text = useText()
+  const text = useText();
   const [progress, setProgress] = React.useState(100);
   const [buySell, setBuySell] = React.useState(false);
   const [buySellValue, setBuySellValue] = React.useState("");
-  const [secondCounter, setSecCounter] = React.useState(100)
+  const [secondCounter, setSecCounter] = React.useState(100);
   const intervalRef = React.useRef<number | null>(null);
 
   const formatNumber = (value: string) => {
@@ -47,9 +42,8 @@ export default function Tile() {
   };
 
   const inlargedNum = (value: string, valueOf: string) => {
-    console.log("value", value, "valueof", valueOf);
-    const xxx = value?.split(".")[1];
-    const yyy = value?.split(".")[0];
+    console.log("value", value, "valueof", valueOf);//65323.17    68005.47
+    const val1 = parseFloat(value)?.toFixed(2);
     return (
       <>
         <Typography
@@ -58,68 +52,64 @@ export default function Tile() {
             fontSize: 11,
             alignItems: "center",
             marginTop: -3,
-            // backgroundColor:'green',
             width: 90,
-            color: secondCounter > 50 ? "white" : valueOf === "BUY" ? "#26BAFC" : "red",
-            "&:hover": { color: "white" }
+            color:
+              secondCounter > 50
+                ? "white"
+                : valueOf === "BUY"
+                ? "#26BAFC"
+                : "red",
+            "&:hover": { color: "white" },
           }}
         >
-          <div style={{ paddingTop:'12px',fontWeight:500 }}>
-            {yyy + "." + xxx?.substr(0, 2)}
+          <div style={{ paddingTop: "12px", fontWeight: 500 }}>
+            {val1.substring(0,3)}
           </div>
           <Typography
             sx={{
               fontSize: 32,
               fontWeight: "semibold",
-              paddingX:0.2
+              paddingX: 0.2,
               // marginBottom: -3,
             }}
           >
-          
-              {xxx?.substr(2, 2)}
+            {val1.substring(3,5)}
           </Typography>
-          <div style={{ paddingTop:'12px',fontWeight:500 }}>
-          {xxx?.substr(4, 10)}
+          <div style={{ paddingTop: "12px", fontWeight: 500 }}>
+            {val1.substring(5,10)}
           </div>
-          
-         
         </Typography>
-    
       </>
     );
   };
 
-  const handleReject = ()=>{
+  const handleReject = () => {
     setProgress(100);
     setInputValue(false);
     setHideRq(false);
     setSecCounter(0);
-    stopProgressBar()
-  }
-
-
+    stopProgressBar();
+  };
 
   const progBar = () => {
-    const decreaseAmount = 100 / (10); // Decrease amount per second to reach 0 in 10 seconds
+    const decreaseAmount = 100 / 10; // Decrease amount per second to reach 0 in 10 seconds
 
     intervalRef.current = window.setInterval(() => {
       setProgress((oldProgress) => {
         // If progress reaches 0, clear the interval
         if (oldProgress === 0) {
           // clearInterval(timer);
-          setInitRq(false)
-          setHideRq(false)
-          setBuySell(false)
-          setInputValue(false)
-          handleReject()
+          setInitRq(false);
+          setHideRq(false);
+          setBuySell(false);
+          setInputValue(false);
+          handleReject();
           return 0;
         }
         // Decrease the progress by the calculated amount
-        console.log('counter', Math.max(oldProgress - decreaseAmount, 0))
-        setSecCounter(Math.max(oldProgress - decreaseAmount, 0))
-        return (Math.max(oldProgress - decreaseAmount, 0))
-
-
+        console.log("counter", Math.max(oldProgress - decreaseAmount, 0));
+        setSecCounter(Math.max(oldProgress - decreaseAmount, 0));
+        return Math.max(oldProgress - decreaseAmount, 0);
       });
     }, 500); // Run every second
 
@@ -127,16 +117,13 @@ export default function Tile() {
     setProgress(100);
   };
 
-
-
   const stopProgressBar = () => {
     clearInterval(intervalRef.current!);
     console.log("Interval cleared");
   };
 
-
   const buySellCard = (val: string) => {
-    console.log('sellbuyvalue', buySellValue)
+    console.log("sellbuyvalue", buySellValue);
     return (
       <div
         style={{
@@ -156,23 +143,23 @@ export default function Tile() {
         </Typography>
         <Typography
           sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            fontWeight: '600',
+            display: "flex",
+            flexDirection: "row",
+            fontWeight: "600",
           }}
         >
           You {" " + buySellValue + " "}
           <Typography
             sx={{
-              backgroundColor: 'white',
+              backgroundColor: "white",
               color: buySellValue === "buy" ? "green" : "#F64A69",
               fontSize: 10,
-              fontWeight: '600',
-              justifyContent: 'center',
-              alignItems: 'center',
-              display: 'flex',
+              fontWeight: "600",
+              justifyContent: "center",
+              alignItems: "center",
+              display: "flex",
               width: 60,
-              marginX: 2
+              marginX: 2,
             }}
           >
             {" USDT " + iniNum}
@@ -180,20 +167,19 @@ export default function Tile() {
           at a rate of
           <Typography
             sx={{
-              backgroundColor: 'white',
+              backgroundColor: "white",
               color: buySellValue === "buy" ? "green" : "#F64A69",
               fontSize: 10,
-              fontWeight: '600',
-              justifyContent: 'center',
-              alignItems: 'center',
-              display: 'flex',
+              fontWeight: "600",
+              justifyContent: "center",
+              alignItems: "center",
+              display: "flex",
               width: 40,
               marginX: 1,
             }}
           >
             {val}
           </Typography>
-
         </Typography>
         <Button
           sx={{
@@ -206,8 +192,8 @@ export default function Tile() {
           }}
           onClick={() => {
             setBuySell(false);
-            setBuySellValue("")
-            inlargedNum("1.23457", "SELL");
+            setBuySellValue("");
+            // inlargedNum("1.23457", "SELL");
           }}
         >
           Close
@@ -226,66 +212,72 @@ export default function Tile() {
     }, 1000);
   };
 
-   // InitiateRq ? setInitRq(false)
-    // :
-    // iniNum !== "" && cancelRequest(),
-    // iniNum !== "" && setInputValue(true),
-    // setBuyValue("0.23476"),
-    // setSellValue("1.23745"),
-    // progBar()
+  // InitiateRq ? setInitRq(false)
+  // :
+  // iniNum !== "" && cancelRequest(),
+  // iniNum !== "" && setInputValue(true),
+  // setBuyValue("0.23476"),
+  // setSellValue("1.23745"),
+  // progBar()
 
-  const handleInitiateRFQ = async()=>{
-      if(text){
-        try {
-          if (cancelToken) {
-            cancelToken.cancel('Request canceled');
+  const handleInitiateRFQ = async () => {
+    if (text) {
+      try {
+        if (cancelToken) {
+          cancelToken.cancel("Request canceled");
+        }
+
+        // Create a new cancel token
+        const source = axios?.CancelToken?.source();
+        console.log('source', source)
+        setCancelToken(source);
+
+        setInitRq(true);
+        const response = await axios.get(
+          `http://192.168.0.108:5000/customer/rfq?symbol=BTC-USD&currency=BTC&orderQty=${text}`,
+          {
+            cancelToken: source.token,
           }
-  
-          // Create a new cancel token
-          const source = axios.CancelToken.source();
-          setCancelToken(source);
-
-          setInitRq(true);
-        const response = await axios.get(`http://192.168.8.102:5000/customer/rfq?symbol=BTC-USD&currency=BTC&orderQty=${text}`,{
-          cancelToken: source.token,
-        });
-        if(response.data?.length > 0){
-          let obj = response?.data[0]
-          console.log("obj==>",obj)
-          setInputValue(true)
+        );
+        if (response.data?.length > 0) {
+          console.log('response =>',response)
+          let obj = response?.data[0];
+          console.log("obj==>", obj);
+          setBuyValue(obj?.BidPx ? obj?.BidPx : "00000"),
+          setSellValue(obj?.OfferPx ? obj?.OfferPx : "00000"),
+          setSecCounter(100)
+          setInputValue(true);
           setInitRq(false);
           setHideRq(true);
-           setBuyValue(obj?.BidPx ? obj?.BidPx : "00000"),
-           setSellValue(obj?.OfferPx ? obj?.OfferPx : "00000"),
-          progBar()
-        }else{
-          alert("request failed")
+            progBar();
+        } else {
+          alert("request failed");
           setTimeout(() => {
             setInitRq(false);
+            setHideRq(false)
           }, 2000);
         }
       } catch (error) {
         if (axios.isCancel(error)) {
           // Request was canceled
-          console.log('Request canceled:', error.message);
+          console.log("Request canceled:", error);
         } else {
-          console.error('Error:', error.message);
+          console.error("Error:", error);
         }
       } finally {
         setInitRq(false);
       }
-    }else{
-      alert("Currency is required")
+    } else {
+      alert("Currency is required");
     }
-  }
+  };
 
-  const handleCancelRequest = async()=>{
+  const handleCancelRequest = async () => {
     if (cancelToken) {
-      cancelToken.cancel('Request canceled by user');
+      cancelToken.cancel("Request canceled by user");
     }
-    setInitRq(false)
-  }
-
+    setInitRq(false);
+  };
 
   return buySell ? (
     <Card
@@ -313,15 +305,17 @@ export default function Tile() {
         width: 340,
         paddingX: 3,
         // paddingY: 1,
-        justifyContent:'center',
+        justifyContent: "center",
         flexDirection: "column",
-        transition: 'background-color 0.1s', // Optional: Add a transition effect for smoother color change
-        '&:hover': {
-          backgroundColor: themes.currentTheme === "dark" ? '#32323f' : '', 
-          boxShadow: onHov ? themes.currentTheme === "dark" ? '' : '0px 0px 10px 0px rgba(0,0,0,0.2)' : 'none',// Change this to the desired hover background color
+        transition: "background-color 0.1s", // Optional: Add a transition effect for smoother color change
+        "&:hover": {
+          backgroundColor: themes.currentTheme === "dark" ? "#32323f" : "",
+          boxShadow: onHov
+            ? themes.currentTheme === "dark"
+              ? ""
+              : "0px 0px 10px 0px rgba(0,0,0,0.2)"
+            : "none", // Change this to the desired hover background color
         },
-        
-        
       }}
       onMouseEnter={() => setOnHov(true)} // Set onHov to true on mouse enter
       onMouseLeave={() => setOnHov(false)} // Set onHov to false on mouse leave
@@ -331,8 +325,8 @@ export default function Tile() {
           sx={{
             // fontWeight: 'bold'
             fontSize: 13,
-            color: themes.currentTheme === "dark" ? "#FFFFFF" : 'black',
-            marginBottom: 1
+            color: themes.currentTheme === "dark" ? "#FFFFFF" : "black",
+            marginBottom: 1,
           }}
         >
           USDT/USD
@@ -346,18 +340,25 @@ export default function Tile() {
         >
           <CardActionArea
             sx={{
-              backgroundColor: hideRQ && secondCounter > 50 ? 'red' : onHov ? themes.currentTheme === "dark" ? '#434354' : '#f9f9f9' : 'transparent',
+              backgroundColor:
+                hideRQ && secondCounter > 50
+                  ? "red"
+                  : onHov
+                  ? themes.currentTheme === "dark"
+                    ? "#434354"
+                    : "#f9f9f9"
+                  : "transparent",
               width: 110,
-              height:55,
+              height: 55,
               borderRadius: 1,
               paddingX: 2,
               paddingY: 1,
-              transition: 'background-color 0.8s',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              alignItems: 'flex-start',
-              flexDirection: 'column',
-              "&:hover": { backgroundColor: hideRQ ? "red" : ''},
+              transition: "background-color 0.8s",
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+              flexDirection: "column",
+              "&:hover": { backgroundColor: hideRQ ? "red" : "" },
             }}
             onClick={() => {
               hideRQ && setBuySellValue("sell");
@@ -369,17 +370,18 @@ export default function Tile() {
                 sx={{
                   marginTop: 1,
                   fontSize: 12,
-                  alignSelf: 'center'
+                  alignSelf: "center",
                 }}
-              >Requesting</Typography>
+              >
+                Requesting
+              </Typography>
             ) : (
               <>
                 <Typography
                   sx={{
                     fontSize: 9,
-                    color:hideRQ && secondCounter > 50 ? 'white' : '#949596',
+                    color: hideRQ && secondCounter > 50 ? "white" : "#949596",
                     // fontWeight: 'bold',
-
                   }}
                 >
                   SELL
@@ -388,33 +390,34 @@ export default function Tile() {
                   sx={{
                     fontSize: 20,
                     // alignSelf: "center",
-                    marginTop: 0.5
+                    marginTop: 0.5,
                   }}
                 >
                   {inputValue && inlargedNum(sellValue, "SELL")}
-                  
                 </Typography>
-                {secondCounter < 10 && hideRQ && ( <Typography
-                  sx={{
-                    fontSize: 8,
-                    color:'red',
-                    textAlign: 'center',
-                    width: 80,
-                    marginTop: -1
-                  }}
-                >
-                  Expired  
-                </Typography>)}
+                {secondCounter < 10 && hideRQ && (
+                  <Typography
+                    sx={{
+                      fontSize: 8,
+                      color: "red",
+                      textAlign: "center",
+                      width: 80,
+                      marginTop: -1,
+                    }}
+                  >
+                    Expired
+                  </Typography>
+                )}
               </>
             )}
           </CardActionArea>
-          {secondCounter < 10 && hideRQ ? (
+          {secondCounter < 10 && hideRQ  ? (
             <Button
               onClick={() => {
-                setInitRq(false)
-                setHideRq(false)
-                setBuySell(false)
-                setInputValue(false)
+                setInitRq(false);
+                setHideRq(false);
+                setBuySell(false);
+                setInputValue(false);
               }}
               sx={{
                 bgcolor: "#5F94F5",
@@ -435,94 +438,94 @@ export default function Tile() {
             >
               {"Requote"}
             </Button>
+          ) : (!hideRQ && InitiateRq) ? (
+            <Button
+              onClick={handleCancelRequest}
+              sx={{
+                bgcolor: "#5F94F5",
+                height: 40,
+                width: 40,
+                color: "#e8e8e8",
+                fontSize: 9,
+                marginX: 0.9,
+                textTransform: "capitalize",
+                placeSelf: "center",
+                lineHeight: 1.4,
+                // marginTop: 1.5,
+                "&:hover": {
+                  backgroundColor: "#85aff7",
+                  color: "#3c52b2",
+                },
+              }}
+            >
+              Cancel RFQ
+            </Button>
+          ) : (!InitiateRq && !hideRQ) && (
+            <Button
+              onClick={handleInitiateRFQ}
+              sx={{
+                bgcolor: "#5F94F5",
+                height: 40,
+                width: 40,
+                color: "#e8e8e8",
+                fontSize: 9,
+                marginX: 0.9,
+                textTransform: "capitalize",
+                placeSelf: "center",
+                lineHeight: 1.4,
+                // marginTop: 1.5,
+                "&:hover": {
+                  backgroundColor: "#85aff7",
+                  color: "#3c52b2",
+                },
+              }}
+            >
+              Initiate RFQ
+            </Button>
           )
-            :
-            (
-              !hideRQ &&
-              InitiateRq ? (
-              <Button
-                onClick={handleCancelRequest}
-                sx={{
-                  bgcolor: "#5F94F5",
-                  height: 40,
-                  width: 40,
-                  color: "#e8e8e8",
-                  fontSize: 9,
-                  marginX: 0.9,
-                  textTransform: "capitalize",
-                  placeSelf: "center",
-                  lineHeight: 1.4,
-                  // marginTop: 1.5,
-                  "&:hover": {
-                    backgroundColor: "#85aff7",
-                    color: "#3c52b2",
-                  },
-                }}
-              >
-                Cancel RFQ
-              </Button>
-              ) : (
-                <Button
-                onClick={handleInitiateRFQ}
-                sx={{
-                  bgcolor: "#5F94F5",
-                  height: 40,
-                  width: 40,
-                  color: "#e8e8e8",
-                  fontSize: 9,
-                  marginX: 0.9,
-                  textTransform: "capitalize",
-                  placeSelf: "center",
-                  lineHeight: 1.4,
-                  // marginTop: 1.5,
-                  "&:hover": {
-                    backgroundColor: "#85aff7",
-                    color: "#3c52b2",
-                  },
-                }}
-              >
-                Initiate RFQ
-              </Button>
-              )
-              // <Button
-              //   onClick={handleInitiateRFQ}
-              //   sx={{
-              //     bgcolor: "#5F94F5",
-              //     height: 40,
-              //     width: 40,
-              //     color: "#e8e8e8",
-              //     fontSize: 9,
-              //     marginX: 0.9,
-              //     textTransform: "capitalize",
-              //     placeSelf: "center",
-              //     lineHeight: 1.4,
-              //     // marginTop: 1.5,
-              //     "&:hover": {
-              //       backgroundColor: "#85aff7",
-              //       color: "#3c52b2",
-              //     },
-              //   }}
-              // >
-              //   {InitiateRq ? "Cancel RFQ" : "Initiate RFQ"}
-              // </Button>
-
-
-            )
+          // <Button
+          //   onClick={handleInitiateRFQ}
+          //   sx={{
+          //     bgcolor: "#5F94F5",
+          //     height: 40,
+          //     width: 40,
+          //     color: "#e8e8e8",
+          //     fontSize: 9,
+          //     marginX: 0.9,
+          //     textTransform: "capitalize",
+          //     placeSelf: "center",
+          //     lineHeight: 1.4,
+          //     // marginTop: 1.5,
+          //     "&:hover": {
+          //       backgroundColor: "#85aff7",
+          //       color: "#3c52b2",
+          //     },
+          //   }}
+          // >
+          //   {InitiateRq ? "Cancel RFQ" : "Initiate RFQ"}
+          // </Button>
           }
           <CardActionArea
             sx={{
-              backgroundColor: hideRQ && secondCounter > 50 ? '#26BAFC' : onHov ? themes.currentTheme === "dark" ? '#434354' : '#f9f9f9' : 'transparent',
+              backgroundColor:
+                hideRQ && secondCounter > 50
+                  ? "#26BAFC"
+                  : onHov
+                  ? themes.currentTheme === "dark"
+                    ? "#434354"
+                    : "#f9f9f9"
+                  : "transparent",
               width: 110,
               height: 55,
               borderRadius: 1,
               paddingX: 2,
               paddingY: 1.5,
-              transition: 'background-color 0.8s',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              alignItems: 'flex-start',
-              flexDirection: 'column',
-              "&:hover": { backgroundColor: hideRQ ? "#26BAFC" : ''}
+              transition: "background-color 0.8s",
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+              flexDirection: "column",
+              "&:hover": { backgroundColor: hideRQ ? "#26BAFC" : "" },
             }}
             onClick={() => {
               hideRQ && setBuySellValue("buy");
@@ -534,7 +537,7 @@ export default function Tile() {
                 sx={{
                   marginTop: 1,
                   fontSize: 12,
-                  alignSelf: 'center'
+                  alignSelf: "center",
                 }}
               >
                 Requesting
@@ -544,7 +547,7 @@ export default function Tile() {
                 <Typography
                   sx={{
                     fontSize: 9,
-                    color: hideRQ && secondCounter > 50 ? 'white' : '#949596',
+                    color: hideRQ && secondCounter > 50 ? "white" : "#949596",
                     // fontWeight: 'bold'
                   }}
                 >
@@ -554,22 +557,24 @@ export default function Tile() {
                   sx={{
                     fontSize: 20,
                     // alignSelf: "center",
-                    marginTop: 0.5
+                    marginTop: 0.5,
                   }}
                 >
                   {inputValue && inlargedNum(buyValue, "BUY")}
                 </Typography>
-                {secondCounter < 10 && hideRQ && ( <Typography
-                  sx={{
-                    fontSize: 8,
-                    color:'red',
-                    textAlign: 'center',
-                    width: 80,
-                    marginTop: -1.5
-                  }}
-                >
-                  Expired  
-                </Typography>)}
+                {secondCounter < 10 && hideRQ && (
+                  <Typography
+                    sx={{
+                      fontSize: 8,
+                      color: "red",
+                      textAlign: "center",
+                      width: 80,
+                      marginTop: -1.5,
+                    }}
+                  >
+                    Expired
+                  </Typography>
+                )}
               </>
             )}
           </CardActionArea>
@@ -590,28 +595,26 @@ export default function Tile() {
           <Typography
             sx={{
               placeSelf: "center",
-              marginTop:0,
+              marginTop: 0,
               color: "gray",
               fontSize: 10,
             }}
           >
-            USDT {" "}
+            USDT{" "}
           </Typography>
           <Input
-          sx={{
-            marginLeft: 0.5,
-            width: 80,
+            sx={{
+              marginLeft: 0.5,
+              width: 80,
 
-            fontSize: 10,
-            '& input': {
-              // backgroundColor: 'gray',
-              // marginBottom: -0.2,
-              textAlign: 'center', // Center the text inside the input field
-              border: 'none', // Set border-bottom color to gray
-
-            },
-           
-          }}
+              fontSize: 10,
+              "& input": {
+                // backgroundColor: 'gray',
+                // marginBottom: -0.2,
+                textAlign: "center", // Center the text inside the input field
+                border: "none", // Set border-bottom color to gray
+              },
+            }}
             value={text && parseInt(text).toLocaleString("en-US")}
             placeholder="1,000,000"
             onChange={(e) => setText(formatNumber(e.target.value))}
@@ -623,13 +626,13 @@ export default function Tile() {
               display: "flex",
               alignItems: "center",
               justifyContent: "space-evenly",
-              marginTop: 10
+              marginTop: 10,
             }}
           >
             <Typography
               sx={{
                 fontSize: 10,
-                color: 'gray'
+                color: "gray",
               }}
             >
               {secondCounter.toString().substr(0, 1) + " seconds"}
