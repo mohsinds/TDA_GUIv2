@@ -10,7 +10,7 @@ import { createSignal } from "@react-rxjs/utils";
 import axios from "axios";
 
 const [textChange$, setText] = createSignal<string>();
-const [useText, text$] = bind(textChange$, "10");
+const [useText, text$] = bind(textChange$, "1000");
 
 export default function Tile() {
   const themes = React.useContext(CustomThemeContext);
@@ -18,8 +18,8 @@ export default function Tile() {
   const [InitiateRq, setInitRq] = React.useState<boolean>(false);
   const [onHov, setOnHov] = React.useState<boolean>(false);
   const [hideRQ, setHideRq] = React.useState<boolean>(false);
-  const [buyValue, setBuyValue] = React.useState("00000.00");
-  const [sellValue, setSellValue] = React.useState("00000.00");
+  const [buyValue, setBuyValue] = React.useState("0.00000");
+  const [sellValue, setSellValue] = React.useState("0.00000");
   const [iniNum, setInitNumb] = React.useState("10");
   const [cancelToken, setCancelToken] = React.useState<any>(null);
 
@@ -44,45 +44,93 @@ export default function Tile() {
   };
 
   const inlargedNum = (value: string, valueOf: string) => {
-    console.log("value", value, "valueof", valueOf);//65323.17    68005.47
-    const val1 = parseFloat(value)?.toFixed(2);
+    console.log("value", value, "valueof", valueOf);
+    const val = parseFloat(value).toFixed(5).toString()
+    const xxx = val?.split(".")[1];
+    const yyy = val?.split(".")[0];
     return (
       <>
         <Typography
           sx={{
             display: "flex",
-            fontSize: 11,
+            fontSize: 15,
             alignItems: "center",
+            // fontSize: 11,
+            // alignItems: "center",//"0.98078400"  1.02081600
+
             marginTop: -3,
+            // color: valueOf === "BUY" ? "green" : "red",
+            // backgroundColor:'green',
             width: 90,
-            color:
-              secondCounter > 50
-                ? "white"
-                : valueOf === "BUY"
-                ? "#26BAFC"
-                : "red",
-            "&:hover": { color: "white" },
+            color: secondCounter > 50 ? "white" : valueOf === "BUY" ? "#26BAFC" : "red",
+            "&:hover": { color: "white" }
           }}
         >
-          <div style={{ paddingTop: "12px", fontWeight: 500 }}>
-            {val1.substring(0,3)}
+          {/* {yyy + "." + xxx?.substr(0, 2)} */}
+          <div style={{ paddingTop:'12px',fontWeight:500 }}>
+            {yyy + "." + xxx?.substr(0, 2)}
           </div>
           <Typography
             sx={{
+              // fontSize: 30,
               fontSize: 32,
               fontWeight: "semibold",
-              paddingX: 0.2,
+              paddingX:0.2
               // marginBottom: -3,
             }}
           >
-            {val1.substring(3,5)}
+            {/* {xxx?.substr(2, 2)} */}
+
+              {xxx?.substr(2, 2)}
           </Typography>
-          <div style={{ paddingTop: "12px", fontWeight: 500 }}>
-            {val1.substring(5,10)}
+          <div style={{ paddingTop:'12px',fontWeight:500 }}>
+          {xxx?.substr(4, 10)}
           </div>
+
+
         </Typography>
+
       </>
     );
+    // console.log("value", value, "valueof", valueOf);//65323.17    68005.47
+    // const val1 = parseFloat(value)?.toFixed(2);
+    // return (
+    //   <>
+    //     <Typography
+    //       sx={{
+    //         display: "flex",
+    //         fontSize: 11,
+    //         alignItems: "center",
+    //         marginTop: -3,
+    //         width: 90,
+    //         color:
+    //           secondCounter > 50
+    //             ? "white"
+    //             : valueOf === "BUY"
+    //             ? "#26BAFC"
+    //             : "red",
+    //         "&:hover": { color: "white" },
+    //       }}
+    //     >
+    //       <div style={{ paddingTop: "12px", fontWeight: 500 }}>
+    //         {val1.substring(0,3)}
+    //       </div>
+    //       <Typography
+    //         sx={{
+    //           fontSize: 32,
+    //           fontWeight: "semibold",
+    //           paddingX: 0.2,
+    //           // marginBottom: -3,
+    //         }}
+    //       >
+    //         {val1.substring(3,5)}
+    //       </Typography>
+    //       <div style={{ paddingTop: "12px", fontWeight: 500 }}>
+    //         {val1.substring(5,10)}
+    //       </div>
+    //     </Typography>
+    //   </>
+    // );
   };
 
   const handleReject = () => {
@@ -245,8 +293,8 @@ export default function Tile() {
           console.log('response =>',response)
           let obj = response?.data[0];
           console.log("obj==>", obj.EndTime);
-          setBuyValue(obj?.OfferPx ? obj?.OfferPx : "00000"),
-          setSellValue(obj?.BidPx ? obj?.BidPx : "00000"),
+          setBuyValue(obj?.OfferPx ? obj?.OfferPx : "0.00000"),
+          setSellValue(obj?.BidPx ? obj?.BidPx : "0.00000"),
           setSecCounter(100)
           setSymbol(obj?.Symbol);
           setCurrencyType(obj?.Currency)
