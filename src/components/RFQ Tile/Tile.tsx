@@ -243,8 +243,8 @@ export default function Tile() {
           console.log('response =>',response)
           let obj = response?.data[0];
           console.log("obj==>", obj);
-          setBuyValue(obj?.BidPx ? obj?.BidPx : "00000"),
-          setSellValue(obj?.OfferPx ? obj?.OfferPx : "00000"),
+          setBuyValue(obj?.OfferPx ? obj?.OfferPx : "00000"),
+          setSellValue(obj?.BidPx ? obj?.BidPx : "00000"),
           setSecCounter(100)
           setInputValue(true);
           setInitRq(false);
