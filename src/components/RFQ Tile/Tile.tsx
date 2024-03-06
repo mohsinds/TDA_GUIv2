@@ -29,6 +29,8 @@ export default function Tile() {
   const [buySellValue, setBuySellValue] = React.useState("");
   const [secondCounter, setSecCounter] = React.useState(100);
   const intervalRef = React.useRef<number | null>(null);
+  const [symbolName, setSymbol] = React.useState('USDT/USD')
+  const [currencyType, setCurrencyType] = React.useState('USDT')
 
   const formatNumber = (value: string) => {
     // Remove non-numeric characters
@@ -242,11 +244,15 @@ export default function Tile() {
         if (response.data?.length > 0) {
           console.log('response =>',response)
           let obj = response?.data[0];
-          console.log("obj==>", obj);
+          console.log("obj==>", obj.EndTime);
           setBuyValue(obj?.OfferPx ? obj?.OfferPx : "00000"),
           setSellValue(obj?.BidPx ? obj?.BidPx : "00000"),
           setSecCounter(100)
+          setSymbol(obj?.Symbol);
+          setCurrencyType(obj?.Currency)
           setInputValue(true);
+          // setText(Math.abs(parseFloat(obj?.OrderQty)) )
+          setText(obj?.OrderQty) 
           setInitRq(false);
           setHideRq(true);
             progBar();
@@ -329,7 +335,7 @@ export default function Tile() {
             marginBottom: 1,
           }}
         >
-          USDT/USD
+          {symbolName}
         </Typography>
         <div
           style={{
@@ -600,7 +606,7 @@ export default function Tile() {
               fontSize: 10,
             }}
           >
-            USDT{" "}
+            {currencyType}{" "}
           </Typography>
           <Input
             sx={{
