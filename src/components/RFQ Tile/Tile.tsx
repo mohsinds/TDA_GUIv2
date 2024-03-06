@@ -18,8 +18,8 @@ export default function Tile() {
   const [InitiateRq, setInitRq] = React.useState<boolean>(false);
   const [onHov, setOnHov] = React.useState<boolean>(false);
   const [hideRQ, setHideRq] = React.useState<boolean>(false);
-  const [buyValue, setBuyValue] = React.useState("00000.0");
-  const [sellValue, setSellValue] = React.useState("00000.0");
+  const [buyValue, setBuyValue] = React.useState("00000.00");
+  const [sellValue, setSellValue] = React.useState("00000.00");
   const [iniNum, setInitNumb] = React.useState("10");
   const [cancelToken, setCancelToken] = React.useState<any>(null);
 
@@ -174,7 +174,7 @@ export default function Tile() {
               justifyContent: "center",
               alignItems: "center",
               display: "flex",
-              width: 40,
+              width: 50,
               marginX: 1,
             }}
           >
@@ -285,7 +285,7 @@ export default function Tile() {
         display: "flex",
         height: 190,
         width: 350,
-        paddingX: 3,
+        paddingX: 1,
         paddingY: 2,
         flexDirection: "column",
         backgroundColor: buySell
