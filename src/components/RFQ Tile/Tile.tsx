@@ -6,6 +6,8 @@ import LinearProgress from "@mui/material/LinearProgress";
 import {CustomThemeContext} from "@/themes/CustomThemeContext";
 import axios from "axios";
 
+const backendApiUrl = process.env.BACKEND_API_URL ?? 'http://localhost:5000'
+const backendApiToken = process.env.BACKEND_API_TOKEN ?? 'set-your-token-in-the-.env-file'
 
 export default function Tile() {
   const themes = React.useContext(CustomThemeContext);
@@ -19,7 +21,7 @@ export default function Tile() {
   const [text, setText] = React.useState("1000");
   const [cancelToken, setCancelToken] = React.useState<any>(null);
 
-  
+
   const [progress, setProgress] = React.useState(100);
   const [buySell, setBuySell] = React.useState(false);
   const [buySellValue, setBuySellValue] = React.useState("");
@@ -44,7 +46,7 @@ export default function Tile() {
     const val = parseFloat(value).toFixed(5).toString()
     const xxx = val?.split(".")[1];
     const yyy = val?.split(".")[0];
-    
+
     return (
       <>
         <Typography
@@ -281,9 +283,11 @@ export default function Tile() {
 
         setInitRq(true);
         const response = await axios.get(
-          `http://192.168.0.108:5000/customer/rfq?symbol=USDT-USD&currency=USDT&orderQty=${text}`,
+          `${backendApiUrl}/customer/rfq?symbol=USDT-USD&currency=USDT&orderQty=${text}`,
           {
             cancelToken: source.token,
+            headers: {
+              'Authorization': `Bearer ${backendApiToken}`            }
           }
         );
         if (response.data?.length > 0) {
@@ -297,7 +301,7 @@ export default function Tile() {
           setCurrencyType(obj?.Currency)
           setInputValue(true);
           // setText(Math.abs(parseFloat(obj?.OrderQty)) )
-          setText(obj?.OrderQty) 
+          setText(obj?.OrderQty)
           setInitRq(false);
           setHideRq(true);
             progBar();
