@@ -1,5 +1,37 @@
-node_modules
-.next
-yarn.lock
 .idea
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
 yarn-error.log
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+/.vscode/
+*.pem
+
+# local env files
+.env*.local
+
+# dotenv environment variables file
+.env
+.env.test
+
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
