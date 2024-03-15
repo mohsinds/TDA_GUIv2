@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import Input from "@mui/material/Input";
 import LinearProgress from "@mui/material/LinearProgress";
 import {CustomThemeContext} from "@/themes/CustomThemeContext";
+// @ts-ignore
 import moment from "moment";
 import axios from "axios";
 
