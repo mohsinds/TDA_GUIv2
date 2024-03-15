@@ -4,10 +4,17 @@ import Button from "@mui/material/Button";
 import Input from "@mui/material/Input";
 import LinearProgress from "@mui/material/LinearProgress";
 import {CustomThemeContext} from "@/themes/CustomThemeContext";
+import moment from "moment";
 import axios from "axios";
 
+interface TileProps {
+  symbol1: string;
+  symbol2: string;
+  handleSymbolTwo: (newSymbol: string) => void;
+  handleAddRow: (val: object) => void;
+}
 
-export default function Tile() {
+const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddRow }) => {
   const themes = React.useContext(CustomThemeContext);
   const [inputValue, setInputValue] = React.useState<boolean>(false);
   const [InitiateRq, setInitRq] = React.useState<boolean>(false);
@@ -16,6 +23,7 @@ export default function Tile() {
   const [buyValue, setBuyValue] = React.useState("0.00000");
   const [sellValue, setSellValue] = React.useState("0.00000");
   const [iniNum, setInitNumb] = React.useState("10");
+  const [status, setStatus] = React.useState("Canceled");
   const [text, setText] = React.useState("1000");
   const [cancelToken, setCancelToken] = React.useState<any>(null);
 
@@ -25,7 +33,7 @@ export default function Tile() {
   const [buySellValue, setBuySellValue] = React.useState("");
   const [secondCounter, setSecCounter] = React.useState(100);
   const intervalRef = React.useRef<number | null>(null);
-  const [symbolName, setSymbol] = React.useState('USDT/USD')
+  const [symbolName, setSymbol] = React.useState("")
   const [currencyType, setCurrencyType] = React.useState('USDT')
 
   const formatNumber = (value: string) => {
@@ -70,7 +78,7 @@ export default function Tile() {
           <Typography
             sx={{
               // fontSize: 30,
-              fontSize: 32,
+              fontSize: 34,
               fontWeight: "semibold",
               paddingX:0.2
               // marginBottom: -3,
@@ -169,6 +177,40 @@ export default function Tile() {
     console.log("Interval cleared");
   };
 
+  function generateRandomId() {
+    const timestamp = Date.now().toString(36); // Convert current timestamp to base-36 string
+    const randomString = Math.random().toString(36).substr(2, 5); // Generate random string
+    return timestamp + randomString; // Combine timestamp and random string
+  }
+
+  const handleSellAddRow = () => {
+    let obj = {
+      transactTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+      sideSymbol:symbolName,
+      filledQty:text,
+      filledPrice:sellValue,
+      accountNum:generateRandomId(),
+      status: status,
+    }
+    obj.filledQty = parseFloat(obj.filledQty)?.toFixed(6);
+    obj.filledPrice = parseFloat(obj.filledPrice)?.toFixed(6);
+    handleAddRow(obj);
+  }
+
+  const handleBuyAddRow = () => {
+    let obj = {
+      transactTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+      sideSymbol:symbolName,
+      filledQty:text,
+      filledPrice:buyValue,
+      accountNum:generateRandomId(),
+      status: status,
+    }
+    obj.filledQty = parseFloat(obj.filledQty)?.toFixed(6);
+    obj.filledPrice = parseFloat(obj.filledPrice)?.toFixed(6);
+    handleAddRow(obj);
+  }
+
   const buySellCard = (val: string) => {
     console.log("sellbuyvalue", buySellValue);
     return (
@@ -200,16 +242,16 @@ export default function Tile() {
             sx={{
               backgroundColor: "white",
               color: buySellValue === "buy" ? "green" : "#F64A69",
-              fontSize: 10,
+              fontSize: 11,
               fontWeight: "600",
               justifyContent: "center",
               alignItems: "center",
               display: "flex",
-              width: 60,
+              width: 120,
               marginX: 2,
             }}
           >
-            {" USDT " + iniNum}
+            {" USDT " + parseFloat(text)?.toFixed(6)}
           </Typography>
           at a rate of
           <Typography
@@ -221,11 +263,11 @@ export default function Tile() {
               justifyContent: "center",
               alignItems: "center",
               display: "flex",
-              width: 50,
+              width: 70,
               marginX: 1,
             }}
           >
-            {val}
+            {parseFloat(val)?.toFixed(6)}
           </Typography>
         </Typography>
         <Button
@@ -267,6 +309,10 @@ export default function Tile() {
   // setSellValue("1.23745"),
   // progBar()
 
+  const handleCurrenyUpdateForSecondDropdown = (val: string)=>{
+    handleSymbolTwo(val)
+  } 
+
   const handleInitiateRFQ = async () => {
     if (text) {
       try {
@@ -281,7 +327,7 @@ export default function Tile() {
 
         setInitRq(true);
         const response = await axios.get(
-          `http://192.168.0.108:5000/customer/rfq?symbol=USDT-USD&currency=USDT&orderQty=${text}`,
+          `http://192.168.0.114:5000/customer/rfq?symbol=${symbol1}-${symbol2}&currency=${symbol1}&orderQty=${text}`,
           {
             cancelToken: source.token,
           }
@@ -295,6 +341,8 @@ export default function Tile() {
           setSecCounter(100)
           setSymbol(obj?.Symbol);
           setCurrencyType(obj?.Currency)
+          setStatus(obj?.QuoteStatus)
+          handleCurrenyUpdateForSecondDropdown(obj?.AmountCurrency)
           setInputValue(true);
           // setText(Math.abs(parseFloat(obj?.OrderQty)) )
           setText(obj?.OrderQty) 
@@ -334,8 +382,8 @@ export default function Tile() {
     <Card
       sx={{
         display: "flex",
-        height: 190,
-        width: 350,
+        height: 210,
+        width: "30rem",
         paddingX: 1,
         paddingY: 2,
         flexDirection: "column",
@@ -352,8 +400,8 @@ export default function Tile() {
     <Card
       sx={{
         display: "flex",
-        height: 170,
-        width: 340,
+        height: 210,
+        width: "30rem",
         paddingX: 3,
         // paddingY: 1,
         justifyContent: "center",
@@ -374,13 +422,14 @@ export default function Tile() {
       <>
         <Typography
           sx={{
-            // fontWeight: 'bold'
-            fontSize: 13,
+            fontWeight: '400',
+            fontSize: 16,
             color: themes.currentTheme === "dark" ? "#FFFFFF" : "black",
             marginBottom: 1,
           }}
         >
-          {symbolName?.replace('-', '/')}
+          {/* {symbolName?.replace('-', '/')} */}
+          {symbol1 + '/' + symbol2}
         </Typography>
         <div
           style={{
@@ -399,8 +448,8 @@ export default function Tile() {
                     ? "#434354"
                     : "#f9f9f9"
                   : "transparent",
-              width: 110,
-              height: 55,
+              width: "10rem",
+              height: "4rem",
               borderRadius: 1,
               paddingX: 2,
               paddingY: 1,
@@ -414,13 +463,14 @@ export default function Tile() {
             onClick={() => {
               hideRQ && setBuySellValue("sell");
               hideRQ && setBuySell(true);
+              hideRQ && handleSellAddRow()
             }}
           >
             {InitiateRq ? (
               <Typography
                 sx={{
                   marginTop: 1,
-                  fontSize: 12,
+                  fontSize: 14,
                   alignSelf: "center",
                 }}
               >
@@ -430,7 +480,7 @@ export default function Tile() {
               <>
                 <Typography
                   sx={{
-                    fontSize: 9,
+                    fontSize: 12,
                     color: hideRQ && secondCounter > 50 ? "white" : "#949596",
                     // fontWeight: 'bold',
                   }}
@@ -446,10 +496,11 @@ export default function Tile() {
                 >
                   {inputValue && inlargedNum(sellValue, "SELL")}
                 </Typography>
+                {/* secondCounter < 10 && hideRQ */}
                 {secondCounter < 10 && hideRQ && (
                   <Typography
                     sx={{
-                      fontSize: 8,
+                      fontSize: 9,
                       color: "red",
                       textAlign: "center",
                       width: 80,
@@ -472,11 +523,11 @@ export default function Tile() {
               }}
               sx={{
                 bgcolor: "#5F94F5",
-                height: 40,
-                width: 40,
+                height: "3rem",
+                width: "5rem",
                 marginX: 0.9,
                 color: "#e8e8e8",
-                fontSize: 9,
+                fontSize: 12,
                 textTransform: "capitalize",
                 placeSelf: "center",
                 lineHeight: 1.5,
@@ -494,10 +545,10 @@ export default function Tile() {
               onClick={handleCancelRequest}
               sx={{
                 bgcolor: "#5F94F5",
-                height: 40,
-                width: 40,
+                height: "3rem",
+                width: "5rem",
                 color: "#e8e8e8",
-                fontSize: 9,
+                fontSize: 12,
                 marginX: 0.9,
                 textTransform: "capitalize",
                 placeSelf: "center",
@@ -516,10 +567,10 @@ export default function Tile() {
               onClick={handleInitiateRFQ}
               sx={{
                 bgcolor: "#5F94F5",
-                height: 40,
-                width: 40,
+                height: "3rem",
+                width: "5rem",
                 color: "#e8e8e8",
-                fontSize: 9,
+                fontSize: 12,
                 marginX: 0.9,
                 textTransform: "capitalize",
                 placeSelf: "center",
@@ -566,8 +617,8 @@ export default function Tile() {
                     ? "#434354"
                     : "#f9f9f9"
                   : "transparent",
-              width: 110,
-              height: 55,
+              width: "10rem",
+              height: "4rem",
               borderRadius: 1,
               paddingX: 2,
               paddingY: 1.5,
@@ -581,13 +632,14 @@ export default function Tile() {
             onClick={() => {
               hideRQ && setBuySellValue("buy");
               hideRQ && setBuySell(true);
+              hideRQ && handleBuyAddRow();
             }}
           >
             {InitiateRq ? (
               <Typography
                 sx={{
                   marginTop: 1,
-                  fontSize: 12,
+                  fontSize: 14,
                   alignSelf: "center",
                 }}
               >
@@ -597,7 +649,7 @@ export default function Tile() {
               <>
                 <Typography
                   sx={{
-                    fontSize: 9,
+                    fontSize: 12,
                     color: hideRQ && secondCounter > 50 ? "white" : "#949596",
                     // fontWeight: 'bold'
                   }}
@@ -608,19 +660,20 @@ export default function Tile() {
                   sx={{
                     fontSize: 20,
                     // alignSelf: "center",
-                    marginTop: 0.5,
+                    marginTop: 0.3,
                   }}
                 >
                   {inputValue && inlargedNum(buyValue, "BUY")}
                 </Typography>
+                {/* secondCounter < 10 && hideRQ */}
                 {secondCounter < 10 && hideRQ && (
                   <Typography
                     sx={{
-                      fontSize: 8,
+                      fontSize: 9,
                       color: "red",
                       textAlign: "center",
                       width: 80,
-                      marginTop: -1.5,
+                      marginTop: -1.3,
                     }}
                   >
                     Expired
@@ -636,7 +689,7 @@ export default function Tile() {
             display: "flex",
             placeSelf: "center",
             marginRight: 25,
-            marginTop: 8,
+            marginTop: 14,
             // backgroundColor: "red",
             justifyContent: "center",
             // alignItems: "center",
@@ -648,10 +701,10 @@ export default function Tile() {
               placeSelf: "center",
               marginTop: 0,
               color: "gray",
-              fontSize: 10,
+              fontSize: 12,
             }}
           >
-            {currencyType}{" "}
+            {symbol1}{" "}
           </Typography>
           <Input
             sx={{
@@ -676,20 +729,21 @@ export default function Tile() {
             style={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-evenly",
+              justifyContent: "center",
               marginTop: 10,
             }}
           >
             <Typography
               sx={{
-                fontSize: 10,
+                fontSize: 11,
                 color: "gray",
+                marginRight:2
               }}
             >
               {(secondCounter/4)?.toFixed(0) + " seconds"}
             </Typography>
             <LinearProgress
-              sx={{ width: 150, marginTop: 0, borderRadius: 50 }}
+              sx={{ width: 180, marginTop: 0, borderRadius: 50 }}
               variant="determinate"
               value={progress}
             />
@@ -699,7 +753,8 @@ export default function Tile() {
                 backgroundColor:
                   themes.currentTheme === "dark" ? "#47474c" : "#f2f2f2",
                 color: themes.currentTheme === "dark" ? "white" : "#000000",
-                fontSize: 8,
+                fontSize: 10,
+                marginLeft:2,
                 textTransform: "capitalize",
                 placeSelf: "end",
                 lineHeight: 1.5,
@@ -720,3 +775,6 @@ export default function Tile() {
     </Card>
   );
 }
+
+
+export default Tile;
