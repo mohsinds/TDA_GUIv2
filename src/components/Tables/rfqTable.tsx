@@ -34,7 +34,7 @@ const columns: GridColDef[] = [
     transactTime: string;
     sideSymbol: string;
     filledQty: string;
-    filledPrice: number;
+    filledPrice: string;
     accountNum : string;
     status: string;
   }
