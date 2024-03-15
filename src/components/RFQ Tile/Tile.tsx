@@ -13,6 +13,8 @@ interface TileProps {
   handleSymbolTwo: (newSymbol: string) => void;
   handleAddRow: (val: object) => void;
 }
+const backendApiUrl = process.env.BACKEND_API_URL ?? 'http://localhost:5000'
+const backendApiToken = process.env.BACKEND_API_TOKEN ?? 'set-your-token-in-the-.env-file'
 
 const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddRow }) => {
   const themes = React.useContext(CustomThemeContext);
@@ -27,7 +29,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
   const [text, setText] = React.useState("1000");
   const [cancelToken, setCancelToken] = React.useState<any>(null);
 
-  
+
   const [progress, setProgress] = React.useState(100);
   const [buySell, setBuySell] = React.useState(false);
   const [buySellValue, setBuySellValue] = React.useState("");
@@ -52,7 +54,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
     const val = parseFloat(value).toFixed(5).toString()
     const xxx = val?.split(".")[1];
     const yyy = val?.split(".")[0];
-    
+
     return (
       <>
         <Typography
@@ -327,9 +329,11 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
 
         setInitRq(true);
         const response = await axios.get(
-          `http://192.168.0.114:5000/customer/rfq?symbol=${symbol1}-${symbol2}&currency=${symbol1}&orderQty=${text}`,
+          `${backendApiUrl}/customer/rfq?symbol=${symbol1}-${symbol2}&currency=${symbol1}&orderQty=${text}`,
           {
             cancelToken: source.token,
+            headers: {
+              'Authorization': `Bearer ${backendApiToken}`            }
           }
         );
         if (response.data?.length > 0) {
@@ -345,7 +349,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
           handleCurrenyUpdateForSecondDropdown(obj?.AmountCurrency)
           setInputValue(true);
           // setText(Math.abs(parseFloat(obj?.OrderQty)) )
-          setText(obj?.OrderQty) 
+          setText(obj?.OrderQty)
           setInitRq(false);
           setHideRq(true);
             progBar();
