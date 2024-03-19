@@ -5,8 +5,10 @@ import './index.css'
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
+    <div style={{ overflowX: "hidden" }}>
     <RootLayout>
       <Component {...pageProps} />
     </RootLayout>
+    </div>
   )
 }

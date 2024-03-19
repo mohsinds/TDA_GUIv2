@@ -1,6 +1,7 @@
-import React,{ useState } from "react";
+import React,{ useState,useEffect } from "react";
 import PageTitle from "@/components/TextDisplay/PageTitle";
 import SubTitle from "@/components/TextDisplay/SubTitle";
+import TileNotification from "@/components/Notifications/TileNotification";
 import Tile from "@/components/RFQ Tile/Tile";   
 import CurrencyDropdown from '@/components/currencyDropdown/CurrencyDropdown'
 import RFQTable from "@/components/Tables/rfqTable";
@@ -21,38 +22,34 @@ interface RowDataVal {
 export default function SpotRFQPage() {
   const [symbol1, setSymbol1] = useState<string>('USDT');
   const [symbol2, setSymbol2] = useState<string>('USD');
-  const [rows, setRows] = React.useState<RowDataVal[]>([
-    {id:"asdas2",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.222321",accountNum:"TJW12",status:"Open"},
-    {id:"123ssd",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.122321",accountNum:"TJW12",status:"Open"},
-    {id:"123dasd",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.522321",accountNum:"TJW12",status:"Open"},
-    {id:"dasdsa21",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.622321",accountNum:"TJW12",status:"Open"},
-    {id:"uudus2",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.222421",accountNum:"TJW12",status:"Open"},
-    {id:"accsa244",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.822321",accountNum:"TJW12",status:"Open"},
-    {id:"asd2455",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.922321",accountNum:"TJW12",status:"Open"},
-    {id:"123aa",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.122321",accountNum:"TJW12",status:"Open"},
-    {id:"423lolp",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.722321",accountNum:"TJW12",status:"Open"},
-    {id:"poliol213",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.1221",accountNum:"TJW12",status:"Open"},  
-  ]);
+  const [isVisible,setIsVisible] = useState<boolean>(false);
+  const [notificationData,setNotificationData] = useState<any>({});
+  const [rows, setRows] = React.useState<RowDataVal[]>([]);
 
     // Function to update symbol1
     const handleSymbolOne = (newSymbol: string) => {
       console.log("symbol1",newSymbol)
       setSymbol1(newSymbol);
     };
-  
+
+    const handleCloseNotification = () => {
+      setIsVisible(false);
+    };
+
     // Function to update symbol2
     const handleSymbolTwo = (newSymbol: string) => {
       console.log("symbol2", newSymbol);
       setSymbol2(newSymbol);
     };
     function generateRandomId() {
-      const timestamp = Date.now().toString(36); // Convert current timestamp to base-36 string
-      const randomString = Math.random().toString(36).substr(2, 5); // Generate random string
-      return timestamp + randomString; // Combine timestamp and random string
+      const randomNumber = Math.floor(1000 + Math.random() * 9000); // Generate random number between 1000 and 9999
+      return randomNumber.toString(); // Convert the random number to string
     }
 
     const handleAddRow = (val: Partial<RowDataVal>) => {
     const newId = generateRandomId();
+    let fillQtyVal = parseFloat(val?.filledQty || "0");
+    let formattedFillQty = fillQtyVal?.toLocaleString("en-US");
     const newRow: RowDataVal = {
       id: newId,
       transactTime: val.transactTime || "", 
@@ -63,11 +60,24 @@ export default function SpotRFQPage() {
       accountNum: val.accountNum || "",
       status: val.status || ""
     };
-      setRows([newRow, ...rows]);
+    setRows([newRow, ...rows]);
+    setIsVisible(true);
+    setNotificationData({
+      id: newId,
+      message:`${val?.side} ${symbol1} ${formattedFillQty} vs ${symbol2} @ ${val?.filledPrice}`
+    })
+    setTimeout(() => {
+      setIsVisible(false)
+    }, 5000)
     }
 
   return (
-    <>
+    <div style={{position:'relative' }}>
+
+      <div style={{ position: 'absolute', top: 0, right: 0 }}>
+        <TileNotification isVisible={isVisible} info={notificationData} closeNotification={handleCloseNotification}/>
+      </div>
+      
       <PageTitle
         sx={{
           textWrap: "nowrap",
@@ -122,6 +132,6 @@ export default function SpotRFQPage() {
         <RFQTable rows={rows} />
       </Box>
 
-    </>
+    </div>
   );
 }
