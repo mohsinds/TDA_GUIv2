@@ -8,6 +8,7 @@ import {CustomThemeContext} from "@/themes/CustomThemeContext";
 import moment from "moment";
 import axios from "axios";
 
+
 interface TileProps {
   symbol1: string;
   symbol2: string;
@@ -38,6 +39,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
   const intervalRef = React.useRef<number | null>(null);
   const [symbolName, setSymbol] = React.useState("")
   const [currencyType, setCurrencyType] = React.useState('USDT')
+  const notificationsRef = React.useRef<any>(null);
 
   const formatNumber = (value: string) => {
     // Remove non-numeric characters
@@ -189,7 +191,8 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
   const handleSellAddRow = () => {
     let obj = {
       transactTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-      sideSymbol:symbolName,
+      symbol:symbolName,
+      side:"Sell",
       filledQty:text,
       filledPrice:sellValue,
       accountNum:generateRandomId(),
@@ -203,7 +206,8 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
   const handleBuyAddRow = () => {
     let obj = {
       transactTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-      sideSymbol:symbolName,
+      symbol:symbolName,
+      side:"Buy",
       filledQty:text,
       filledPrice:buyValue,
       accountNum:generateRandomId(),
@@ -383,6 +387,8 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
     setInitRq(false);
   };
 
+ 
+
   return buySell ? (
     <Card
       sx={{
@@ -425,6 +431,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
       onMouseLeave={() => setOnHov(false)} // Set onHov to false on mouse leave
     >
       <>
+    
         <Typography
           sx={{
             fontWeight: '400',

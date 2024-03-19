@@ -5,7 +5,7 @@ import { ProfileContainer } from "./ProfileContainer"
 export const ProfileDetails = ({ ...props }: BoxProps) => {
   return (
     <ProfileContainer
-      title="Profile Details"
+      title="Request Update Details"
       {...props}>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pl: 2, pr: 2 }}>
         <Stack
@@ -19,6 +19,19 @@ export const ProfileDetails = ({ ...props }: BoxProps) => {
           <AppTextField
             required
             label={"Last Name"}
+          />
+        </Stack>
+        <Stack
+          direction={{ sm: "column", md: "row" }}
+          spacing={2}>
+          <AppTextField
+            required
+            label={"Account Number"}
+          />
+
+          <AppTextField
+            required
+            label={"Account Name"}
           />
         </Stack>
 

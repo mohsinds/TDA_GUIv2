@@ -10,7 +10,8 @@ import HLOGO from "../../../../src/Images/dark.png"
 interface RowDataVal {
   id:string;
   transactTime: string;
-  sideSymbol: string;
+  symbol: string;
+  side: string;
   filledQty: string;
   filledPrice: string;
   accountNum : string;
@@ -20,7 +21,18 @@ interface RowDataVal {
 export default function SpotRFQPage() {
   const [symbol1, setSymbol1] = useState<string>('USDT');
   const [symbol2, setSymbol2] = useState<string>('USD');
-  const [rows, setRows] = React.useState<RowDataVal[]>([]);
+  const [rows, setRows] = React.useState<RowDataVal[]>([
+    {id:"asdas2",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.222321",accountNum:"TJW12",status:"Open"},
+    {id:"123ssd",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.122321",accountNum:"TJW12",status:"Open"},
+    {id:"123dasd",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.522321",accountNum:"TJW12",status:"Open"},
+    {id:"dasdsa21",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.622321",accountNum:"TJW12",status:"Open"},
+    {id:"uudus2",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.222421",accountNum:"TJW12",status:"Open"},
+    {id:"accsa244",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.822321",accountNum:"TJW12",status:"Open"},
+    {id:"asd2455",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.922321",accountNum:"TJW12",status:"Open"},
+    {id:"123aa",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.122321",accountNum:"TJW12",status:"Open"},
+    {id:"423lolp",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.722321",accountNum:"TJW12",status:"Open"},
+    {id:"poliol213",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.1221",accountNum:"TJW12",status:"Open"},  
+  ]);
 
     // Function to update symbol1
     const handleSymbolOne = (newSymbol: string) => {
@@ -44,7 +56,8 @@ export default function SpotRFQPage() {
     const newRow: RowDataVal = {
       id: newId,
       transactTime: val.transactTime || "", 
-      sideSymbol: val.sideSymbol || "",
+      symbol: val.symbol || "",
+      side: val.side || "",
       filledQty: val.filledQty || "",
       filledPrice: val.filledPrice || "",
       accountNum: val.accountNum || "",
