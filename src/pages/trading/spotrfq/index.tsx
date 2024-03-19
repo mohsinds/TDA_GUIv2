@@ -1,4 +1,4 @@
-import React,{ useState } from "react";
+import React,{ useState,useEffect } from "react";
 import PageTitle from "@/components/TextDisplay/PageTitle";
 import SubTitle from "@/components/TextDisplay/SubTitle";
 import Tile from "@/components/RFQ Tile/Tile";   
@@ -21,18 +21,57 @@ interface RowDataVal {
 export default function SpotRFQPage() {
   const [symbol1, setSymbol1] = useState<string>('USDT');
   const [symbol2, setSymbol2] = useState<string>('USD');
-  const [rows, setRows] = React.useState<RowDataVal[]>([
-    {id:"asdas2",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.222321",accountNum:"TJW12",status:"Open"},
-    {id:"123ssd",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.122321",accountNum:"TJW12",status:"Open"},
-    {id:"123dasd",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.522321",accountNum:"TJW12",status:"Open"},
-    {id:"dasdsa21",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.622321",accountNum:"TJW12",status:"Open"},
-    {id:"uudus2",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.222421",accountNum:"TJW12",status:"Open"},
-    {id:"accsa244",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.822321",accountNum:"TJW12",status:"Open"},
-    {id:"asd2455",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.922321",accountNum:"TJW12",status:"Open"},
-    {id:"123aa",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.122321",accountNum:"TJW12",status:"Open"},
-    {id:"423lolp",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.722321",accountNum:"TJW12",status:"Open"},
-    {id:"poliol213",transactTime:"19/3/2024 10:47AM",symbol:"USDT",side:"Buy",filledQty:"10000",filledPrice:"0.1221",accountNum:"TJW12",status:"Open"},  
-  ]);
+  const [rows, setRows] = React.useState<RowDataVal[]>([]);
+
+  useEffect(() => {
+    if (!("Notification" in window)) {
+      console.log("Browser does not support desktop notification");
+    } else {
+      console.log("notification supported")
+      Notification.requestPermission();
+    }
+  }, []);
+
+ 
+
+  const showNotification = (notificationOptions: any)=>{
+    // Check if the Notification API is supported
+    if (!('Notification' in window)) {
+      console.log('This browser does not support notifications.');
+      return;
+    }
+  
+    // Check if the user has granted permission for notifications
+    if (Notification.permission === 'granted') {
+      // If permission has been granted, show the notification
+      const options: NotificationOptions = {
+        body: `${notificationOptions?.side} ${notificationOptions?.symbol1} ${notificationOptions?.qty} vs ${notificationOptions?.symbol2} @ ${notificationOptions?.price}`,
+        icon: 'https://tda-gui-v2.vercel.app/static/images/dark.png?auto=compress&cs=tinysrgb&dpr=1&w=500',
+        dir: 'ltr',
+      };
+  
+      const notification = new Notification(`Trade Accepted: ID ${notificationOptions?.id}`, options);
+    } else if (Notification.permission !== 'denied') {
+      // If permission hasn't been denied yet, request permission
+      Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+          // If permission has been granted, show the notification
+          const options: NotificationOptions = {
+            body: `${notificationOptions?.side} ${notificationOptions?.symbol1} ${notificationOptions?.qty} vs ${notificationOptions?.symbol2} @ ${notificationOptions?.price}`,
+            icon: 'https://tda-gui-v2.vercel.app/static/images/dark.png?auto=compress&cs=tinysrgb&dpr=1&w=500',
+            dir: 'ltr',
+          };
+  
+          const notification = new Notification(`Trade Accepted: ID ${notificationOptions?.id}`, options);
+        } else {
+          console.log('User has denied permission for notifications.');
+        }
+      });
+    } else {
+      console.log('User has denied permission for notifications.');
+    }
+  }
+
 
     // Function to update symbol1
     const handleSymbolOne = (newSymbol: string) => {
@@ -46,13 +85,14 @@ export default function SpotRFQPage() {
       setSymbol2(newSymbol);
     };
     function generateRandomId() {
-      const timestamp = Date.now().toString(36); // Convert current timestamp to base-36 string
-      const randomString = Math.random().toString(36).substr(2, 5); // Generate random string
-      return timestamp + randomString; // Combine timestamp and random string
+      const randomNumber = Math.floor(1000 + Math.random() * 9000); // Generate random number between 1000 and 9999
+      return randomNumber.toString(); // Convert the random number to string
     }
 
     const handleAddRow = (val: Partial<RowDataVal>) => {
     const newId = generateRandomId();
+    let fillQtyVal = parseFloat(val?.filledQty || "0");
+    let formattedFillQty = fillQtyVal?.toLocaleString("en-US");
     const newRow: RowDataVal = {
       id: newId,
       transactTime: val.transactTime || "", 
@@ -64,6 +104,21 @@ export default function SpotRFQPage() {
       status: val.status || ""
     };
       setRows([newRow, ...rows]);
+      let obj = {
+        id: newRow?.id,
+        symbol1: symbol1,
+        symbol2: symbol2,
+        side: newRow?.side,
+        qty: formattedFillQty,
+        price:newRow.filledPrice
+      }
+      showNotification(obj)
+      // var options = {
+      //   body: `${newRow?.side} ${symbol1} ${formattedFillQty} vs ${symbol2} @ ${newRow.filledPrice}`,
+      //   icon: 'https://tda-gui-v2.vercel.app/static/images/dark.png?    auto=compress&cs=tinysrgb&dpr=1&w=500',
+      //   dir: 'ltr',
+      // };
+      // new Notification(`Trade Accepted: ID ${newRow?.id}`, options)
     }
 
   return (

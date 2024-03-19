@@ -393,8 +393,8 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
     <Card
       sx={{
         display: "flex",
-        height: 210,
-        width: "30rem",
+        height: 240,
+        width: "36rem",
         paddingX: 1,
         paddingY: 2,
         flexDirection: "column",
@@ -411,8 +411,8 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
     <Card
       sx={{
         display: "flex",
-        height: 210,
-        width: "30rem",
+        height: 240,
+        width: "36rem",
         paddingX: 3,
         // paddingY: 1,
         justifyContent: "center",
@@ -460,7 +460,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
                     ? "#434354"
                     : "#f9f9f9"
                   : "transparent",
-              width: "10rem",
+              width: "12rem",
               height: "4rem",
               borderRadius: 1,
               paddingX: 2,
@@ -629,7 +629,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
                     ? "#434354"
                     : "#f9f9f9"
                   : "transparent",
-              width: "10rem",
+              width: "12rem",
               height: "4rem",
               borderRadius: 1,
               paddingX: 2,
@@ -701,7 +701,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
             display: "flex",
             placeSelf: "center",
             marginRight: 25,
-            marginTop: 14,
+            marginTop: 20,
             // backgroundColor: "red",
             justifyContent: "center",
             // alignItems: "center",
@@ -713,7 +713,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
               placeSelf: "center",
               marginTop: 0,
               color: "gray",
-              fontSize: 12,
+              fontSize: 13,
             }}
           >
             {symbol1}{" "}
@@ -723,7 +723,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
               marginLeft: 0.5,
               width: 80,
 
-              fontSize: 10,
+              fontSize: 11,
               "& input": {
                 // backgroundColor: 'gray',
                 // marginBottom: -0.2,
