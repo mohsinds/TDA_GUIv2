@@ -7,32 +7,19 @@ import {CustomThemeContext} from "@/themes/CustomThemeContext";
 
 const columns: GridColDef[] = [
     { field: 'transactTime', headerName: 'Transact Time', width: 200 },
-    { field: 'sideSymbol', headerName: 'Side Symbol', width: 200 },
+    { field: 'symbol', headerName: 'Symbol', width: 200 },
+    { field: 'side', headerName: 'Side', width: 200 },
     { field: 'filledQty', headerName: 'Filled Quantity', width: 200 },
     { field: 'filledPrice', headerName: 'Filled Price', width: 200 },
     { field: 'accountNum', headerName: 'Account Number', width: 200 },
     { field: 'status', headerName: 'Status', width: 200 },
-    // {
-    //   field: 'age',
-    //   headerName: 'Age',
-    //   type: 'number',
-    //   width: 90,
-    // },
-    // {
-    //   field: 'fullName',
-    //   headerName: 'Full name',
-    //   description: 'This column has a value getter and is not sortable.',
-    //   sortable: false,
-    //   width: 160,
-    //   valueGetter: (params: GridValueGetterParams) =>
-    //     `${params.row.firstName || ''} ${params.row.lastName || ''}`,
-    // },
   ];
 
   interface RowData {
     id:string;
     transactTime: string;
-    sideSymbol: string;
+    symbol: string;
+    side:string;
     filledQty: string;
     filledPrice: string;
     accountNum : string;
@@ -44,6 +31,8 @@ const columns: GridColDef[] = [
   }
 
 
+
+
 export default function RFQTable(props: RFQTableProps) {
     const { rows } = props;
     const [filterText, setFilterText] = React.useState('');
@@ -52,7 +41,8 @@ export default function RFQTable(props: RFQTableProps) {
 
     const filteredRows = rows.filter(row => {
       return (
-          row?.filledQty?.toLowerCase().includes(filterText.toLowerCase())
+          row?.filledQty?.toLowerCase().includes(filterText.toLowerCase()) ||
+          row?.filledPrice?.toLowerCase().includes(filterText.toLowerCase())
           // Add more conditions for other columns as needed
       );
   });
@@ -70,9 +60,9 @@ export default function RFQTable(props: RFQTableProps) {
     // link.click();
 
          // Create the CSV content from the data array
-    let csvContent = "Transact Time, Side Symbol, Filled Quantity, Filled Price, Account Number, Status\n";
+    let csvContent = "Transact Time, Symbol,Side, Filled Quantity, Filled Price, Account Number, Status\n";
     filteredRows?.forEach((item, key) => {
-    csvContent += `${item.transactTime},${item.sideSymbol},${item.filledQty},${item.filledPrice},${item.accountNum},${item.status}\n`;
+    csvContent += `${item.transactTime},${item.symbol},${item.side},${item.filledQty},${item.filledPrice},${item.accountNum},${item.status}\n`;
   });
 
   // Create a Blob object from the CSV content
@@ -91,11 +81,16 @@ export default function RFQTable(props: RFQTableProps) {
     setFilterText(event.target.value);
 };
 
+  const getRowClassName = (params:any) => {
+    let num = Number(params.id)
+    return num % 2 != 0 ? themes.currentTheme === "dark" ? 'evenDarkRow':'evenLightRow' : '';
+  };
+
 
   return (
     <div style={{ height: '24rem', width: '100%',backgroundColor:themes.currentTheme === "dark" ? "#3b3b44" : "#F9F9F9",padding:10 }}>
       <div style={{ height: "5%", width: '100%',display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"30px" }}>
-        <Typography variant="h5" sx={{ paddingTop: "20px" }}>Trades</Typography>
+        <Typography variant="h5" sx={{ paddingTop: "20px" }}>Recent Transactions</Typography>
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ marginRight: 10,paddingTop:20 }}>
             <span style={{ cursor: "pointer" }} onClick={handleDownloadCsv}>
@@ -105,7 +100,7 @@ export default function RFQTable(props: RFQTableProps) {
           <div style={{ marginRight: 6,paddingTop:20 }}>
           <span style={{ cursor: "pointer" }}>
           <svg width={20} height={20} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
+            <path stroke-linecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
           </svg>
           </span>
           </div>
@@ -123,6 +118,10 @@ export default function RFQTable(props: RFQTableProps) {
           },
         }}
         pageSizeOptions={[5, 10]}
+        // getRowClassName={getRowClassName}
+        getRowClassName={(params) =>
+          params.indexRelativeToCurrentPage % 2 === 0 ? themes.currentTheme === "dark" ? 'evenDarkRow':'evenLightRow' : ''
+        }
       />
       </div>
 

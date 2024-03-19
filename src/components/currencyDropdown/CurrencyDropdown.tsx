@@ -21,7 +21,7 @@ export default function CurrencyDropdown({ handleSymbolOne, handleSymbolTwo }: C
   };
 
   return (
-    <div style={{width:"30rem",height:"7rem" }}>
+    <div style={{width:"36rem",height:"6rem" }}>
         <Typography
          sx={{
             fontWeight: '400',
@@ -29,7 +29,7 @@ export default function CurrencyDropdown({ handleSymbolOne, handleSymbolTwo }: C
             color: themes.currentTheme === "dark" ? "#FFFFFF" : "black",
           }}
         >I am buying/selling</Typography>
-        <div style={{ display: "flex", alignItems: "center",marginTop:10 }}>
+        <div style={{ display: "flex", alignItems: "center",marginTop:10,justifyContent: "space-between" }}>
         <Autocomplete
             id="buy-currency"
             defaultValue={currency.find(cur => cur.symbol === "USDT")}

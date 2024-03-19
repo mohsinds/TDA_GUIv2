@@ -8,6 +8,7 @@ import {CustomThemeContext} from "@/themes/CustomThemeContext";
 import moment from "moment";
 import axios from "axios";
 
+
 interface TileProps {
   symbol1: string;
   symbol2: string;
@@ -38,6 +39,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
   const intervalRef = React.useRef<number | null>(null);
   const [symbolName, setSymbol] = React.useState("")
   const [currencyType, setCurrencyType] = React.useState('USDT')
+  const notificationsRef = React.useRef<any>(null);
 
   const formatNumber = (value: string) => {
     // Remove non-numeric characters
@@ -189,7 +191,8 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
   const handleSellAddRow = () => {
     let obj = {
       transactTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-      sideSymbol:symbolName,
+      symbol:symbolName,
+      side:"Sell",
       filledQty:text,
       filledPrice:sellValue,
       accountNum:generateRandomId(),
@@ -203,7 +206,8 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
   const handleBuyAddRow = () => {
     let obj = {
       transactTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-      sideSymbol:symbolName,
+      symbol:symbolName,
+      side:"Buy",
       filledQty:text,
       filledPrice:buyValue,
       accountNum:generateRandomId(),
@@ -383,12 +387,14 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
     setInitRq(false);
   };
 
+ 
+
   return buySell ? (
     <Card
       sx={{
         display: "flex",
-        height: 210,
-        width: "30rem",
+        height: 240,
+        width: "36rem",
         paddingX: 1,
         paddingY: 2,
         flexDirection: "column",
@@ -405,8 +411,8 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
     <Card
       sx={{
         display: "flex",
-        height: 210,
-        width: "30rem",
+        height: 240,
+        width: "36rem",
         paddingX: 3,
         // paddingY: 1,
         justifyContent: "center",
@@ -425,6 +431,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
       onMouseLeave={() => setOnHov(false)} // Set onHov to false on mouse leave
     >
       <>
+    
         <Typography
           sx={{
             fontWeight: '400',
@@ -453,7 +460,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
                     ? "#434354"
                     : "#f9f9f9"
                   : "transparent",
-              width: "10rem",
+              width: "12rem",
               height: "4rem",
               borderRadius: 1,
               paddingX: 2,
@@ -622,7 +629,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
                     ? "#434354"
                     : "#f9f9f9"
                   : "transparent",
-              width: "10rem",
+              width: "12rem",
               height: "4rem",
               borderRadius: 1,
               paddingX: 2,
@@ -694,7 +701,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
             display: "flex",
             placeSelf: "center",
             marginRight: 25,
-            marginTop: 14,
+            marginTop: 20,
             // backgroundColor: "red",
             justifyContent: "center",
             // alignItems: "center",
@@ -706,7 +713,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
               placeSelf: "center",
               marginTop: 0,
               color: "gray",
-              fontSize: 12,
+              fontSize: 13,
             }}
           >
             {symbol1}{" "}
@@ -716,7 +723,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
               marginLeft: 0.5,
               width: 80,
 
-              fontSize: 10,
+              fontSize: 11,
               "& input": {
                 // backgroundColor: 'gray',
                 // marginBottom: -0.2,

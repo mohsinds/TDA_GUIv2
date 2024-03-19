@@ -1,0 +1,26 @@
+.evenDarkRow {
+    background-color: #363640; /* Change this to your desired background color */
+  }
+
+.evenLightRow {
+    background-color: white;
+}  
+
+/* Define a custom scrollbar */
+::-webkit-scrollbar {
+    width: 12px; /* Width of the scrollbar */
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: transparent; /* Color of the track */
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #b4b3b3; /* Color of the handle */
+  }
+  
+  .darkHeaderBg {
+    background-color: #2d2d327c;
+  }
