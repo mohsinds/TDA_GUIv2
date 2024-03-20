@@ -30,12 +30,12 @@ const PLATFORMS_ITEMS: SidebarListItem[] = [
     open: false,
     children: [
       {
-        title: 'Spot',
-        href: '/trading/spot',
+        title: 'Spot Streaming',
+        href: '/trading/spotstreaming',
       },
       {
-        title: 'Spot RFQ',
-        href: '/trading/spotrfq',
+        title: 'RFQ',
+        href: '/trading/rfq',
       },
     ],
   },
