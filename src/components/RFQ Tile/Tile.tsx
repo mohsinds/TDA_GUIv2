@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Card, CardActionArea, CardContent, Typography} from "@mui/material";
+import {Card, CardActionArea, CardContent, Typography,Box} from "@mui/material";
 import Button from "@mui/material/Button";
 import Input from "@mui/material/Input";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -22,6 +22,8 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
   const themes = React.useContext(CustomThemeContext);
   const [inputValue, setInputValue] = React.useState<boolean>(false);
   const [InitiateRq, setInitRq] = React.useState<boolean>(false);
+  const [showBuyConfirmationPopup, setShowBuyConfirmationPopup] = React.useState<boolean>(false);
+  const [showSellConfirmationPopup, setShowSellConfirmationPopup] = React.useState<boolean>(false);
   const [onHov, setOnHov] = React.useState<boolean>(false);
   const [hideRQ, setHideRq] = React.useState<boolean>(false);
   const [buyValue, setBuyValue] = React.useState("0.00000");
@@ -30,6 +32,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
   const [status, setStatus] = React.useState("Canceled");
   const [text, setText] = React.useState("1000");
   const [cancelToken, setCancelToken] = React.useState<any>(null);
+  
 
 
   const [progress, setProgress] = React.useState(100);
@@ -163,6 +166,8 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
           setHideRq(false);
           setBuySell(false);
           setInputValue(false);
+          setShowBuyConfirmationPopup(false)
+          setShowSellConfirmationPopup(false)
           handleReject();
           return 0;
         }
@@ -387,8 +392,86 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
     setInitRq(false);
   };
 
- 
+  const handleBuyPopupYes = ()=>{
+    handleBuyAddRow();
+    handleBuyPopupNo()
+  }
 
+  const handleBuyPopupNo = ()=>{
+    setShowBuyConfirmationPopup(false)
+  }
+
+  const handleSellPopupYes = ()=>{
+    handleSellAddRow()
+    handleSellPopupNo()
+  }
+
+  const handleSellPopupNo = ()=>{
+    setShowSellConfirmationPopup(false)
+  }
+
+  const getMultipluVal = (x:string)=>{
+    if(x == 'buy'){
+      let val = parseFloat(buyValue) * parseFloat(text);
+      let formatted =  val.toLocaleString("en-US")
+      return formatted
+    }else{
+      let val = parseFloat(sellValue) * parseFloat(text);
+      let formatted =  val.toLocaleString("en-US")
+      return formatted
+    }
+  }
+
+  const BuyConfirmationPopup = ()=>{
+    return (
+      <div style={{position:'absolute',right:0,width:'22rem',boxShadow:'0 0 10px 0 rgb(0 0 0 / 10%)',zIndex:100,height:"10rem",background:themes.currentTheme === "dark" ? "#404040" : "white",borderRadius:5}}>
+          <div style={{width:'100%',height:'20%',display:'flex',justifyContent:'center',alignItems:'center'}}>
+          <svg width={24} height={24} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+            </svg>
+            <span style={{fontWeight:600,textDecoration:'underline',margin:'0 5px 0 5px',fontSize:15}}>TRADE CONFIRMATION</span>
+            <svg width={24} height={24} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+            </svg>
+
+          </div>
+          <div style={{width:'100%',height:'50%',display:'flex',justifyContent:'center',alignItems:'center',fontSize:14,padding:'0 10px 0 10px'}}>
+            <span>Buy {parseInt(text).toLocaleString("en-US")} {symbol1} and Sell {getMultipluVal('buy')} {symbol2} (Notional Value) @ {parseFloat(buyValue)?.toFixed(6)}</span>
+          </div>
+          <div style={{width:'100%',height:'30%',display:'flex',justifyContent:'end',alignItems:'center',fontSize:13,padding:'0 10px 0 10px'}}>
+            <Button onClick={handleBuyPopupNo}>No</Button>
+            <Button onClick={handleBuyPopupYes}>Yes</Button>
+          </div>
+      </div>
+    )
+  }
+
+  const SellConfirmationPopup = ()=>{
+    return (
+      <div style={{position:'absolute',left:0,width:'22rem',boxShadow:'0 0 10px 0 rgb(0 0 0 / 10%)',zIndex:100,height:"10rem",background:themes.currentTheme === "dark" ? "#404040" : "white",borderRadius:5}}>
+          <div style={{width:'100%',height:'20%',display:'flex',justifyContent:'center',alignItems:'center'}}>
+          <svg width={24} height={24} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+            </svg>
+            <span style={{fontWeight:600,textDecoration:'underline',margin:'0 5px 0 5px',fontSize:15}}>TRADE CONFIRMATION</span>
+            <svg width={24} height={24} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+            </svg>
+
+          </div>
+          <div style={{width:'100%',height:'50%',display:'flex',justifyContent:'center',alignItems:'center',fontSize:14,padding:'0 10px 0 10px'}}>
+            <span>Sell {parseInt(text).toLocaleString("en-US")} {symbol1} and Buy {getMultipluVal('sell')} {symbol2} (Notional Value) @ {parseFloat(sellValue)?.toFixed(6)}</span>
+          </div>
+          <div style={{width:'100%',height:'30%',display:'flex',justifyContent:'end',alignItems:'center',fontSize:13,padding:'0 10px 0 10px'}}>
+            <Button onClick={handleSellPopupNo}>No</Button>
+            <Button onClick={handleSellPopupYes}>Yes</Button>
+          </div>
+      </div>
+    )
+  }
+
+
+  
   return buySell ? (
     <Card
       sx={{
@@ -408,6 +491,13 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
       <CardContent>{buySellCard(sellValue)}</CardContent>
     </Card>
   ) : (
+    <div style={{ position: "relative",width:'70rem',display:'flex',justifyContent:'center',alignItems:'center' }}>
+      {showBuyConfirmationPopup && <BuyConfirmationPopup />}
+      
+      {showSellConfirmationPopup && <SellConfirmationPopup />}
+      
+     
+
     <Card
       sx={{
         display: "flex",
@@ -431,6 +521,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
       onMouseLeave={() => setOnHov(false)} // Set onHov to false on mouse leave
     >
       <>
+
     
         <Typography
           sx={{
@@ -474,8 +565,9 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
             }}
             onClick={() => {
               hideRQ && setBuySellValue("sell");
-              hideRQ && setBuySell(true);
-              hideRQ && handleSellAddRow()
+              // hideRQ && setBuySell(true);
+              // hideRQ && handleSellAddRow()
+              hideRQ && setShowSellConfirmationPopup(true)
             }}
           >
             {InitiateRq ? (
@@ -643,8 +735,9 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
             }}
             onClick={() => {
               hideRQ && setBuySellValue("buy");
-              hideRQ && setBuySell(true);
-              hideRQ && handleBuyAddRow();
+              // hideRQ && setBuySell(true);
+              // hideRQ && handleBuyAddRow();
+              hideRQ && setShowBuyConfirmationPopup(true);
             }}
           >
             {InitiateRq ? (
@@ -785,6 +878,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
         )}
       </>
     </Card>
+    </div>
   );
 }
 
