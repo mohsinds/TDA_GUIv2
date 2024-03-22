@@ -5,6 +5,9 @@ import Tile from "@/components/RFQ Tile/Tile";
 import CurrencyDropdown from '@/components/currencyDropdown/CurrencyDropdown'
 import RFQTable from "@/components/Tables/rfqTable";
 import { Box, CardMedia, IconButton, SvgIcon, Paper, Avatar, Typography } from "@mui/material";
+import Snackbar from '@mui/material/Snackbar';
+import SnackbarContent from '@mui/material/SnackbarContent';
+
 import HLOGO from "../../../../src/Images/dark.png"
 
 interface RowDataVal {
@@ -21,7 +24,16 @@ interface RowDataVal {
 export default function SpotRFQPage() {
   const [symbol1, setSymbol1] = useState<string>('USDT');
   const [symbol2, setSymbol2] = useState<string>('USD');
+  const [open, setOpen] = React.useState<boolean>(false);
+  const [tradeSide,setTradeSide] = React.useState<string>("Buy");
+  const [snackbarMessage, setSnackbarMessage] = React.useState<string>("");
   const [rows, setRows] = React.useState<RowDataVal[]>([]);
+  const [obj, setObj] = React.useState<any>({
+    vertical: 'top',
+    horizontal: 'center',
+  });
+  const { vertical, horizontal } = obj;
+
 
   useEffect(() => {
     if (!("Notification" in window)) {
@@ -112,17 +124,48 @@ export default function SpotRFQPage() {
         qty: formattedFillQty,
         price:newRow.filledPrice
       }
+
+      setTradeSide(val?.side || "")
+      
+      let x = parseFloat(newRow.filledPrice) * parseFloat(newRow.filledQty);
+      let formatted =  x.toLocaleString("en-US")
+      if(newRow?.side == "Buy"){
+        setSnackbarMessage(`You have Bought ${formattedFillQty} ${symbol1} and Sold ${formatted} ${symbol2} (Notional Value) at a Rate of ${newRow.filledPrice}`);
+      }else{
+        setSnackbarMessage(`You have Sold ${formattedFillQty} ${symbol1} and Bought ${formatted} ${symbol2} (Notional Value) at a Rate of ${newRow.filledPrice}`);
+      }
+
+      setOpen(true);
       showNotification(obj)
-      // var options = {
-      //   body: `${newRow?.side} ${symbol1} ${formattedFillQty} vs ${symbol2} @ ${newRow.filledPrice}`,
-      //   icon: 'https://tda-gui-v2.vercel.app/static/images/dark.png?    auto=compress&cs=tinysrgb&dpr=1&w=500',
-      //   dir: 'ltr',
-      // };
-      // new Notification(`Trade Accepted: ID ${newRow?.id}`, options)
     }
+
+    const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+  
+      setOpen(false);
+    };
 
   return (
     <>
+      <div>
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        autoHideDuration={7000}
+        onClose={handleClose}
+        key={vertical + horizontal}
+      >
+         <SnackbarContent style={{
+          backgroundColor: tradeSide == 'Buy' ? '#E2F0D9' : '#FFDDDD',
+          color:'#000000',
+          fontWeight:500
+          }}
+          message={<span id="client-snackbar">{snackbarMessage}</span>}
+        />
+      </Snackbar>
+      </div>
       <PageTitle
         sx={{
           textWrap: "nowrap",

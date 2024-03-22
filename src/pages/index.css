@@ -24,3 +24,12 @@
   .darkHeaderBg {
     background-color: #2d2d327c;
   }
+
+
+  @media (min-width: 600px){
+
+    .css-zzms1-MuiSnackbar-root{
+      left: 56% !important;
+      top:35px !important
+    }
+  }
