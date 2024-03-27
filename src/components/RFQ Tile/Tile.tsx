@@ -487,6 +487,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
             : "#F5264B"
           : "",
       }}
+      className="titleContainer"
     >
       <CardContent>{buySellCard(sellValue)}</CardContent>
     </Card>
@@ -517,6 +518,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
             : "none", // Change this to the desired hover background color
         },
       }}
+      className="titleContainer"
       onMouseEnter={() => setOnHov(true)} // Set onHov to true on mouse enter
       onMouseLeave={() => setOnHov(false)} // Set onHov to false on mouse leave
     >
@@ -563,6 +565,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
               flexDirection: "column",
               "&:hover": { backgroundColor: hideRQ ? "red" : "" },
             }}
+            className="cardSection"
             onClick={() => {
               hideRQ && setBuySellValue("sell");
               // hideRQ && setBuySell(true);
@@ -733,6 +736,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
               flexDirection: "column",
               "&:hover": { backgroundColor: hideRQ ? "#26BAFC" : "" },
             }}
+            className="cardSection"
             onClick={() => {
               hideRQ && setBuySellValue("buy");
               // hideRQ && setBuySell(true);

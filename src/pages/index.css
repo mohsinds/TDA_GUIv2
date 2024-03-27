@@ -32,4 +32,49 @@
       left: 56% !important;
       top:35px !important
     }
+    
+  }
+
+  @media (max-width:600px) {
+     .currencyDropdown{
+      display: flex;
+      flex-direction: column;
+      width: 28rem !important;
+      padding-right: 0.8rem;
+      /* margin-left: -1rem; */
+
+    } 
+    .dropdownContainer{
+      width: 27rem;
+    }
+    .tileParent{
+      padding-right: 1.5rem;
+      width: 27.5rem;
+    }
+    .tableParent{
+      margin-left: -0.8rem;
+      width: 27.5rem;
+    }
+    .titleContainer{
+      width: 27.5rem;
+    }
+    .cardSection{
+      width: 10rem;
+    }
+    .tableHeading{
+      font-size: 16px;
+    }
+   .iconMargin{
+    margin-right: 3px !important;
+   }
+   .inputStyle{
+    width: 7rem;
+   }
+   .tableHeaderRight{
+    padding-top: 10px;
+   }
+   .dropdownHeading{
+    padding-bottom: 2px;
+   }
+  
   }
