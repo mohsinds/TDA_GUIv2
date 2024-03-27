@@ -166,6 +166,7 @@ export default function SpotRFQPage() {
         />
       </Snackbar>
       </div>
+      <div className="tileParent">
       <PageTitle
         sx={{
           textWrap: "nowrap",
@@ -188,7 +189,7 @@ export default function SpotRFQPage() {
       >
         Click Initiate RFQ to instantly receive a quote
       </SubTitle>
-
+      </div>
       <Box
       sx={{
         display:'flex',
@@ -196,6 +197,7 @@ export default function SpotRFQPage() {
         alignItems:'center',
         marginTop:5,
       }}
+      className="dropdownContainer"
       >
         <CurrencyDropdown handleSymbolOne={handleSymbolOne} handleSymbolTwo={handleSymbolTwo} />
 
@@ -206,8 +208,10 @@ export default function SpotRFQPage() {
         display:'flex',
         justifyContent:'center',
         alignItems:'center',
+
         // marginTop:15,
       }}
+      className="tileParent"
       >
       <Tile symbol1={symbol1} symbol2={symbol2} handleSymbolTwo= {handleSymbolTwo} handleAddRow={handleAddRow} />
       </Box>
@@ -216,6 +220,7 @@ export default function SpotRFQPage() {
         sx={{
           marginTop: 5,
         }}
+        className="tableParent"
       >
         <RFQTable rows={rows} />
       </Box>

@@ -21,15 +21,16 @@ export default function CurrencyDropdown({ handleSymbolOne, handleSymbolTwo }: C
   };
 
   return (
-    <div style={{width:"36rem",height:"6rem" }}>
+    <div className="currencyDropdown" style={{width:"36rem",height:"6rem" }}>
         <Typography
          sx={{
             fontWeight: '400',
             fontSize: 14,
             color: themes.currentTheme === "dark" ? "#FFFFFF" : "black",
           }}
+          className="dropdownHeading"
         >I am buying/selling</Typography>
-        <div style={{ display: "flex", alignItems: "center",marginTop:10,justifyContent: "space-between" }}>
+        <div  style={{ display: "flex", alignItems: "center",marginTop:10,justifyContent: "space-between" }}>
         <Autocomplete
             id="buy-currency"
             defaultValue={currency.find(cur => cur.symbol === "USDT")}
