@@ -76,5 +76,9 @@
    .dropdownHeading{
     padding-bottom: 2px;
    }
+
+   .tileMain{
+    width: 27.5rem !important;
+   }
   
   }

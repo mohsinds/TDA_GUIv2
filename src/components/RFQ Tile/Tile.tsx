@@ -492,7 +492,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
       <CardContent>{buySellCard(sellValue)}</CardContent>
     </Card>
   ) : (
-    <div style={{ position: "relative",width:'70rem',display:'flex',justifyContent:'center',alignItems:'center' }}>
+    <div className="tileMain" style={{ position: "relative", width:'70rem',display:'flex',justifyContent:'center',alignItems:'center' }}>
       {showBuyConfirmationPopup && <BuyConfirmationPopup />}
       
       {showSellConfirmationPopup && <SellConfirmationPopup />}
