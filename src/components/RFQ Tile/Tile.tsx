@@ -56,7 +56,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
   };
 
   const inlargedNum = (value: string, valueOf: string) => {
-    console.log("value", value, "valueof", valueOf);
+    // console.log("value", value, "valueof", valueOf);
     const val = parseFloat(value).toFixed(5).toString()
     const xxx = val?.split(".")[1];
     const yyy = val?.split(".")[0];
@@ -172,7 +172,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
           return 0;
         }
         // Decrease the progress by the calculated amount
-        console.log("counter", Math.max(oldProgress - decreaseAmount, 0));
+        // console.log("counter", Math.max(oldProgress - decreaseAmount, 0));
         setSecCounter(Math.max(oldProgress - decreaseAmount, 0));
         return Math.max(oldProgress - decreaseAmount, 0);
       });
@@ -184,7 +184,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
 
   const stopProgressBar = () => {
     clearInterval(intervalRef.current!);
-    console.log("Interval cleared");
+    // console.log("Interval cleared");
   };
 
   function generateRandomId() {
