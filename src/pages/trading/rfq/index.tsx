@@ -21,7 +21,7 @@ interface RowDataVal {
   accountNum : string;
   status: string;
 }
-const backendApiUrl = 'http://localhost:5000'
+const backendApiUrl = process.env.BACKEND_API_URL ?? 'http://localhost:5000'
 const backendApiToken = process.env.BACKEND_API_TOKEN ?? 'set-your-token-in-the-.env-file'
 export default function SpotRFQPage() {
   const [symbol1, setSymbol1] = useState<string>('USDT');
