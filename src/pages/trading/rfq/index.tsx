@@ -9,6 +9,7 @@ import Snackbar from '@mui/material/Snackbar';
 import SnackbarContent from '@mui/material/SnackbarContent';
 
 import HLOGO from "../../../../src/Images/dark.png"
+import axios from "axios";
 
 interface RowDataVal {
   id:string;
@@ -20,14 +21,17 @@ interface RowDataVal {
   accountNum : string;
   status: string;
 }
-
+const backendApiUrl = process.env.BACKEND_API_URL ?? 'http://localhost:5000'
+const backendApiToken = process.env.BACKEND_API_TOKEN ?? 'set-your-token-in-the-.env-file'
 export default function SpotRFQPage() {
   const [symbol1, setSymbol1] = useState<string>('USDT');
   const [symbol2, setSymbol2] = useState<string>('USD');
   const [open, setOpen] = React.useState<boolean>(false);
+  const [placingOrder, setPlacingOrder] = React.useState<boolean>(false);
   const [tradeSide,setTradeSide] = React.useState<string>("Buy");
   const [snackbarMessage, setSnackbarMessage] = React.useState<string>("");
   const [rows, setRows] = React.useState<RowDataVal[]>([]);
+  const [cancelToken, setCancelToken] = React.useState<any>(null);
   const [obj, setObj] = React.useState<any>({
     vertical: 'top',
     horizontal: 'center',
@@ -43,6 +47,55 @@ export default function SpotRFQPage() {
       Notification.requestPermission();
     }
   }, []);
+
+    const handlePlaceOrderRequest = async (payload: Partial<RowDataVal>) => {
+        if (payload) {
+            try {
+                if (cancelToken) {
+                    cancelToken.cancel("Request canceled");
+                }
+
+                // Create a new cancel token
+                const source = axios?.CancelToken?.source();
+                console.log('source', source)
+                setCancelToken(source);
+                setPlacingOrder(true);
+                
+                const response = await axios.post(
+                    `${backendApiUrl}/customer/placeorder`,
+                    payload,
+                    {
+                        cancelToken: source.token,
+                        headers: {
+                            'Authorization': `Bearer ${backendApiToken}`            }
+                    }
+                );
+                if (response?.data) {
+                    console.log('response =>',response?.data)
+                    let obj = response?.data[0];
+                    
+                    setPlacingOrder(false);
+                    
+                } else {
+                    alert("request failed");
+                    setTimeout(() => {
+                        setPlacingOrder(false);
+                    }, 2000);
+                }
+            } catch (error) {
+                if (axios.isCancel(error)) {
+                    // Request was canceled
+                    console.log("Request canceled:", error);
+                } else {
+                    console.error("Error:", error);
+                }
+            } finally {
+                setPlacingOrder(false);
+            }
+        } else {
+            alert("Currency is required");
+        }
+    };
 
  
 
@@ -115,28 +168,33 @@ export default function SpotRFQPage() {
       accountNum: val.accountNum || "",
       status: val.status || ""
     };
-      setRows([newRow, ...rows]);
-      let obj = {
-        id: newRow?.id,
-        symbol1: symbol1,
-        symbol2: symbol2,
-        side: newRow?.side,
-        qty: formattedFillQty,
-        price:newRow.filledPrice
-      }
+    handlePlaceOrderRequest(newRow).then(d => {
+        setRows([newRow, ...rows]);
+        let obj = {
+            id: newRow?.id,
+            symbol1: symbol1,
+            symbol2: symbol2,
+            side: newRow?.side,
+            qty: formattedFillQty,
+            price:newRow.filledPrice
+        }
 
-      setTradeSide(val?.side || "")
+        setTradeSide(val?.side || "")
+
+        let x = parseFloat(newRow.filledPrice) * parseFloat(newRow.filledQty);
+        let formatted =  x.toLocaleString("en-US")
+        if(newRow?.side == "Buy"){
+            setSnackbarMessage(`You have Bought ${formattedFillQty} ${symbol1} and Sold ${formatted} ${symbol2} (Notional Value) at a Rate of ${newRow.filledPrice}`);
+        }else{
+            setSnackbarMessage(`You have Sold ${formattedFillQty} ${symbol1} and Bought ${formatted} ${symbol2} (Notional Value) at a Rate of ${newRow.filledPrice}`);
+        }
+
+        setOpen(true);
+        showNotification(obj)
+    }).catch(e => {
+        console.log("Error",e)
+    })
       
-      let x = parseFloat(newRow.filledPrice) * parseFloat(newRow.filledQty);
-      let formatted =  x.toLocaleString("en-US")
-      if(newRow?.side == "Buy"){
-        setSnackbarMessage(`You have Bought ${formattedFillQty} ${symbol1} and Sold ${formatted} ${symbol2} (Notional Value) at a Rate of ${newRow.filledPrice}`);
-      }else{
-        setSnackbarMessage(`You have Sold ${formattedFillQty} ${symbol1} and Bought ${formatted} ${symbol2} (Notional Value) at a Rate of ${newRow.filledPrice}`);
-      }
-
-      setOpen(true);
-      showNotification(obj)
     }
 
     const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
