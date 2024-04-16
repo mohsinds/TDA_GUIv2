@@ -7,7 +7,8 @@ import {CustomThemeContext} from "@/themes/CustomThemeContext";
 // @ts-ignore
 import moment from "moment";
 import axios from "axios";
-import {RfqQuote} from "@/pages/trading/rfq/RfqQuote";
+import {RfqQuote} from "@/components/RFQ Tile/RfqQuote";
+
 
 
 interface TileProps {

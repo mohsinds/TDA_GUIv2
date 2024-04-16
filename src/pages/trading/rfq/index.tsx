@@ -10,7 +10,8 @@ import SnackbarContent from '@mui/material/SnackbarContent';
 
 import HLOGO from "../../../../src/Images/dark.png"
 import axios from "axios";
-import {RfqQuote} from "@/pages/trading/rfq/RfqQuote";
+import {RfqQuote} from "@/components/RFQ Tile/RfqQuote";
+
 
 
 const backendApiUrl = process.env.BACKEND_API_URL ?? 'http://localhost:5000'
