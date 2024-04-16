@@ -7,13 +7,15 @@ import {CustomThemeContext} from "@/themes/CustomThemeContext";
 // @ts-ignore
 import moment from "moment";
 import axios from "axios";
+import {RfqQuote} from "@/components/RFQ Tile/RfqQuote";
+
 
 
 interface TileProps {
   symbol1: string;
   symbol2: string;
   handleSymbolTwo: (newSymbol: string) => void;
-  handleAddRow: (val: object) => void;
+  handleAddRow: (val: Partial<RfqQuote>) => void;
 }
 const backendApiUrl = process.env.BACKEND_API_URL ?? 'http://localhost:5000'
 const backendApiToken = process.env.BACKEND_API_TOKEN ?? 'set-your-token-in-the-.env-file'
@@ -31,7 +33,9 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
   const [iniNum, setInitNumb] = React.useState("10");
   const [status, setStatus] = React.useState("Canceled");
   const [text, setText] = React.useState("1000");
-  const [cancelToken, setCancelToken] = React.useState<any>(null);
+    const [quoteId, setQuoteId] = React.useState<string>("");
+    const [refId, setRefId] = React.useState<string>("");
+    const [cancelToken, setCancelToken] = React.useState<any>(null);
   
 
 
@@ -193,35 +197,44 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
     return timestamp + randomString; // Combine timestamp and random string
   }
 
-  const handleSellAddRow = () => {
-    let obj = {
-      transactTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-      symbol:symbolName,
-      side:"Sell",
-      filledQty:text,
-      filledPrice:sellValue,
-      accountNum:generateRandomId(),
-      status: status,
-    }
-    obj.filledQty = parseFloat(obj.filledQty)?.toFixed(6);
-    obj.filledPrice = parseFloat(obj.filledPrice)?.toFixed(6);
-    handleAddRow(obj);
-  }
+    const handleSellAddRow = () => {
+        let obj: Partial<RfqQuote> = {
+            transactTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+            symbol: symbolName,
+            side: "Sell",
+            filledQty: text,
+            filledPrice: sellValue,
+            accountNum: generateRandomId(),
+            status: status,
+            QuoteID: quoteId,
+            RFQID: refId
+        }
 
-  const handleBuyAddRow = () => {
-    let obj = {
-      transactTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-      symbol:symbolName,
-      side:"Buy",
-      filledQty:text,
-      filledPrice:buyValue,
-      accountNum:generateRandomId(),
-      status: status,
+        let filledQty = obj.filledQty as string;
+        let filledPrice = obj.filledPrice as string;
+        obj.filledQty = parseFloat(filledQty)?.toFixed(6);
+        obj.filledPrice = parseFloat(filledPrice)?.toFixed(6);
+        handleAddRow(obj);
     }
-    obj.filledQty = parseFloat(obj.filledQty)?.toFixed(6);
-    obj.filledPrice = parseFloat(obj.filledPrice)?.toFixed(6);
-    handleAddRow(obj);
-  }
+
+    const handleBuyAddRow = () => {
+        let obj: Partial<RfqQuote> = {
+            transactTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+            symbol: symbolName,
+            side: "Buy",
+            filledQty: text,
+            filledPrice: buyValue,
+            accountNum: generateRandomId(),
+            status: status,
+            QuoteID: quoteId,
+            RFQID: refId
+        }
+        let filledQty = obj.filledQty as string;
+        let filledPrice = obj.filledPrice as string;
+        obj.filledQty = parseFloat(filledQty)?.toFixed(6);
+        obj.filledPrice = parseFloat(filledPrice)?.toFixed(6);
+        handleAddRow(obj);
+    }
 
   const buySellCard = (val: string) => {
     console.log("sellbuyvalue", buySellValue);
@@ -349,14 +362,17 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
         if (response.data?.length > 0) {
           console.log('response =>',response)
           let obj = response?.data[0];
-          console.log("obj==>", obj.EndTime);
+          console.log("obj==>", obj);
           setBuyValue(obj?.OfferPx ? obj?.OfferPx : "0.00000"),
           setSellValue(obj?.BidPx ? obj?.BidPx : "0.00000"),
           setSecCounter(100)
           setSymbol(obj?.Symbol);
           setCurrencyType(obj?.Currency)
           setStatus(obj?.QuoteStatus)
+          setQuoteId(obj?.QuoteID)
+          setRefId(obj?.RFQID)
           handleCurrenyUpdateForSecondDropdown(obj?.AmountCurrency)
+          
           setInputValue(true);
           // setText(Math.abs(parseFloat(obj?.OrderQty)) )
           setText(obj?.OrderQty)

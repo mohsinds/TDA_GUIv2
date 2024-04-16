@@ -10,17 +10,10 @@ import SnackbarContent from '@mui/material/SnackbarContent';
 
 import HLOGO from "../../../../src/Images/dark.png"
 import axios from "axios";
+import {RfqQuote} from "@/components/RFQ Tile/RfqQuote";
 
-interface RowDataVal {
-  id:string;
-  transactTime: string;
-  symbol: string;
-  side: string;
-  filledQty: string;
-  filledPrice: string;
-  accountNum : string;
-  status: string;
-}
+
+
 const backendApiUrl = process.env.BACKEND_API_URL ?? 'http://localhost:5000'
 const backendApiToken = process.env.BACKEND_API_TOKEN ?? 'set-your-token-in-the-.env-file'
 export default function SpotRFQPage() {
@@ -30,7 +23,7 @@ export default function SpotRFQPage() {
   const [placingOrder, setPlacingOrder] = React.useState<boolean>(false);
   const [tradeSide,setTradeSide] = React.useState<string>("Buy");
   const [snackbarMessage, setSnackbarMessage] = React.useState<string>("");
-  const [rows, setRows] = React.useState<RowDataVal[]>([]);
+  const [rows, setRows] = React.useState<RfqQuote[]>([]);
   const [cancelToken, setCancelToken] = React.useState<any>(null);
   const [obj, setObj] = React.useState<any>({
     vertical: 'top',
@@ -48,7 +41,7 @@ export default function SpotRFQPage() {
     }
   }, []);
 
-    const handlePlaceOrderRequest = async (payload: Partial<RowDataVal>) => {
+    const handlePlaceOrderRequest = async (payload: Partial<RfqQuote>) => {
         if (payload) {
             try {
                 if (cancelToken) {
@@ -154,11 +147,11 @@ export default function SpotRFQPage() {
       return randomNumber.toString(); // Convert the random number to string
     }
 
-    const handleAddRow = (val: Partial<RowDataVal>) => {
+    const handleAddRow = (val: Partial<RfqQuote>) => {
     const newId = generateRandomId();
     let fillQtyVal = parseFloat(val?.filledQty || "0");
     let formattedFillQty = fillQtyVal?.toLocaleString("en-US");
-    const newRow: RowDataVal = {
+    const newRow: RfqQuote = {
       id: newId,
       transactTime: val.transactTime || "", 
       symbol: val.symbol || "",
@@ -166,7 +159,9 @@ export default function SpotRFQPage() {
       filledQty: val.filledQty || "",
       filledPrice: val.filledPrice || "",
       accountNum: val.accountNum || "",
-      status: val.status || ""
+      status: val.status || "",
+        QuoteID: val.QuoteID || "",
+        RFQID: val.RFQID || ""
     };
     handlePlaceOrderRequest(newRow).then(d => {
         setRows([newRow, ...rows]);
@@ -176,7 +171,9 @@ export default function SpotRFQPage() {
             symbol2: symbol2,
             side: newRow?.side,
             qty: formattedFillQty,
-            price:newRow.filledPrice
+            price:newRow.filledPrice,
+            QuoteID:newRow.QuoteID,
+            RFQID:newRow.RFQID
         }
 
         setTradeSide(val?.side || "")
