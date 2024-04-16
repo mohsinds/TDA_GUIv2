@@ -205,8 +205,8 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
             filledPrice: sellValue,
             accountNum: generateRandomId(),
             status: status,
-            quoteId: quoteId,
-            refId: refId
+            QuoteID: quoteId,
+            RFQID: refId
         }
 
         let filledQty = obj.filledQty as string;
@@ -225,8 +225,8 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
             filledPrice: buyValue,
             accountNum: generateRandomId(),
             status: status,
-            quoteId: quoteId,
-            refId: refId
+            QuoteID: quoteId,
+            RFQID: refId
         }
         let filledQty = obj.filledQty as string;
         let filledPrice = obj.filledPrice as string;

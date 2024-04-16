@@ -159,8 +159,8 @@ export default function SpotRFQPage() {
       filledPrice: val.filledPrice || "",
       accountNum: val.accountNum || "",
       status: val.status || "",
-      quoteId: val.quoteId || "",
-      refId: val.refId || ""
+        QuoteID: val.QuoteID || "",
+        RFQID: val.RFQID || ""
     };
     handlePlaceOrderRequest(newRow).then(d => {
         setRows([newRow, ...rows]);
@@ -171,8 +171,8 @@ export default function SpotRFQPage() {
             side: newRow?.side,
             qty: formattedFillQty,
             price:newRow.filledPrice,
-            quoteId:newRow.quoteId,
-            refId:newRow.refId
+            QuoteID:newRow.QuoteID,
+            RFQID:newRow.RFQID
         }
 
         setTradeSide(val?.side || "")

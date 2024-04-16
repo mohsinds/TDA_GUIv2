@@ -6,7 +6,7 @@
     filledQty: string;
     filledPrice: string;
     accountNum : string;
-    quoteId : string;
-    refId : string;
+    QuoteID : string;
+    RFQID : string;
     status: string;
 }
