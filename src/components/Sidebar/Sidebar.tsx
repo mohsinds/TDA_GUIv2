@@ -43,6 +43,8 @@ export default function Sidebar({ open, toggleSide }: Props) {
         </IconButton>
       </StyledDrawerHeader>
       <Divider />
+
+      {/* Execution Start*/}
       <List
         sx={{ width: "100%", bgcolor: "background.paper" }}
         component="nav"
@@ -69,7 +71,10 @@ export default function Sidebar({ open, toggleSide }: Props) {
           />
         ))}
       </List>
+      {/* Execution End*/}
       <Divider />
+
+      {/* Account Management Start*/}
       <List
         sx={{ width: "100%", bgcolor: "background.paper" }}
         component="nav"
@@ -97,7 +102,10 @@ export default function Sidebar({ open, toggleSide }: Props) {
           />
         ))}
       </List>
+      {/* Account Management End*/}
       <Divider />
+
+      {/* Admin Start*/}
       <List
         sx={{ width: "100%", bgcolor: "background.paper" }}
         component="nav"
@@ -125,6 +133,7 @@ export default function Sidebar({ open, toggleSide }: Props) {
           />
         ))}
       </List>
+      {/* Admin End*/}
     </StyledDrawer>
   )
 }

@@ -60,44 +60,57 @@ const ADMIN_ITEMS: SidebarListItem[] = [
 
 const TOOLS_ITEMS: SidebarListItem[] = [
   {
-    title: 'Account History',
-    icon: <AccountBalanceWalletIcon />,
-    open: false,
-    children: [
-      {
-        title: 'Execution',
-        href: '/accounthistory/execution',
-      },
-      {
-        title: 'Historic',
-        href: '/accounthistory/historic',
-      },
-      {
-        title: 'Statement Generation',
-        href: '/accounthistory/statement',
-      },
-    ],
-  },
-
-  {
     title: 'Account Funding',
     icon: <AccountBalanceWalletIcon />,
     open: false,
     children: [
+      // {
+      //   title: 'Balances',
+      //   href: '/accountfunding/balances',
+      // },
+      // {
+      //   title: 'Funding',
+      //   href: '/accountfunding/funding',
+      // },
+      // {
+      //   title: 'Instructions',
+      //   href: '/accountfunding/instructions',
+      // },
       {
-        title: 'Balances',
-        href: '/accountfunding/balances',
+        title: 'Crypto',
+        href: '/accountfunding/crypto',
       },
       {
-        title: 'Funding',
-        href: '/accountfunding/funding',
-      },
-      {
-        title: 'Instructions',
-        href: '/accountfunding/instructions',
+        title: 'Fiat',
+        href: '/accountfunding/fiat',
       },
     ],
   },
+  {
+    title: 'Account History',
+    icon: <AccountBalanceWalletIcon />,
+    open: false,
+    href: '/accounthistory',
+  },
+  // {
+  //   title: 'Account History',
+  //   icon: <AccountBalanceWalletIcon />,
+  //   open: false,
+  //   children: [
+  //     // {
+  //     //   title: 'Execution',
+  //     //   href: '/accounthistory/execution',
+  //     // },
+  //     // {
+  //     //   title: 'Historic',
+  //     //   href: '/accounthistory/historic',
+  //     // },
+  //     // {
+  //     //   title: 'Statement Generation',
+  //     //   href: '/accounthistory/statement',
+  //     // },
+  //   ],
+  // }
 ]
 
 export { PLATFORMS_ITEMS, TOOLS_ITEMS,ADMIN_ITEMS }
