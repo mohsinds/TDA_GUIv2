@@ -41,7 +41,7 @@ export default function SpotRFQPage() {
     }
   }, []);
 
-    const handlePlaceOrderRequest = async (payload: Partial<RfqQuote>) => {
+    const handlePlaceOrderRequest = async (payload: any) => {
         if (payload) {
             try {
                 if (cancelToken) {
@@ -151,19 +151,30 @@ export default function SpotRFQPage() {
     const newId = generateRandomId();
     let fillQtyVal = parseFloat(val?.filledQty || "0");
     let formattedFillQty = fillQtyVal?.toLocaleString("en-US");
-    const newRow: RfqQuote = {
-      id: newId,
-      transactTime: val.transactTime || "", 
-      symbol: val.symbol || "",
-      side: val.side || "",
-      filledQty: val.filledQty || "",
-      filledPrice: val.filledPrice || "",
-      accountNum: val.accountNum || "",
-      status: val.status || "",
+    let reqPayload = {
+        // id: newId,
+        transactTime: val.transactTime || "",
+        symbol: val.symbol || "",
+        side: val.side || "",
+        filledQty: val.filledQty || "",
+        accountNum: val.accountNum || "",
+        status: val.status || "",
         QuoteID: val.QuoteID || "",
         RFQID: val.RFQID || ""
-    };
-    handlePlaceOrderRequest(newRow).then(d => {
+    }
+    handlePlaceOrderRequest(reqPayload).then(d => {
+        const newRow: RfqQuote = {
+            id: newId,
+            transactTime: val.transactTime || "",
+            symbol: val.symbol || "",
+            side: val.side || "",
+            filledQty: val.filledQty || "",
+            filledPrice: val.filledPrice || "",
+            accountNum: val.accountNum || "",
+            status: val.status || "",
+            QuoteID: val.QuoteID || "",
+            RFQID: val.RFQID || ""
+        };
         setRows([newRow, ...rows]);
         let obj = {
             id: newRow?.id,
