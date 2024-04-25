@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function Layout({ children }: Props) {
-  const [openSide, setOpenSide] = React.useState(true)
+  const [openSide, setOpenSide] = React.useState(false)
 
   const toggleSidebar = (value: boolean) => setOpenSide(value)
   return (

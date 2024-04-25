@@ -1,15 +1,19 @@
 import * as React from "react";
-import {Card, CardActionArea, CardContent, Typography,Box} from "@mui/material";
+import {
+  Card,
+  CardActionArea,
+  CardContent,
+  Typography,
+  Box,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import Input from "@mui/material/Input";
 import LinearProgress from "@mui/material/LinearProgress";
-import {CustomThemeContext} from "@/themes/CustomThemeContext";
+import { CustomThemeContext } from "@/themes/CustomThemeContext";
 // @ts-ignore
 import moment from "moment";
 import axios from "axios";
-import {RfqQuote} from "@/components/RFQ Tile/RfqQuote";
-
-
+import { RfqQuote } from "@/components/RFQ Tile/RfqQuote";
 
 interface TileProps {
   symbol1: string;
@@ -17,51 +21,68 @@ interface TileProps {
   handleSymbolTwo: (newSymbol: string) => void;
   handleAddRow: (val: Partial<RfqQuote>) => void;
 }
-const backendApiUrl = process.env.BACKEND_API_URL ?? 'http://localhost:5000'
-const backendApiToken = process.env.BACKEND_API_TOKEN ?? 'set-your-token-in-the-.env-file'
+const backendApiUrl = process.env.BACKEND_API_URL ?? "http://localhost:5000";
+const backendApiToken =
+  process.env.BACKEND_API_TOKEN ?? "set-your-token-in-the-.env-file";
 
-const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddRow }) => {
+const Tile: React.FC<TileProps> = ({
+  symbol1,
+  symbol2,
+  handleSymbolTwo,
+  handleAddRow,
+}) => {
   const themes = React.useContext(CustomThemeContext);
   const [inputValue, setInputValue] = React.useState<boolean>(false);
   const [InitiateRq, setInitRq] = React.useState<boolean>(false);
-  const [showBuyConfirmationPopup, setShowBuyConfirmationPopup] = React.useState<boolean>(false);
-  const [showSellConfirmationPopup, setShowSellConfirmationPopup] = React.useState<boolean>(false);
+  const [showBuyConfirmationPopup, setShowBuyConfirmationPopup] =
+    React.useState<boolean>(false);
+  const [showSellConfirmationPopup, setShowSellConfirmationPopup] =
+    React.useState<boolean>(false);
   const [onHov, setOnHov] = React.useState<boolean>(false);
   const [hideRQ, setHideRq] = React.useState<boolean>(false);
   const [buyValue, setBuyValue] = React.useState("0.00000");
   const [sellValue, setSellValue] = React.useState("0.00000");
   const [iniNum, setInitNumb] = React.useState("10");
   const [status, setStatus] = React.useState("Canceled");
-  const [text, setText] = React.useState("1000");
-    const [quoteId, setQuoteId] = React.useState<string>("");
-    const [refId, setRefId] = React.useState<string>("");
-    const [cancelToken, setCancelToken] = React.useState<any>(null);
-  
-
+  const [text, setText] = React.useState("1000.00000");
+  const [quoteId, setQuoteId] = React.useState<string>("");
+  const [refId, setRefId] = React.useState<string>("");
+  const [cancelToken, setCancelToken] = React.useState<any>(null);
 
   const [progress, setProgress] = React.useState(100);
   const [buySell, setBuySell] = React.useState(false);
   const [buySellValue, setBuySellValue] = React.useState("");
   const [secondCounter, setSecCounter] = React.useState(100);
   const intervalRef = React.useRef<number | null>(null);
-  const [symbolName, setSymbol] = React.useState("")
-  const [currencyType, setCurrencyType] = React.useState('USDT')
+  const [symbolName, setSymbol] = React.useState("");
+  const [currencyType, setCurrencyType] = React.useState("USDT");
   const notificationsRef = React.useRef<any>(null);
 
+  // const formatNumber = (value: string) => {
+  //   // Remove non-numeric characters
+  //   const numericValue = value.replace(/[^0-9]/g, "");
+  //   // Format the number as desired
+  //   const formattedValue = parseInt(numericValue).toLocaleString("en-US");
+  //   // Update the state with the formatted value
+  //   setInitNumb(formattedValue);
+  //   // Return the unformatted numeric value for input display
+  //   return numericValue;
+  // };
+
   const formatNumber = (value: string) => {
-    // Remove non-numeric characters
-    const numericValue = value.replace(/[^0-9]/g, "");
-    // Format the number as desired
-    const formattedValue = parseInt(numericValue).toLocaleString("en-US");
-    // Update the state with the formatted value
-    setInitNumb(formattedValue);
-    // Return the unformatted numeric value for input display
-    return numericValue;
-  };
+    // console.log('value', value);
+    // Remove non-numeric characters except decimal point
+    const numericValue = value.replace(/[^\d.]/g, (match, index) => {
+        // Allow the decimal point only if it's the first occurrence or if it's not followed by another decimal point
+        return (match === '.' && value.indexOf('.') === index && value.indexOf('.', index + 1) === -1) ? '.' : '';
+    });
+    // console.log('value', numericValue);
+    setText(numericValue)
+};
 
   const inlargedNum = (value: string, valueOf: string) => {
     // console.log("value", value, "valueof", valueOf);
-    const val = parseFloat(value).toFixed(5).toString()
+    const val = parseFloat(value).toFixed(5).toString();
     const xxx = val?.split(".")[1];
     const yyy = val?.split(".")[0];
 
@@ -79,12 +100,17 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
             // color: valueOf === "BUY" ? "green" : "red",
             // backgroundColor:'green',
             width: 90,
-            color: secondCounter > 50 ? "white" : valueOf === "BUY" ? "#26BAFC" : "red",
-            "&:hover": { color: "white" }
+            color:
+              secondCounter > 50
+                ? "white"
+                : valueOf === "BUY"
+                ? "#26BAFC"
+                : "red",
+            "&:hover": { color: "white" },
           }}
         >
           {/* {yyy + "." + xxx?.substr(0, 2)} */}
-          <div style={{ paddingTop:'12px',fontWeight:500 }}>
+          <div style={{ paddingTop: "12px", fontWeight: 500 }}>
             {yyy + "." + xxx?.substr(0, 2)}
           </div>
           <Typography
@@ -92,21 +118,18 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
               // fontSize: 30,
               fontSize: 34,
               fontWeight: "semibold",
-              paddingX:0.2
+              paddingX: 0.2,
               // marginBottom: -3,
             }}
           >
             {/* {xxx?.substr(2, 2)} */}
 
-              {xxx?.substr(2, 2)}
+            {xxx?.substr(2, 2)}
           </Typography>
-          <div style={{ paddingTop:'12px',fontWeight:500 }}>
-          {xxx?.substr(4, 10)}
+          <div style={{ paddingTop: "12px", fontWeight: 500 }}>
+            {xxx?.substr(4, 10)}
           </div>
-
-
         </Typography>
-
       </>
     );
     // console.log("value", value, "valueof", valueOf);//65323.17    68005.47
@@ -151,6 +174,8 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
   };
 
   const handleReject = () => {
+    setShowSellConfirmationPopup(false);
+    setShowBuyConfirmationPopup(false);
     setProgress(100);
     setInputValue(false);
     setHideRq(false);
@@ -159,7 +184,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
   };
 
   const progBar = () => {
-    const decreaseAmount = 100 / 50; // Decrease amount per second to reach 0 in 10 seconds
+    const decreaseAmount = 100 / 20; // Decrease amount per second to reach 0 in 10 seconds
 
     intervalRef.current = window.setInterval(() => {
       setProgress((oldProgress) => {
@@ -197,44 +222,44 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
     return timestamp + randomString; // Combine timestamp and random string
   }
 
-    const handleSellAddRow = () => {
-        let obj: Partial<RfqQuote> = {
-            transactTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-            symbol: symbolName,
-            side: "Sell",
-            filledQty: text,
-            filledPrice: sellValue,
-            accountNum: generateRandomId(),
-            status: status,
-            QuoteID: quoteId,
-            RFQID: refId
-        }
+  const handleSellAddRow = () => {
+    let obj: Partial<RfqQuote> = {
+      transactTime: moment().format("YYYY-MM-DD HH:mm:ss"),
+      symbol: symbolName,
+      side: "Sell",
+      filledQty: text,
+      filledPrice: sellValue,
+      accountNum: generateRandomId(),
+      status: status,
+      QuoteID: quoteId,
+      RFQID: refId,
+    };
 
-        let filledQty = obj.filledQty as string;
-        let filledPrice = obj.filledPrice as string;
-        obj.filledQty = parseFloat(filledQty)?.toFixed(6);
-        obj.filledPrice = parseFloat(filledPrice)?.toFixed(6);
-        handleAddRow(obj);
-    }
+    let filledQty = obj.filledQty as string;
+    let filledPrice = obj.filledPrice as string;
+    obj.filledQty = parseFloat(filledQty)?.toFixed(6);
+    obj.filledPrice = parseFloat(filledPrice)?.toFixed(6);
+    handleAddRow(obj);
+  };
 
-    const handleBuyAddRow = () => {
-        let obj: Partial<RfqQuote> = {
-            transactTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-            symbol: symbolName,
-            side: "Buy",
-            filledQty: text,
-            filledPrice: buyValue,
-            accountNum: generateRandomId(),
-            status: status,
-            QuoteID: quoteId,
-            RFQID: refId
-        }
-        let filledQty = obj.filledQty as string;
-        let filledPrice = obj.filledPrice as string;
-        obj.filledQty = parseFloat(filledQty)?.toFixed(6);
-        obj.filledPrice = parseFloat(filledPrice)?.toFixed(6);
-        handleAddRow(obj);
-    }
+  const handleBuyAddRow = () => {
+    let obj: Partial<RfqQuote> = {
+      transactTime: moment().format("YYYY-MM-DD HH:mm:ss"),
+      symbol: symbolName,
+      side: "Buy",
+      filledQty: text,
+      filledPrice: buyValue,
+      accountNum: generateRandomId(),
+      status: status,
+      QuoteID: quoteId,
+      RFQID: refId,
+    };
+    let filledQty = obj.filledQty as string;
+    let filledPrice = obj.filledPrice as string;
+    obj.filledQty = parseFloat(filledQty)?.toFixed(6);
+    obj.filledPrice = parseFloat(filledPrice)?.toFixed(6);
+    handleAddRow(obj);
+  };
 
   const buySellCard = (val: string) => {
     console.log("sellbuyvalue", buySellValue);
@@ -334,9 +359,9 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
   // setSellValue("1.23745"),
   // progBar()
 
-  const handleCurrenyUpdateForSecondDropdown = (val: string)=>{
-    handleSymbolTwo(val)
-  } 
+  const handleCurrenyUpdateForSecondDropdown = (val: string) => {
+    handleSymbolTwo(val);
+  };
 
   const handleInitiateRFQ = async () => {
     if (text) {
@@ -347,43 +372,45 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
 
         // Create a new cancel token
         const source = axios?.CancelToken?.source();
-        console.log('source', source)
+        console.log("source", source);
         setCancelToken(source);
 
         setInitRq(true);
+        console.log('value', text)
         const response = await axios.get(
           `${backendApiUrl}/customer/rfq?symbol=${symbol1}-${symbol2}&currency=${symbol1}&orderQty=${text}`,
           {
             cancelToken: source.token,
             headers: {
-              'Authorization': `Bearer ${backendApiToken}`            }
+              Authorization: `Bearer ${backendApiToken}`,
+            },
           }
         );
         if (response.data?.length > 0) {
-          console.log('response =>',response)
+          console.log("response =>", response);
           let obj = response?.data[0];
           console.log("obj==>", obj);
           setBuyValue(obj?.OfferPx ? obj?.OfferPx : "0.00000"),
-          setSellValue(obj?.BidPx ? obj?.BidPx : "0.00000"),
-          setSecCounter(100)
+            setSellValue(obj?.BidPx ? obj?.BidPx : "0.00000"),
+            setSecCounter(100);
           setSymbol(obj?.Symbol);
-          setCurrencyType(obj?.Currency)
-          setStatus(obj?.QuoteStatus)
-          setQuoteId(obj?.QuoteID)
-          setRefId(obj?.RFQID)
-          handleCurrenyUpdateForSecondDropdown(obj?.AmountCurrency)
-          
+          setCurrencyType(obj?.Currency);
+          setStatus(obj?.QuoteStatus);
+          setQuoteId(obj?.QuoteID);
+          setRefId(obj?.RFQID);
+          handleCurrenyUpdateForSecondDropdown(obj?.AmountCurrency);
+
           setInputValue(true);
           // setText(Math.abs(parseFloat(obj?.OrderQty)) )
-          setText(obj?.OrderQty)
+          setText(obj?.OrderQty);
           setInitRq(false);
           setHideRq(true);
-            progBar();
+          progBar();
         } else {
           alert("request failed");
           setTimeout(() => {
             setInitRq(false);
-            setHideRq(false)
+            setHideRq(false);
           }, 2000);
         }
       } catch (error) {
@@ -397,7 +424,7 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
         setInitRq(false);
       }
     } else {
-      alert("Currency is required");
+      alert("Currency is required" + text);
     }
   };
 
@@ -408,86 +435,236 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
     setInitRq(false);
   };
 
-  const handleBuyPopupYes = ()=>{
+  const handleBuyPopupYes = () => {
     handleBuyAddRow();
-    handleBuyPopupNo()
-  }
+    handleBuyPopupNo();
+    handleReject();
+  };
 
-  const handleBuyPopupNo = ()=>{
-    setShowBuyConfirmationPopup(false)
-  }
+  const handleBuyPopupNo = () => {
+    setShowBuyConfirmationPopup(false);
+  };
 
-  const handleSellPopupYes = ()=>{
-    handleSellAddRow()
-    handleSellPopupNo()
-  }
+  const handleSellPopupYes = () => {
+    handleSellAddRow();
+    handleSellPopupNo();
+    handleReject();
+  };
 
-  const handleSellPopupNo = ()=>{
-    setShowSellConfirmationPopup(false)
-  }
+  const handleSellPopupNo = () => {
+    setShowSellConfirmationPopup(false);
+  };
 
-  const getMultipluVal = (x:string)=>{
-    if(x == 'buy'){
+  const getMultipluVal = (x: string) => {
+    if (x == "buy") {
       let val = parseFloat(buyValue) * parseFloat(text);
-      let formatted =  val.toLocaleString("en-US")
-      return formatted
-    }else{
+      let formatted = val.toLocaleString("en-US");
+      return formatted;
+    } else {
       let val = parseFloat(sellValue) * parseFloat(text);
-      let formatted =  val.toLocaleString("en-US")
-      return formatted
+      let formatted = val.toLocaleString("en-US");
+      return formatted;
     }
-  }
+  };
 
-  const BuyConfirmationPopup = ()=>{
+  const BuyConfirmationPopup = () => {
     return (
-      <div style={{position:'absolute',right:0,width:'22rem',boxShadow:'0 0 10px 0 rgb(0 0 0 / 10%)',zIndex:100,height:"10rem",background:themes.currentTheme === "dark" ? "#404040" : "white",borderRadius:5}}>
-          <div style={{width:'100%',height:'20%',display:'flex',justifyContent:'center',alignItems:'center'}}>
-          <svg width={24} height={24} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-            </svg>
-            <span style={{fontWeight:600,textDecoration:'underline',margin:'0 5px 0 5px',fontSize:15}}>TRADE CONFIRMATION</span>
-            <svg width={24} height={24} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-            </svg>
-
-          </div>
-          <div style={{width:'100%',height:'50%',display:'flex',justifyContent:'center',alignItems:'center',fontSize:14,padding:'0 10px 0 10px'}}>
-            <span>Buy {parseInt(text).toLocaleString("en-US")} {symbol1} and Sell {getMultipluVal('buy')} {symbol2} (Notional Value) @ {parseFloat(buyValue)?.toFixed(6)}</span>
-          </div>
-          <div style={{width:'100%',height:'30%',display:'flex',justifyContent:'end',alignItems:'center',fontSize:13,padding:'0 10px 0 10px'}}>
-            <Button onClick={handleBuyPopupNo}>No</Button>
-            <Button onClick={handleBuyPopupYes}>Yes</Button>
-          </div>
+      <div
+        style={{
+          position: "absolute",
+          right: 0,
+          width: "22rem",
+          boxShadow: "0 0 10px 0 rgb(0 0 0 / 10%)",
+          zIndex: 100,
+          height: "10rem",
+          background: themes.currentTheme === "dark" ? "#404040" : "white",
+          borderRadius: 5,
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            height: "20%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <svg
+            width={24}
+            height={24}
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
+            />
+          </svg>
+          <span
+            style={{
+              fontWeight: 600,
+              textDecoration: "underline",
+              margin: "0 5px 0 5px",
+              fontSize: 15,
+            }}
+          >
+            TRADE CONFIRMATION
+          </span>
+          <svg
+            width={24}
+            height={24}
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
+            />
+          </svg>
+        </div>
+        <div
+          style={{
+            width: "100%",
+            height: "50%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            fontSize: 14,
+            padding: "0 10px 0 10px",
+          }}
+        >
+          <span>
+            Buy {parseInt(text).toLocaleString("en-US")} {symbol1} and Sell{" "}
+            {getMultipluVal("buy")} {symbol2} (Notional Value) @{" "}
+            {parseFloat(buyValue)?.toFixed(6)}
+          </span>
+        </div>
+        <div
+          style={{
+            width: "100%",
+            height: "30%",
+            display: "flex",
+            justifyContent: "end",
+            alignItems: "center",
+            fontSize: 13,
+            padding: "0 10px 0 10px",
+          }}
+        >
+          <Button onClick={handleBuyPopupNo}>No</Button>
+          <Button onClick={handleBuyPopupYes}>Yes</Button>
+        </div>
       </div>
-    )
-  }
+    );
+  };
 
-  const SellConfirmationPopup = ()=>{
+  const SellConfirmationPopup = () => {
     return (
-      <div style={{position:'absolute',left:0,width:'22rem',boxShadow:'0 0 10px 0 rgb(0 0 0 / 10%)',zIndex:100,height:"10rem",background:themes.currentTheme === "dark" ? "#404040" : "white",borderRadius:5}}>
-          <div style={{width:'100%',height:'20%',display:'flex',justifyContent:'center',alignItems:'center'}}>
-          <svg width={24} height={24} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-            </svg>
-            <span style={{fontWeight:600,textDecoration:'underline',margin:'0 5px 0 5px',fontSize:15}}>TRADE CONFIRMATION</span>
-            <svg width={24} height={24} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-            </svg>
-
-          </div>
-          <div style={{width:'100%',height:'50%',display:'flex',justifyContent:'center',alignItems:'center',fontSize:14,padding:'0 10px 0 10px'}}>
-            <span>Sell {parseInt(text).toLocaleString("en-US")} {symbol1} and Buy {getMultipluVal('sell')} {symbol2} (Notional Value) @ {parseFloat(sellValue)?.toFixed(6)}</span>
-          </div>
-          <div style={{width:'100%',height:'30%',display:'flex',justifyContent:'end',alignItems:'center',fontSize:13,padding:'0 10px 0 10px'}}>
-            <Button onClick={handleSellPopupNo}>No</Button>
-            <Button onClick={handleSellPopupYes}>Yes</Button>
-          </div>
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          width: "22rem",
+          boxShadow: "0 0 10px 0 rgb(0 0 0 / 10%)",
+          zIndex: 100,
+          height: "10rem",
+          background: themes.currentTheme === "dark" ? "#404040" : "white",
+          borderRadius: 5,
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            height: "20%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <svg
+            width={24}
+            height={24}
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
+            />
+          </svg>
+          <span
+            style={{
+              fontWeight: 600,
+              textDecoration: "underline",
+              margin: "0 5px 0 5px",
+              fontSize: 15,
+            }}
+          >
+            TRADE CONFIRMATION
+          </span>
+          <svg
+            width={24}
+            height={24}
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
+            />
+          </svg>
+        </div>
+        <div
+          style={{
+            width: "100%",
+            height: "50%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            fontSize: 14,
+            padding: "0 10px 0 10px",
+          }}
+        >
+          <span>
+            Sell {parseInt(text).toLocaleString("en-US")} {symbol1} and Buy{" "}
+            {getMultipluVal("sell")} {symbol2} (Notional Value) @{" "}
+            {parseFloat(sellValue)?.toFixed(6)}
+          </span>
+        </div>
+        <div
+          style={{
+            width: "100%",
+            height: "30%",
+            display: "flex",
+            justifyContent: "end",
+            alignItems: "center",
+            fontSize: 13,
+            padding: "0 10px 0 10px",
+          }}
+        >
+          <Button onClick={handleSellPopupNo}>No</Button>
+          <Button onClick={handleSellPopupYes}>Yes</Button>
+        </div>
       </div>
-    )
-  }
+    );
+  };
 
-
-  
   return buySell ? (
     <Card
       sx={{
@@ -508,399 +685,391 @@ const Tile: React.FC<TileProps> = ({ symbol1, symbol2,handleSymbolTwo,handleAddR
       <CardContent>{buySellCard(sellValue)}</CardContent>
     </Card>
   ) : (
-    <div className="tileMain" style={{ position: "relative", width:'70rem',display:'flex',justifyContent:'center',alignItems:'center' }}>
-      {showBuyConfirmationPopup && <BuyConfirmationPopup />}
-      
-      {showSellConfirmationPopup && <SellConfirmationPopup />}
-      
-     
-
-    <Card
-      sx={{
+    <div
+      className="tileMain"
+      style={{
+        position: "relative",
+        width: "70rem",
         display: "flex",
-        height: 240,
-        width: "36rem",
-        paddingX: 3,
-        // paddingY: 1,
         justifyContent: "center",
-        flexDirection: "column",
-        transition: "background-color 0.1s", // Optional: Add a transition effect for smoother color change
-        "&:hover": {
-          backgroundColor: themes.currentTheme === "dark" ? "#32323f" : "",
-          boxShadow: onHov
-            ? themes.currentTheme === "dark"
-              ? ""
-              : "0px 0px 10px 0px rgba(0,0,0,0.2)"
-            : "none", // Change this to the desired hover background color
-        },
+        alignItems: "center",
       }}
-      className="titleContainer"
-      onMouseEnter={() => setOnHov(true)} // Set onHov to true on mouse enter
-      onMouseLeave={() => setOnHov(false)} // Set onHov to false on mouse leave
     >
-      <>
+      {showBuyConfirmationPopup && <BuyConfirmationPopup />}
 
-    
-        <Typography
-          sx={{
-            fontWeight: '400',
-            fontSize: 16,
-            color: themes.currentTheme === "dark" ? "#FFFFFF" : "black",
-            marginBottom: 1,
-          }}
-        >
-          {/* {symbolName?.replace('-', '/')} */}
-          {symbol1 + '/' + symbol2}
-        </Typography>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginTop: 5,
-          }}
-        >
-          <CardActionArea
-            sx={{
-              backgroundColor:
-                hideRQ && secondCounter > 50
-                  ? "red"
-                  : onHov
-                  ? themes.currentTheme === "dark"
-                    ? "#434354"
-                    : "#f9f9f9"
-                  : "transparent",
-              width: "12rem",
-              height: "4rem",
-              borderRadius: 1,
-              paddingX: 2,
-              paddingY: 1,
-              transition: "background-color 0.8s",
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "flex-start",
-              flexDirection: "column",
-              "&:hover": { backgroundColor: hideRQ ? "red" : "" },
-            }}
-            className="cardSection"
-            onClick={() => {
-              hideRQ && setBuySellValue("sell");
-              // hideRQ && setBuySell(true);
-              // hideRQ && handleSellAddRow()
-              hideRQ && setShowSellConfirmationPopup(true)
-            }}
-          >
-            {InitiateRq ? (
-              <Typography
-                sx={{
-                  marginTop: 1,
-                  fontSize: 14,
-                  alignSelf: "center",
-                }}
-              >
-                Requesting
-              </Typography>
-            ) : (
-              <>
-                <Typography
-                  sx={{
-                    fontSize: 12,
-                    color: hideRQ && secondCounter > 50 ? "white" : "#949596",
-                    // fontWeight: 'bold',
-                  }}
-                >
-                  SELL
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: 20,
-                    // alignSelf: "center",
-                    marginTop: 0.5,
-                  }}
-                >
-                  {inputValue && inlargedNum(sellValue, "SELL")}
-                </Typography>
-                {/* secondCounter < 10 && hideRQ */}
-                {secondCounter < 10 && hideRQ && (
-                  <Typography
-                    sx={{
-                      fontSize: 9,
-                      color: "red",
-                      textAlign: "center",
-                      width: 80,
-                      marginTop: -1,
-                    }}
-                  >
-                    Expired
-                  </Typography>
-                )}
-              </>
-            )}
-          </CardActionArea>
-          {secondCounter < 10 && hideRQ  ? (
-            <Button
-              onClick={() => {
-                setInitRq(false);
-                setHideRq(false);
-                setBuySell(false);
-                setInputValue(false);
-              }}
-              sx={{
-                bgcolor: "#5F94F5",
-                height: "3rem",
-                width: "5rem",
-                marginX: 0.9,
-                color: "#e8e8e8",
-                fontSize: 12,
-                textTransform: "capitalize",
-                placeSelf: "center",
-                lineHeight: 1.5,
-                // marginTop: 1.5,
-                "&:hover": {
-                  backgroundColor: "#85aff7",
-                  color: "#3c52b2",
-                },
-              }}
-            >
-              {"Requote"}
-            </Button>
-          ) : (!hideRQ && InitiateRq) ? (
-            <Button
-              onClick={handleCancelRequest}
-              sx={{
-                bgcolor: "#5F94F5",
-                height: "3rem",
-                width: "5rem",
-                color: "#e8e8e8",
-                fontSize: 12,
-                marginX: 0.9,
-                textTransform: "capitalize",
-                placeSelf: "center",
-                lineHeight: 1.4,
-                // marginTop: 1.5,
-                "&:hover": {
-                  backgroundColor: "#85aff7",
-                  color: "#3c52b2",
-                },
-              }}
-            >
-              Cancel RFQ
-            </Button>
-          ) : (!InitiateRq && !hideRQ) && (
-            <Button
-              onClick={handleInitiateRFQ}
-              sx={{
-                bgcolor: "#5F94F5",
-                height: "3rem",
-                width: "5rem",
-                color: "#e8e8e8",
-                fontSize: 12,
-                marginX: 0.9,
-                textTransform: "capitalize",
-                placeSelf: "center",
-                lineHeight: 1.4,
-                // marginTop: 1.5,
-                "&:hover": {
-                  backgroundColor: "#85aff7",
-                  color: "#3c52b2",
-                },
-              }}
-            >
-              Initiate RFQ
-            </Button>
-          )
-          // <Button
-          //   onClick={handleInitiateRFQ}
-          //   sx={{
-          //     bgcolor: "#5F94F5",
-          //     height: 40,
-          //     width: 40,
-          //     color: "#e8e8e8",
-          //     fontSize: 9,
-          //     marginX: 0.9,
-          //     textTransform: "capitalize",
-          //     placeSelf: "center",
-          //     lineHeight: 1.4,
-          //     // marginTop: 1.5,
-          //     "&:hover": {
-          //       backgroundColor: "#85aff7",
-          //       color: "#3c52b2",
-          //     },
-          //   }}
-          // >
-          //   {InitiateRq ? "Cancel RFQ" : "Initiate RFQ"}
-          // </Button>
-          }
-          <CardActionArea
-            sx={{
-              backgroundColor:
-                hideRQ && secondCounter > 50
-                  ? "#26BAFC"
-                  : onHov
-                  ? themes.currentTheme === "dark"
-                    ? "#434354"
-                    : "#f9f9f9"
-                  : "transparent",
-              width: "12rem",
-              height: "4rem",
-              borderRadius: 1,
-              paddingX: 2,
-              paddingY: 1.5,
-              transition: "background-color 0.8s",
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "flex-start",
-              flexDirection: "column",
-              "&:hover": { backgroundColor: hideRQ ? "#26BAFC" : "" },
-            }}
-            className="cardSection"
-            onClick={() => {
-              hideRQ && setBuySellValue("buy");
-              // hideRQ && setBuySell(true);
-              // hideRQ && handleBuyAddRow();
-              hideRQ && setShowBuyConfirmationPopup(true);
-            }}
-          >
-            {InitiateRq ? (
-              <Typography
-                sx={{
-                  marginTop: 1,
-                  fontSize: 14,
-                  alignSelf: "center",
-                }}
-              >
-                Requesting
-              </Typography>
-            ) : (
-              <>
-                <Typography
-                  sx={{
-                    fontSize: 12,
-                    color: hideRQ && secondCounter > 50 ? "white" : "#949596",
-                    // fontWeight: 'bold'
-                  }}
-                >
-                  BUY
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: 20,
-                    // alignSelf: "center",
-                    marginTop: 0.3,
-                  }}
-                >
-                  {inputValue && inlargedNum(buyValue, "BUY")}
-                </Typography>
-                {/* secondCounter < 10 && hideRQ */}
-                {secondCounter < 10 && hideRQ && (
-                  <Typography
-                    sx={{
-                      fontSize: 9,
-                      color: "red",
-                      textAlign: "center",
-                      width: 80,
-                      marginTop: -1.3,
-                    }}
-                  >
-                    Expired
-                  </Typography>
-                )}
-              </>
-            )}
-          </CardActionArea>
-        </div>
+      {showSellConfirmationPopup && <SellConfirmationPopup />}
 
-        <div
-          style={{
-            display: "flex",
-            placeSelf: "center",
-            marginRight: 25,
-            marginTop: 20,
-            // backgroundColor: "red",
-            justifyContent: "center",
-            // alignItems: "center",
-            // border: "1px solid gray",
-          }}
-        >
+      <Card
+        sx={{
+          display: "flex",
+          height: 240,
+          width: "36rem",
+          paddingX: 3,
+          // paddingY: 1,
+          justifyContent: "center",
+          flexDirection: "column",
+          transition: "background-color 0.1s", // Optional: Add a transition effect for smoother color change
+          "&:hover": {
+            backgroundColor: themes.currentTheme === "dark" ? "#32323f" : "",
+            boxShadow: onHov
+              ? themes.currentTheme === "dark"
+                ? ""
+                : "0px 0px 10px 0px rgba(0,0,0,0.2)"
+              : "none", // Change this to the desired hover background color
+          },
+        }}
+        className="titleContainer"
+        onMouseEnter={() => setOnHov(true)} // Set onHov to true on mouse enter
+        onMouseLeave={() => setOnHov(false)} // Set onHov to false on mouse leave
+      >
+        <>
           <Typography
             sx={{
-              placeSelf: "center",
-              marginTop: 0,
-              color: "gray",
-              fontSize: 13,
+              fontWeight: "400",
+              fontSize: 16,
+              color: themes.currentTheme === "dark" ? "#FFFFFF" : "black",
+              marginBottom: 1,
             }}
           >
-            {symbol1}{" "}
+            {/* {symbolName?.replace('-', '/')} */}
+            {/* {symbol1 + '/' + symbol2} */}
+            {symbolName !== ""
+              ? symbolName.split("-")[0] + "/" + symbolName.split("-")[1]
+              : symbol1 + "/" + symbol2}
           </Typography>
-          <Input
-            sx={{
-              marginLeft: 0.5,
-              width: 80,
-
-              fontSize: 11,
-              "& input": {
-                // backgroundColor: 'gray',
-                // marginBottom: -0.2,
-                textAlign: "center", // Center the text inside the input field
-                border: "none", // Set border-bottom color to gray
-              },
-            }}
-            value={text && parseInt(text).toLocaleString("en-US")}
-            placeholder="1,000,000"
-            onChange={(e) => setText(formatNumber(e.target.value))}
-          />
-        </div>
-        {hideRQ && (
           <div
             style={{
               display: "flex",
-              alignItems: "center",
+              justifyContent: "space-between",
+              marginTop: 5,
+            }}
+          >
+            <CardActionArea
+              sx={{
+                backgroundColor:
+                  hideRQ && secondCounter > 50
+                    ? "red"
+                    : onHov
+                    ? themes.currentTheme === "dark"
+                      ? "#434354"
+                      : "#f9f9f9"
+                    : "transparent",
+                width: "12rem",
+                height: "4rem",
+                borderRadius: 1,
+                paddingX: 2,
+                paddingY: 1,
+                transition: "background-color 0.8s",
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+                flexDirection: "column",
+                "&:hover": { backgroundColor: hideRQ ? "red" : "" },
+              }}
+              className="cardSection"
+              onClick={() => {
+                hideRQ && setBuySellValue("sell");
+                // hideRQ && setBuySell(true);
+                // hideRQ && handleSellAddRow()
+                hideRQ && setShowSellConfirmationPopup(true);
+                setShowBuyConfirmationPopup(false);
+              }}
+            >
+              {InitiateRq ? (
+                <Typography
+                  sx={{
+                    marginTop: 1,
+                    fontSize: 14,
+                    alignSelf: "center",
+                  }}
+                >
+                  Requesting
+                </Typography>
+              ) : (
+                <>
+                  <Typography
+                    sx={{
+                      fontSize: 12,
+                      color: hideRQ && secondCounter > 50 ? "white" : "#949596",
+                      // fontWeight: 'bold',
+                    }}
+                  >
+                    SELL
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: 20,
+                      // alignSelf: "center",
+                      marginTop: 0.5,
+                    }}
+                  >
+                    {inputValue && inlargedNum(sellValue, "SELL")}
+                  </Typography>
+                  {/* secondCounter < 10 && hideRQ */}
+                  {secondCounter < 10 && hideRQ && (
+                    <Typography
+                      sx={{
+                        fontSize: 9,
+                        color: "red",
+                        textAlign: "center",
+                        width: 80,
+                        marginTop: -1,
+                      }}
+                    >
+                      Expired
+                    </Typography>
+                  )}
+                </>
+              )}
+            </CardActionArea>
+            {secondCounter < 10 && hideRQ ? (
+              <Button
+                onClick={() => {
+                  setInitRq(false);
+                  setHideRq(false);
+                  setBuySell(false);
+                  setInputValue(false);
+                }}
+                sx={{
+                  bgcolor: "#5F94F5",
+                  height: "3rem",
+                  width: "5rem",
+                  marginX: 0.9,
+                  color: "#e8e8e8",
+                  fontSize: 12,
+                  textTransform: "capitalize",
+                  placeSelf: "center",
+                  lineHeight: 1.5,
+                  // marginTop: 1.5,
+                  "&:hover": {
+                    backgroundColor: "#85aff7",
+                    color: "#3c52b2",
+                  },
+                }}
+              >
+                {"Requote"}
+              </Button>
+            ) : !hideRQ && InitiateRq ? (
+              <Button
+                onClick={handleCancelRequest}
+                sx={{
+                  bgcolor: "#5F94F5",
+                  height: "3rem",
+                  width: "5rem",
+                  color: "#e8e8e8",
+                  fontSize: 12,
+                  marginX: 0.9,
+                  textTransform: "capitalize",
+                  placeSelf: "center",
+                  lineHeight: 1.4,
+                  // marginTop: 1.5,
+                  "&:hover": {
+                    backgroundColor: "#85aff7",
+                    color: "#3c52b2",
+                  },
+                }}
+              >
+                Cancel RFQ
+              </Button>
+            ) : (
+              !InitiateRq &&
+              !hideRQ && (
+                <Button
+                  onClick={handleInitiateRFQ}
+                  sx={{
+                    bgcolor: "#5F94F5",
+                    height: "3rem",
+                    width: "5rem",
+                    color: "#e8e8e8",
+                    fontSize: 12,
+                    marginX: 0.9,
+                    textTransform: "capitalize",
+                    placeSelf: "center",
+                    lineHeight: 1.4,
+                    // marginTop: 1.5,
+                    "&:hover": {
+                      backgroundColor: "#85aff7",
+                      color: "#3c52b2",
+                    },
+                  }}
+                >
+                  Initiate RFQ
+                </Button>
+              )
+            )}
+            <CardActionArea
+              sx={{
+                backgroundColor:
+                  hideRQ && secondCounter > 50
+                    ? "#26BAFC"
+                    : onHov
+                    ? themes.currentTheme === "dark"
+                      ? "#434354"
+                      : "#f9f9f9"
+                    : "transparent",
+                width: "12rem",
+                height: "4rem",
+                borderRadius: 1,
+                paddingX: 2,
+                paddingY: 1.5,
+                transition: "background-color 0.8s",
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+                flexDirection: "column",
+                "&:hover": { backgroundColor: hideRQ ? "#26BAFC" : "" },
+              }}
+              className="cardSection"
+              onClick={() => {
+                hideRQ && setBuySellValue("buy");
+                // hideRQ && setBuySell(true);
+                // hideRQ && handleBuyAddRow();
+                hideRQ && setShowBuyConfirmationPopup(true);
+                setShowSellConfirmationPopup(false);
+              }}
+            >
+              {InitiateRq ? (
+                <Typography
+                  sx={{
+                    marginTop: 1,
+                    fontSize: 14,
+                    alignSelf: "center",
+                  }}
+                >
+                  Requesting
+                </Typography>
+              ) : (
+                <>
+                  <Typography
+                    sx={{
+                      fontSize: 12,
+                      color: hideRQ && secondCounter > 50 ? "white" : "#949596",
+                      // fontWeight: 'bold'
+                    }}
+                  >
+                    BUY
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: 20,
+                      // alignSelf: "center",
+                      marginTop: 0.3,
+                    }}
+                  >
+                    {inputValue && inlargedNum(buyValue, "BUY")}
+                  </Typography>
+                  {/* secondCounter < 10 && hideRQ */}
+                  {secondCounter < 10 && hideRQ && (
+                    <Typography
+                      sx={{
+                        fontSize: 9,
+                        color: "red",
+                        textAlign: "center",
+                        width: 80,
+                        marginTop: -1.3,
+                      }}
+                    >
+                      Expired
+                    </Typography>
+                  )}
+                </>
+              )}
+            </CardActionArea>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              placeSelf: "center",
+              marginRight: 25,
+              marginTop: 20,
+              // backgroundColor: "red",
               justifyContent: "center",
-              marginTop: 10,
+              // alignItems: "center",
+              // border: "1px solid gray",
             }}
           >
             <Typography
               sx={{
-                fontSize: 11,
+                placeSelf: "center",
+                marginTop: 0,
                 color: "gray",
-                marginRight:2
+                fontSize: 13,
               }}
             >
-              {(secondCounter/4)?.toFixed(0) + " seconds"}
+              {symbol1}{" "}
             </Typography>
-            <LinearProgress
-              sx={{ width: 180, marginTop: 0, borderRadius: 50 }}
-              variant="determinate"
-              value={progress}
-            />
-            <Button
-              onClick={handleReject}
+            <Input
               sx={{
-                backgroundColor:
-                  themes.currentTheme === "dark" ? "#47474c" : "#f2f2f2",
-                color: themes.currentTheme === "dark" ? "white" : "#000000",
-                fontSize: 10,
-                marginLeft:2,
-                textTransform: "capitalize",
-                placeSelf: "end",
-                lineHeight: 1.5,
-                justifyContent: "center",
-                alignItems: "center",
-                display: "flex",
-                "&:hover": {
-                  backgroundColor: "#3f3f3f",
-                  color: "gray",
+                marginLeft: 0.5,
+                width: 80,
+
+                fontSize: 11,
+                "& input": {
+                  // backgroundColor: 'gray',
+                  // marginBottom: -0.2,
+                  textAlign: "center", // Center the text inside the input field
+                  border: "none", // Set border-bottom color to gray
                 },
               }}
-            >
-              Reject
-            </Button>
+              // value={text && parseInt(text).toLocaleString("en-US")}
+              value={text}
+              placeholder="1,000,000"
+              // onChange={(e) => setText(formatNumber(e.target.value))}
+              onChange={(e) => formatNumber(e.target.value)}
+            />
           </div>
-        )}
-      </>
-    </Card>
+          {hideRQ && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: 10,
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: 11,
+                  color: "gray",
+                  marginRight: 2,
+                }}
+              >
+                {(secondCounter / 10)?.toFixed(0) + " seconds"}
+              </Typography>
+              <LinearProgress
+                sx={{ width: 180, marginTop: 0, borderRadius: 50 }}
+                variant="determinate"
+                value={progress}
+              />
+              <Button
+                onClick={handleReject}
+                sx={{
+                  backgroundColor:
+                    themes.currentTheme === "dark" ? "#47474c" : "#f2f2f2",
+                  color: themes.currentTheme === "dark" ? "white" : "#000000",
+                  fontSize: 10,
+                  marginLeft: 2,
+                  textTransform: "capitalize",
+                  placeSelf: "end",
+                  lineHeight: 1.5,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  display: "flex",
+                  "&:hover": {
+                    backgroundColor: "#3f3f3f",
+                    color: "gray",
+                  },
+                }}
+              >
+                Reject
+              </Button>
+            </div>
+          )}
+        </>
+      </Card>
     </div>
   );
-}
-
+};
 
 export default Tile;
