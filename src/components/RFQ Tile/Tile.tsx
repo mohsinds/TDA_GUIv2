@@ -184,8 +184,7 @@ const Tile: React.FC<TileProps> = ({
   };
 
   const progBar = () => {
-    // denominator 2 === 1 seconds, increament/decrement 2 in denominator will increase/decrease 1 seconds in the progressbar
-    const decreaseAmount = (100 / 22).toFixed(2); // Decrease amount per second to reach 0 in 10 seconds
+    const decreaseAmount = 100 / 20; // Decrease amount per second to reach 0 in 10 seconds
 
     intervalRef.current = window.setInterval(() => {
       setProgress((oldProgress) => {
@@ -196,14 +195,15 @@ const Tile: React.FC<TileProps> = ({
           setHideRq(false);
           setBuySell(false);
           setInputValue(false);
+          setShowBuyConfirmationPopup(false)
+          setShowSellConfirmationPopup(false)
           handleReject();
           return 0;
         }
         // Decrease the progress by the calculated amount
-        const abc = parseInt(Math.max(oldProgress - decreaseAmount, 0));
-        // setSecCounter(Math.max(oldProgress.toFixed(2) - decreaseAmount, 0));
-        setSecCounter(abc);
-        return abc; //Math.max(oldProgress - decreaseAmount, 0);
+        // console.log("counter", Math.max(oldProgress - decreaseAmount, 0));
+        setSecCounter(Math.max(oldProgress - decreaseAmount, 0));
+        return Math.max(oldProgress - decreaseAmount, 0);
       });
     }, 500); // Run every second
 
