@@ -140,7 +140,12 @@ export default function SpotRFQPage() {
     // Function to update symbol2
     const handleSymbolTwo = (newSymbol: string) => {
       console.log("symbol2", newSymbol);
-      setSymbol2(newSymbol);
+      if(newSymbol){
+          setSymbol2(newSymbol);
+      }else{
+          setSymbol2('USD');
+      }
+      
     };
     function generateRandomId() {
       const randomNumber = Math.floor(1000 + Math.random() * 9000); // Generate random number between 1000 and 9999
