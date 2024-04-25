@@ -17,8 +17,10 @@ import {RfqQuote} from "@/components/RFQ Tile/RfqQuote";
 const backendApiUrl = process.env.BACKEND_API_URL ?? 'http://localhost:5000'
 const backendApiToken = process.env.BACKEND_API_TOKEN ?? 'set-your-token-in-the-.env-file'
 export default function SpotRFQPage() {
-  const [symbol1, setSymbol1] = useState<string>('USDT');
-  const [symbol2, setSymbol2] = useState<string>('USD');
+    const DefaultSymbol1 = 'USDT';
+    const DefaultSymbol2 = 'USD';
+    const [symbol1, setSymbol1] = useState<string>(DefaultSymbol1);
+    const [symbol2, setSymbol2] = useState<string>(DefaultSymbol2);
   const [open, setOpen] = React.useState<boolean>(false);
   const [placingOrder, setPlacingOrder] = React.useState<boolean>(false);
   const [tradeSide,setTradeSide] = React.useState<string>("Buy");
@@ -134,7 +136,12 @@ export default function SpotRFQPage() {
     // Function to update symbol1
     const handleSymbolOne = (newSymbol: string) => {
       console.log("symbol1",newSymbol)
-      setSymbol1(newSymbol);
+        if(newSymbol){
+            setSymbol1(newSymbol);      
+        }else{
+            setSymbol1(DefaultSymbol1);
+        }
+      
     };
   
     // Function to update symbol2
@@ -143,7 +150,7 @@ export default function SpotRFQPage() {
       if(newSymbol){
           setSymbol2(newSymbol);
       }else{
-          setSymbol2('USD');
+          setSymbol2(DefaultSymbol2);
       }
       
     };
