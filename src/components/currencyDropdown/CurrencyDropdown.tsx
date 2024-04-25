@@ -33,14 +33,15 @@ export default function CurrencyDropdown({ handleSymbolOne, handleSymbolTwo }: C
         <div  style={{ display: "flex", alignItems: "center",marginTop:10,justifyContent: "space-between" }}>
         <Autocomplete
             id="buy-currency"
-            defaultValue={currency.find(cur => cur.symbol === "USDT")}
+            // defaultValue={currency.find(cur => cur.symbol === "USDT")}
+            defaultValue={currencyBuying[0]}
             // sx={{ width: "14rem"}}
             sx={{ width: "14rem",  "& .MuiAutocomplete-inputRoot": {
                 display: "flex",
                 alignItems: "center", 
                 padding: '6px',
             }, "&:hover .MuiAutocomplete-inputRoot": { borderColor: "red" } }}
-            options={currency}
+            options={currencyBuying}
             autoHighlight
             getOptionLabel={(option) => option.symbol}
             renderOption={(props, option) => (
@@ -70,14 +71,15 @@ export default function CurrencyDropdown({ handleSymbolOne, handleSymbolTwo }: C
 
         <Autocomplete
             id="sell-currency"
-            defaultValue={currency.find(cur => cur.symbol === "USD")}
+            // defaultValue={currency.find(cur => cur.symbol === "USD")}
+            defaultValue={currencySelling[0]}
             // sx={{ width: "14rem"}}
             sx={{ width: "14rem",  "& .MuiAutocomplete-inputRoot": {
                 display: "flex",
                 alignItems: "center", 
                 padding: '6px',
             }, "&:hover .MuiAutocomplete-inputRoot": { borderColor: "red" } }}
-            options={currency}
+            options={currencySelling}
             autoHighlight
             getOptionLabel={(option) => option.symbol}
             renderOption={(props, option) => (
@@ -118,6 +120,23 @@ interface CountryType {
     // { code: 'AD', label: 'Andorra', phone: '376' },
     {symbol:"USD",description:"USD"},
     {symbol:"BTC",description:"BTC"},
+    {symbol:"USDT",description:"USDT"},
+  
+]
+
+// creating it temporiroly to fix the input values of Buying/Selling individually
+  const currencySelling: readonly CountryType[] = [
+    // { code: 'AD', label: 'Andorra', phone: '376' },
+    {symbol:"USD",description:"USD"},
+    // {symbol:"BTC",description:"BTC"},
+    // {symbol:"USDT",description:"USDT"},
+  
+]
+
+const currencyBuying: readonly CountryType[] = [
+    // { code: 'AD', label: 'Andorra', phone: '376' },
+    // {symbol:"USD",description:"USD"},
+    // {symbol:"BTC",description:"BTC"},
     {symbol:"USDT",description:"USDT"},
   
 ]

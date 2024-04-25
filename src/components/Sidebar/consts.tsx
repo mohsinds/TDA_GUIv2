@@ -19,26 +19,26 @@ export type SidebarListItem = {
 
 const PLATFORMS_ITEMS: SidebarListItem[] = [
   {
-    title: 'Home',
+    title: 'RFQ',
     icon: <HomeIcon />,
     open: false,
     href: '/',
   },
-  {
-    title: 'Trading',
-    icon: <TrendingUpIcon />,
-    open: false,
-    children: [
-      {
-        title: 'Spot Streaming',
-        href: '/trading/spotstreaming',
-      },
-      {
-        title: 'RFQ',
-        href: '/trading/rfq',
-      },
-    ],
-  },
+  // {
+  //   title: 'Trading',
+  //   icon: <TrendingUpIcon />,
+  //   open: false,
+  //   children: [
+  //     {
+  //       title: 'Spot Streaming',
+  //       href: '/trading/spotstreaming',
+  //     },
+  //     {
+  //       title: 'RFQ',
+  //       href: '/trading/rfq',
+  //     },
+  //   ],
+  // },
 
 ]
 

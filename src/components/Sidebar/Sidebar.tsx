@@ -57,7 +57,7 @@ export default function Sidebar({ open, toggleSide }: Props) {
             <ListSubheader
               component="div"
               id="platforms-subheader">
-              {"Execution"}
+              {"Trade Execution"}
             </ListSubheader>
           </Collapse>
         }>
