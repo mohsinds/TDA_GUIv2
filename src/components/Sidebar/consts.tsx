@@ -1,7 +1,7 @@
 import TrendingUpIcon from '@mui/icons-material/TrendingUp'
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
 import AdminIcon from '@mui/icons-material/AdminPanelSettings'
-import HomeIcon from '@mui/icons-material/Home'
+import HomeIcon from '@mui/icons-material/CandlestickChartOutlined'
 import React from 'react'
 
 type SidebarItemChild = {
