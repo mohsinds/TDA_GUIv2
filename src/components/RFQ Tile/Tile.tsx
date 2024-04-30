@@ -14,6 +14,7 @@ import { CustomThemeContext } from "@/themes/CustomThemeContext";
 import moment from "moment";
 import axios from "axios";
 import { RfqQuote } from "@/components/RFQ Tile/RfqQuote";
+import { fail } from "assert";
 
 interface TileProps {
   symbol1: string;
@@ -50,7 +51,6 @@ const Tile: React.FC<TileProps> = ({
   const [cancelToken, setCancelToken] = React.useState<any>(null);
 
   const [progress, setProgress] = React.useState(100);
-  const [buySell, setBuySell] = React.useState(false);
   const [buySellValue, setBuySellValue] = React.useState("");
   const [secondCounter, setSecCounter] = React.useState(100);
   const intervalRef = React.useRef<number | null>(null);
@@ -58,30 +58,22 @@ const Tile: React.FC<TileProps> = ({
   const [currencyType, setCurrencyType] = React.useState("USDT");
   const notificationsRef = React.useRef<any>(null);
 
-  // const formatNumber = (value: string) => {
-  //   // Remove non-numeric characters
-  //   const numericValue = value.replace(/[^0-9]/g, "");
-  //   // Format the number as desired
-  //   const formattedValue = parseInt(numericValue).toLocaleString("en-US");
-  //   // Update the state with the formatted value
-  //   setInitNumb(formattedValue);
-  //   // Return the unformatted numeric value for input display
-  //   return numericValue;
-  // };
-
   const formatNumber = (value: string) => {
     // console.log('value', value);
     // Remove non-numeric characters except decimal point
     const numericValue = value.replace(/[^\d.]/g, (match, index) => {
-        // Allow the decimal point only if it's the first occurrence or if it's not followed by another decimal point
-        return (match === '.' && value.indexOf('.') === index && value.indexOf('.', index + 1) === -1) ? '.' : '';
+      // Allow the decimal point only if it's the first occurrence or if it's not followed by another decimal point
+      return match === "." &&
+        value.indexOf(".") === index &&
+        value.indexOf(".", index + 1) === -1
+        ? "."
+        : "";
     });
     // console.log('value', numericValue);
-    setText(numericValue)
-};
+    setText(numericValue);
+  };
 
   const inlargedNum = (value: string, valueOf: string) => {
-    // console.log("value", value, "valueof", valueOf);
     const val = parseFloat(value).toFixed(5).toString();
     const xxx = val?.split(".")[1];
     const yyy = val?.split(".")[0];
@@ -93,12 +85,8 @@ const Tile: React.FC<TileProps> = ({
             display: "flex",
             fontSize: 15,
             alignItems: "center",
-            // fontSize: 11,
-            // alignItems: "center",//"0.98078400"  1.02081600
 
             marginTop: -3,
-            // color: valueOf === "BUY" ? "green" : "red",
-            // backgroundColor:'green',
             width: 90,
             color:
               secondCounter > 50
@@ -109,21 +97,16 @@ const Tile: React.FC<TileProps> = ({
             "&:hover": { color: "white" },
           }}
         >
-          {/* {yyy + "." + xxx?.substr(0, 2)} */}
           <div style={{ paddingTop: "12px", fontWeight: 500 }}>
             {yyy + "." + xxx?.substr(0, 2)}
           </div>
           <Typography
             sx={{
-              // fontSize: 30,
               fontSize: 34,
               fontWeight: "semibold",
               paddingX: 0.2,
-              // marginBottom: -3,
             }}
           >
-            {/* {xxx?.substr(2, 2)} */}
-
             {xxx?.substr(2, 2)}
           </Typography>
           <div style={{ paddingTop: "12px", fontWeight: 500 }}>
@@ -132,45 +115,6 @@ const Tile: React.FC<TileProps> = ({
         </Typography>
       </>
     );
-    // console.log("value", value, "valueof", valueOf);//65323.17    68005.47
-    // const val1 = parseFloat(value)?.toFixed(2);
-    // return (
-    //   <>
-    //     <Typography
-    //       sx={{
-    //         display: "flex",
-    //         fontSize: 11,
-    //         alignItems: "center",
-    //         marginTop: -3,
-    //         width: 90,
-    //         color:
-    //           secondCounter > 50
-    //             ? "white"
-    //             : valueOf === "BUY"
-    //             ? "#26BAFC"
-    //             : "red",
-    //         "&:hover": { color: "white" },
-    //       }}
-    //     >
-    //       <div style={{ paddingTop: "12px", fontWeight: 500 }}>
-    //         {val1.substring(0,3)}
-    //       </div>
-    //       <Typography
-    //         sx={{
-    //           fontSize: 32,
-    //           fontWeight: "semibold",
-    //           paddingX: 0.2,
-    //           // marginBottom: -3,
-    //         }}
-    //       >
-    //         {val1.substring(3,5)}
-    //       </Typography>
-    //       <div style={{ paddingTop: "12px", fontWeight: 500 }}>
-    //         {val1.substring(5,10)}
-    //       </div>
-    //     </Typography>
-    //   </>
-    // );
   };
 
   const handleReject = () => {
@@ -190,18 +134,15 @@ const Tile: React.FC<TileProps> = ({
       setProgress((oldProgress) => {
         // If progress reaches 0, clear the interval
         if (oldProgress === 0) {
-          // clearInterval(timer);
           setInitRq(false);
           setHideRq(false);
-          setBuySell(false);
           setInputValue(false);
-          setShowBuyConfirmationPopup(false)
-          setShowSellConfirmationPopup(false)
+          setShowBuyConfirmationPopup(false);
+          setShowSellConfirmationPopup(false);
           handleReject();
           return 0;
         }
         // Decrease the progress by the calculated amount
-        // console.log("counter", Math.max(oldProgress - decreaseAmount, 0));
         setSecCounter(Math.max(oldProgress - decreaseAmount, 0));
         return Math.max(oldProgress - decreaseAmount, 0);
       });
@@ -213,7 +154,6 @@ const Tile: React.FC<TileProps> = ({
 
   const stopProgressBar = () => {
     clearInterval(intervalRef.current!);
-    // console.log("Interval cleared");
   };
 
   function generateRandomId() {
@@ -330,9 +270,7 @@ const Tile: React.FC<TileProps> = ({
             fontSize: 10,
           }}
           onClick={() => {
-            setBuySell(false);
             setBuySellValue("");
-            // inlargedNum("1.23457", "SELL");
           }}
         >
           Close
@@ -351,14 +289,6 @@ const Tile: React.FC<TileProps> = ({
     }, 1000);
   };
 
-  // InitiateRq ? setInitRq(false)
-  // :
-  // iniNum !== "" && cancelRequest(),
-  // iniNum !== "" && setInputValue(true),
-  // setBuyValue("0.23476"),
-  // setSellValue("1.23745"),
-  // progBar()
-
   const handleCurrenyUpdateForSecondDropdown = (val: string) => {
     handleSymbolTwo(val);
   };
@@ -376,7 +306,7 @@ const Tile: React.FC<TileProps> = ({
         setCancelToken(source);
 
         setInitRq(true);
-        console.log('value', text)
+        console.log("value", text);
         const response = await axios.get(
           `${backendApiUrl}/customer/rfq?symbol=${symbol1}-${symbol2}&currency=${symbol1}&orderQty=${text}`,
           {
@@ -401,7 +331,6 @@ const Tile: React.FC<TileProps> = ({
           handleCurrenyUpdateForSecondDropdown(obj?.AmountCurrency);
 
           setInputValue(true);
-          // setText(Math.abs(parseFloat(obj?.OrderQty)) )
           setText(obj?.OrderQty);
           setInitRq(false);
           setHideRq(true);
@@ -559,8 +488,22 @@ const Tile: React.FC<TileProps> = ({
             padding: "0 10px 0 10px",
           }}
         >
-          <Button onClick={handleBuyPopupNo}>No</Button>
-          <Button onClick={handleBuyPopupYes}>Yes</Button>
+          <Button sx={{
+              fontWeight:'300',
+             "&:hover": {
+              backgroundColor: 'transparent',
+              fontWeight: 'bold',
+              // color:'red'
+            }
+          }} onClick={handleBuyPopupNo}>No</Button>
+          <Button sx={{
+              fontWeight:'300',
+             "&:hover": {
+              backgroundColor: 'transparent',
+              fontWeight: 'bold',
+              // color:'green'
+            }
+          }} onClick={handleBuyPopupYes}>Yes</Button>
         </div>
       </div>
     );
@@ -658,33 +601,26 @@ const Tile: React.FC<TileProps> = ({
             padding: "0 10px 0 10px",
           }}
         >
-          <Button onClick={handleSellPopupNo}>No</Button>
-          <Button onClick={handleSellPopupYes}>Yes</Button>
+          <Button sx={{
+              fontWeight:'300',
+            "&:hover": {
+              backgroundColor: 'transparent',
+              fontWeight: 'bold'
+            }
+          }} onClick={handleSellPopupNo}>No</Button>
+          <Button sx={{
+              fontWeight:'300',
+             "&:hover": {
+              backgroundColor: 'transparent',
+              fontWeight: 'bold'
+            }
+          }} onClick={handleSellPopupYes}>Yes</Button>
         </div>
       </div>
     );
   };
 
-  return buySell ? (
-    <Card
-      sx={{
-        display: "flex",
-        height: 240,
-        width: "36rem",
-        paddingX: 1,
-        paddingY: 2,
-        flexDirection: "column",
-        backgroundColor: buySell
-          ? buySellValue === "buy"
-            ? "green"
-            : "#F5264B"
-          : "",
-      }}
-      className="titleContainer"
-    >
-      <CardContent>{buySellCard(sellValue)}</CardContent>
-    </Card>
-  ) : (
+  return (
     <div
       className="tileMain"
       style={{
@@ -827,7 +763,6 @@ const Tile: React.FC<TileProps> = ({
                 onClick={() => {
                   setInitRq(false);
                   setHideRq(false);
-                  setBuySell(false);
                   setInputValue(false);
                 }}
                 sx={{
