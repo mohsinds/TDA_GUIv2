@@ -12,15 +12,18 @@ import EventOutlined from "@mui/icons-material/EventOutlined";
 import HelpOutline from "@mui/icons-material/HelpOutline";
 import AppDatePicker from "../common/inputs/AppDatePicker";
 import Picker from "./DPicker";
+import dayjs, { Dayjs } from 'dayjs';
+import Button from '@mui/material/Button';
+import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 
 const columns: GridColDef[] = [
-  { field: "transactTime", headerName: "Transact Time", width: 200 },
+  { field: "transactTime", headerName: "Timestamp", width: 200 },
   { field: "symbol", headerName: "Symbol", width: 200 },
   { field: "side", headerName: "Side", width: 200 },
-  { field: "filledQty", headerName: "Filled Quantity", width: 200 },
-  { field: "filledPrice", headerName: "Filled Price", width: 200 },
+  { field: "filledQty", headerName: "Quantity", width: 200 },
+  { field: "filledPrice", headerName: "Price", width: 200 },
   // { field: 'accountNum', headerName: 'Account Number', width: 200 },
-  { field: "status", headerName: "Status", width: 200 },
+  { field: "status", headerName: "TradeStatus", width: 200 },
 ];
 
 interface RowData {
@@ -36,6 +39,7 @@ interface RowData {
 
 interface RFQTableProps {
   rows: RowData[];
+  handleHistoryRequest: (dateVal: object) => void;
 }
 
 export default function RFQTable(props: RFQTableProps) {
@@ -44,6 +48,8 @@ export default function RFQTable(props: RFQTableProps) {
   const themes = React.useContext(CustomThemeContext);
   const [startCalendar, setStartCalendar] = React.useState<boolean>(false);
   const [endCalendar, setEndCalendar] = React.useState<boolean>(false);
+  const [toDate, setToDate] = React.useState<any>(dayjs('2022-04-17'));
+  const [fromDate, setFromDate] = React.useState<any>(dayjs('2022-01-6'));
   const isSmallerThan600 = useMediaQuery("(max-width:600px)");
   const columnsWithDynamicWidth = columns.map((column) => ({
     ...column,
@@ -58,13 +64,35 @@ export default function RFQTable(props: RFQTableProps) {
     );
   });
 
+  React.useEffect(() => {
+    const currentDate: string = new Date()?.toISOString()?.split('T')[0];
+    let fullCurrentDate = new Date(currentDate);
+    let fromDateVal = new Date(fullCurrentDate.getTime());
+    fromDateVal.setDate(fromDateVal?.getDate() - 30);
+    let formattedFromDate: string = fromDateVal?.toISOString()?.split('T')[0];
+    if(formattedFromDate){
+      setFromDate(dayjs(formattedFromDate));
+    }
+    if(currentDate){
+      setToDate(dayjs(currentDate));
+    }
+  }, []);
+
+  const handleFromDateChange = (newFromDate: any) => {
+    setFromDate(newFromDate);
+  };
+
+  const handleToDateChange = (newToDate: any) => {
+    setToDate(newToDate);
+  };
+
   const handleDownloadCsv = () => {
     // Create the CSV content from the data array
     let csvContent =
-      "Transact Time, Symbol,Side, Filled Quantity, Filled Price, Account Number, Status\n";
+      "Timestamp, Symbol, Side, Quantity, Price, TradeStatus\n";
     filteredRows?.forEach((item, key) => {
-      csvContent += `${item.transactTime},${item.symbol},${item.side},${item.filledQty},${item.filledPrice},${item.accountNum},${item.status}\n`;
-    });
+      csvContent += `${item.transactTime},${item.symbol},${item.side},${item.filledQty},${item.filledPrice},${item.status}\n`;
+    }); 
 
     // Create a Blob object from the CSV content
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -90,6 +118,14 @@ export default function RFQTable(props: RFQTableProps) {
         : "evenLightRow"
       : "";
   };
+
+  const handleHistory = ()=>{
+    let dates = {
+      fromDate:fromDate?.$d,
+      toDate:toDate?.$d
+    }
+    props.handleHistoryRequest(dates);
+  }
 
   return (
     <div
@@ -123,7 +159,7 @@ export default function RFQTable(props: RFQTableProps) {
         >
           <div
             className="iconMargin"
-            style={{ marginRight: 10, paddingTop: 20 }}
+            style={{ marginRight: 10, paddingTop: 25 }}
           >
             <span style={{ cursor: "pointer" }} onClick={handleDownloadCsv}>
               <svg
@@ -161,7 +197,7 @@ export default function RFQTable(props: RFQTableProps) {
             style={{
               flexDirection: "column",
               display: "flex",
-              marginRight:10
+              // marginRight:10
               // backgroundColor:'red'
             }}
           >
@@ -185,21 +221,22 @@ export default function RFQTable(props: RFQTableProps) {
                   sx={{
                     fontSize: 11,
                     color: "gray",
+                    paddingTop: 0.5,
                   }}
                 >
                   From Date*
                 </Typography>
-                <HelpOutline
+                {/* <HelpOutline
                   sx={{
                     color: "gray",
                     fontSize: 10,
                     marginLeft: 0.5,
                     marginTop: 0.5,
                   }}
-                />
+                /> */}
               </div>
             </div>
-            <Picker/>
+            <Picker dateValue={fromDate} onChange={handleFromDateChange}/>
           </div>
           {/* From Date */}
 
@@ -232,28 +269,39 @@ export default function RFQTable(props: RFQTableProps) {
                   sx={{
                     fontSize: 11,
                     color: "gray",
+                    paddingTop: 0.5,
+
                   }}
                 >
                   To Date*
                 </Typography>
-                <HelpOutline
+                {/* <HelpOutline
                   sx={{
                     color: "gray",
                     fontSize: 10,
                     marginLeft: 0.5,
                     marginTop: 0.5,
                   }}
-                />
+                /> */}
               </div>
             </div>
-            <Picker/>
+            <Picker dateValue={toDate} onChange={handleToDateChange}/>
           </div>
           {/* To Date */}
        </div>
 
+            
+       <div className="runHistoryBtn" style={{ marginLeft: 10, paddingTop: 30 }} >
+          <Button variant="contained" onClick={handleHistory}>Run History</Button>
+       </div>
+
+       <div className="runHistoryIconBtn" style={{ marginLeft: 5, paddingTop: 35 }}>
+           <HistoryRoundedIcon  onClick={handleHistory} sx={{ color: "white", fontSize: 25 }} />  
+       </div>
+
         </div>
       </div>
-      <div style={{ height: "85%", width: "100%" }}>
+      <div style={{ height: "85%", width: "100%", paddingTop: 6 }}>
         <DataGrid
           rows={filteredRows}
           columns={columnsWithDynamicWidth}

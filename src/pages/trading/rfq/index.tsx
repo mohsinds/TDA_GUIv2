@@ -225,6 +225,12 @@ export default function SpotRFQPage() {
       setOpen(false);
     };
 
+    const handleHistoryRequest = (dateVal : any)=>{
+      let fromDate=dateVal?.fromDate
+      let toDate=dateVal?.toDate
+      console.log("dateObj",fromDate,toDate)
+    }
+
   return (
     <>
       <div>
@@ -300,7 +306,7 @@ export default function SpotRFQPage() {
         }}
         className="tableParent"
       >
-        <RFQTable rows={rows} />
+        <RFQTable rows={rows} handleHistoryRequest={handleHistoryRequest} />
       </Box>
 
     </>
