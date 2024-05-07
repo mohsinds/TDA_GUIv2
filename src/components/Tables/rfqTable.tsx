@@ -17,13 +17,13 @@ import Button from '@mui/material/Button';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 
 const columns: GridColDef[] = [
-  { field: "transactTime", headerName: "Timestamp", width: 200 },
+  { field: "transactTime", headerName: "Transact Time", width: 200 },
   { field: "symbol", headerName: "Symbol", width: 200 },
   { field: "side", headerName: "Side", width: 200 },
-  { field: "filledQty", headerName: "Quantity", width: 200 },
-  { field: "filledPrice", headerName: "Price", width: 200 },
+  { field: "filledQty", headerName: "Filled Quantity", width: 200 },
+  { field: "filledPrice", headerName: "Filled Price", width: 200 },
   // { field: 'accountNum', headerName: 'Account Number', width: 200 },
-  { field: "status", headerName: "TradeStatus", width: 200 },
+  { field: "status", headerName: "Status", width: 200 },
 ];
 
 interface RowData {

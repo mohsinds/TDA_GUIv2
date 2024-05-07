@@ -11,7 +11,8 @@ import SnackbarContent from '@mui/material/SnackbarContent';
 import HLOGO from "../../../../src/Images/dark.png"
 import axios from "axios";
 import {RfqQuote} from "@/components/RFQ Tile/RfqQuote";
-
+import {accountNumber,timeFormated} from '@/components/utils/userData'
+import moment from "moment";
 
 
 const backendApiUrl = process.env.BACKEND_API_URL ?? 'http://localhost:5000'
@@ -41,6 +42,8 @@ export default function SpotRFQPage() {
       console.log("notification supported")
       Notification.requestPermission();
     }
+
+    getHistoryData();
   }, []);
 
     const handlePlaceOrderRequest = async (payload: any) => {
@@ -187,7 +190,9 @@ export default function SpotRFQPage() {
             QuoteID: val.QuoteID || "",
             RFQID: val.RFQID || ""
         };
-        setRows([newRow, ...rows]);
+        // setRows([newRow, ...rows]);
+        // console.log("newRow", newRow)
+        getHistoryData();
         let obj = {
             id: newRow?.id,
             symbol1: symbol1,
@@ -225,10 +230,64 @@ export default function SpotRFQPage() {
       setOpen(false);
     };
 
-    const handleHistoryRequest = (dateVal : any)=>{
-      let fromDate=dateVal?.fromDate
-      let toDate=dateVal?.toDate
-      console.log("dateObj",fromDate,toDate)
+    const getHistoryData = async() => {
+      try{
+        const res = await axios.get(`${backendApiUrl}/customer/orderhistory?accountNumber=${accountNumber}`);
+        if(res?.data?.length > 0){
+          let updatedArr = res?.data?.map(({ qtyFilled,exchangeOrderId,marketSymbol,timeLastUpdated,instruction,priceSubmitted,orderStatus }: any) => {
+            return {
+              filledQty: String(qtyFilled),
+              id:exchangeOrderId,
+              symbol:marketSymbol,
+              transactTime:timeFormated(timeLastUpdated),
+              side:instruction,
+              filledPrice:String(priceSubmitted),
+              status:orderStatus
+            };
+        });
+        console.log("res=>",res)
+            setRows(updatedArr);
+        }else{
+            setRows([])
+          }
+        }catch(e){
+          setRows([])
+        }
+    }
+
+
+    
+
+    const handleHistoryRequest = async(dateVal : any)=>{
+      let fromDate = new Date(dateVal?.fromDate);
+      let formatedFromDate = moment(fromDate).format('YYYY-MM-DD');
+
+      let toDate = new Date(dateVal?.toDate)
+      let formatedToDate = moment(toDate).format('YYYY-MM-DD');
+
+      try{
+      const res = await axios.get(`${backendApiUrl}/customer/orderhistory?accountNumber=${accountNumber}&startDate=${formatedFromDate}&endDate=${formatedToDate}`);
+      if(res?.data?.length > 0){
+        let updatedArr = res?.data?.map(({ qtyFilled,exchangeOrderId,marketSymbol,timeLastUpdated,instruction,priceSubmitted,orderStatus }: any) => {
+          return {
+            filledQty: String(qtyFilled),
+            id:exchangeOrderId,
+            symbol:marketSymbol,
+            transactTime:timeFormated(timeLastUpdated),
+            side:instruction,
+            filledPrice:String(priceSubmitted),
+            status:orderStatus
+          };
+      });
+          setRows(updatedArr);
+      }else{
+          setRows([])
+      }
+    }catch(e){
+      setRows([]) 
+    }
+
+
     }
 
   return (

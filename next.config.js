@@ -10,6 +10,7 @@ const nextConfig = {
     BACKEND_API_TOKEN: process.env.BACKEND_API_TOKEN,
     NEXT_PUBLIC_BACKEND_API_TOKEN: process.env.BACKEND_API_TOKEN,
     */
+    // BACKEND_API_URL: "http://192.168.0.113:5000",
     BACKEND_API_URL: "https://tda-api.emergentcybernetics.net",
     NEXT_PUBLIC_BACKEND_API_URL: "https://tda-api.emergentcybernetics.net",
     // BACKEND_API_URL: "http://local.emergentcybernetics.net:5000",
