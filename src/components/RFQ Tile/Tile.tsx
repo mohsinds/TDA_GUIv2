@@ -12,6 +12,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { CustomThemeContext } from "@/themes/CustomThemeContext";
 // @ts-ignore
 import moment from "moment";
+import {accountNumber} from '../utils/userData'
 import axios from "axios";
 import { RfqQuote } from "@/components/RFQ Tile/RfqQuote";
 import { fail } from "assert";
@@ -169,7 +170,7 @@ const Tile: React.FC<TileProps> = ({
       side: "Sell",
       filledQty: text,
       filledPrice: sellValue,
-      accountNum: generateRandomId(),
+      accountNum: accountNumber,
       status: status,
       QuoteID: quoteId,
       RFQID: refId,
@@ -189,7 +190,7 @@ const Tile: React.FC<TileProps> = ({
       side: "Buy",
       filledQty: text,
       filledPrice: buyValue,
-      accountNum: generateRandomId(),
+      accountNum: accountNumber,
       status: status,
       QuoteID: quoteId,
       RFQID: refId,
