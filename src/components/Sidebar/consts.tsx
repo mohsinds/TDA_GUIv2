@@ -2,6 +2,7 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp'
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
 import AdminIcon from '@mui/icons-material/AdminPanelSettings'
 import HomeIcon from '@mui/icons-material/CandlestickChartOutlined'
+import PersonIcon from '@mui/icons-material/Person';
 import React from 'react'
 
 type SidebarItemChild = {
@@ -54,6 +55,12 @@ const ADMIN_ITEMS: SidebarListItem[] = [
         href: '/accounting/fireblocks',
       },
     ],
+  },
+  {
+    title: 'Customers',
+    icon: <PersonIcon />,
+    open: false,
+    href: '/customers',
   },
 
 ]
