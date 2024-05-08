@@ -48,6 +48,26 @@
     display: none;    
    }
   }
+  @media screen and (max-width: 450px) {
+   .tableContainer{
+    width: 24rem !important;    
+   }
+  }
+  @media screen and (max-width: 420px) {
+   .tableContainer{
+    width: 23rem !important;    
+   }
+  }
+  @media screen and (max-width: 400px) {
+   .tableContainer{
+    width: 22rem !important;    
+   }
+  }
+  @media screen and (max-width: 382px) {
+   .tableContainer{
+    width: 21rem !important;    
+   }
+  }
 
   @media (max-width:600px) {
      .currencyDropdown{
@@ -96,3 +116,30 @@
    }
   
   }
+
+ 
+
+  input:focus {
+    outline: none;
+  }
+
+
+  /* For WebKit based browsers (Chrome, Safari, etc.) */
+::-webkit-scrollbar {
+  width: 5px; /* Adjust the width as needed */
+}
+
+/* For Firefox */
+::-moz-scrollbar {
+  width: 5px; /* Adjust the width as needed */
+}
+
+/* For Internet Explorer and Edge */
+::-ms-scrollbar {
+  width: 5px; /* Adjust the width as needed */
+}
+
+table {
+  border-spacing: 0;
+}
+
