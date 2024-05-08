@@ -232,7 +232,10 @@ export default function SpotRFQPage() {
 
     const getHistoryData = async() => {
       try{
-        const res = await axios.get(`${backendApiUrl}/customer/orderhistory?accountNumber=${accountNumber}`);
+        const res = await axios.get(`${backendApiUrl}/customer/orderhistory?accountNumber=${accountNumber}`,{
+            headers: {
+                'Authorization': `Bearer ${backendApiToken}`            }
+        });
         if(res?.data?.length > 0){
           let updatedArr = res?.data?.map(({ qtyPlaced,exchangeOrderId,marketSymbol,timeLastUpdated,instruction,priceSubmitted,orderStatus }: any) => {
             return {
@@ -267,7 +270,10 @@ export default function SpotRFQPage() {
       let formatedToDate = moment(toDate).format('YYYY-MM-DD');
 
       try{
-      const res = await axios.get(`${backendApiUrl}/customer/orderhistory?accountNumber=${accountNumber}&startDate=${formatedFromDate}&endDate=${formatedToDate}`);
+      const res = await axios.get(`${backendApiUrl}/customer/orderhistory?accountNumber=${accountNumber}&startDate=${formatedFromDate}&endDate=${formatedToDate}`,{
+          headers: {
+              'Authorization': `Bearer ${backendApiToken}`            }
+      });
       if(res?.data?.length > 0){
         let updatedArr = res?.data?.map(({ qtyPlaced,exchangeOrderId,marketSymbol,timeLastUpdated,instruction,priceSubmitted,orderStatus }: any) => {
           return {

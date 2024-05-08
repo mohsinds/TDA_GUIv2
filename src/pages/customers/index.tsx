@@ -1,30 +1,26 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import { Typography } from '@mui/material';
+import {Typography} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import { CustomThemeContext } from "@/themes/CustomThemeContext";
+import {CustomThemeContext} from "@/themes/CustomThemeContext";
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import {
-  GridRowsProp,
-  GridRowModesModel,
-  GridRowModes,
   DataGrid,
-  GridColDef,
-  GridToolbarContainer,
   GridActionsCellItem,
+  GridColDef,
   GridEventListener,
+  GridRowEditStopReasons,
   GridRowId,
   GridRowModel,
-  GridRowEditStopReasons,
+  GridRowModes,
+  GridRowModesModel,
+  GridRowsProp,
+  GridToolbarContainer,
 } from '@mui/x-data-grid';
-import moment from "moment/moment";
 import axios from "axios";
-import {accountNumber, timeFormated} from "@/components/utils/userData";
-import {useEffect} from "react";
 // import {
 //   randomCreatedDate,
 //   randomTraderName,
@@ -98,13 +94,19 @@ export default function CustomerPage() {
   const handleEditClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
-  // useEffect(() => {
-  //   handleCustomerList();
-  // }, []);
+  React.useEffect(() => {
+    handleCustomerList();
+  }, []);
   const handleCustomerList = async()=>{
-    
+    const source = axios?.CancelToken?.source();
     try{
-      const res = await axios.get(`${backendApiUrl}/customer/list`);
+      
+      const res = await axios.get(`${backendApiUrl}/customer/list`,
+          {
+            headers: {
+              Authorization: `Bearer ${backendApiToken}`,
+            },
+          });
       if(res?.data?.length > 0){
         let updatedArr = res?.data?.map(({Name,CounterpartyID}: any) => {
           return {
