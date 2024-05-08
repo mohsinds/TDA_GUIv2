@@ -4,22 +4,17 @@ import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CloseIcon from '@mui/icons-material/Close';
 import { BorderBottom } from "@mui/icons-material";
+import axios from "axios";
 
 interface Customer {
     id: number;
     name: string;
     login: string;
   }
-
+const backendApiUrl = process.env.BACKEND_API_URL ?? 'http://localhost:5000'
+const backendApiToken = process.env.BACKEND_API_TOKEN ?? 'set-your-token-in-the-.env-file'
   const CustomersPage: React.FC = () => {
-    const [customers, setCustomers] = React.useState<Customer[]>([
-        { id: 1, name: 'Sam Pena', login: 'User 1'},
-        { id: 2, name: 'Norman Sandoval', login: 'User 2' },
-        { id: 3, name: 'Maude Collier', login: 'User 3' },
-        { id: 4, name: 'Betty Norman', login: 'User 4' },
-        { id: 5, name: 'Leo Lee', login: 'User 5' },
-      
-    ]);
+    const [customers, setCustomers] = React.useState<Customer[]>([]);
 
     const [headers, setHeaders] = React.useState<string[]>(["Customer","Login","Edit Login"]);
 
@@ -42,6 +37,37 @@ interface Customer {
         console.log("customer",customers,customerId);
       };
 
+      React.useEffect(() => {
+          handleCustomerList();
+      }, []);
+      const handleCustomerList = async()=>{
+          const source = axios?.CancelToken?.source();
+          try{
+
+              const res = await axios.get(`${backendApiUrl}/customer/list`,
+                  {
+                      headers: {
+                          Authorization: `Bearer ${backendApiToken}`,
+                      },
+                  });
+              if(res?.data?.length > 0){
+                  let updatedArr = res?.data?.map(({Name,CounterpartyID}: any) => {
+                      return {
+                          id:CounterpartyID,
+                          name:Name,
+                          login:""
+                      };
+                  });
+                  setCustomers(updatedArr);
+              }else{
+                  setCustomers([])
+              }
+          }catch(e){
+              setCustomers([])
+          }
+
+
+      }
   return (
     <>
     <div className="tableContainer" style={{background:'#212121',height:'auto',maxHeight:'20rem',overflowY:'auto',overflowX:'hidden',width:'24.5rem',paddingLeft:10,paddingBottom:10}}>

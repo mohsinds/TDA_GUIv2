@@ -237,9 +237,9 @@ export default function SpotRFQPage() {
                 'Authorization': `Bearer ${backendApiToken}`            }
         });
         if(res?.data?.length > 0){
-          let updatedArr = res?.data?.map(({ qtyFilled,exchangeOrderId,marketSymbol,timeLastUpdated,instruction,priceSubmitted,orderStatus }: any) => {
+          let updatedArr = res?.data?.map(({ qtyPlaced,exchangeOrderId,marketSymbol,timeLastUpdated,instruction,priceSubmitted,orderStatus }: any) => {
             return {
-              filledQty: String(qtyFilled),
+              filledQty: String(qtyPlaced),
               id:exchangeOrderId,
               symbol:marketSymbol,
               transactTime:timeFormated(timeLastUpdated),
@@ -248,6 +248,7 @@ export default function SpotRFQPage() {
               status:orderStatus
             };
         });
+            updatedArr = updatedArr.reverse()
         console.log("res=>",res)
             setRows(updatedArr);
         }else{
@@ -274,9 +275,9 @@ export default function SpotRFQPage() {
               'Authorization': `Bearer ${backendApiToken}`            }
       });
       if(res?.data?.length > 0){
-        let updatedArr = res?.data?.map(({ qtyFilled,exchangeOrderId,marketSymbol,timeLastUpdated,instruction,priceSubmitted,orderStatus }: any) => {
+        let updatedArr = res?.data?.map(({ qtyPlaced,exchangeOrderId,marketSymbol,timeLastUpdated,instruction,priceSubmitted,orderStatus }: any) => {
           return {
-            filledQty: String(qtyFilled),
+            filledQty: String(qtyPlaced),
             id:exchangeOrderId,
             symbol:marketSymbol,
             transactTime:timeFormated(timeLastUpdated),
@@ -285,6 +286,7 @@ export default function SpotRFQPage() {
             status:orderStatus
           };
       });
+          updatedArr = updatedArr.reverse()
           setRows(updatedArr);
       }else{
           setRows([])
