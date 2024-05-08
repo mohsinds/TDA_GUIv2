@@ -234,9 +234,9 @@ export default function SpotRFQPage() {
       try{
         const res = await axios.get(`${backendApiUrl}/customer/orderhistory?accountNumber=${accountNumber}`);
         if(res?.data?.length > 0){
-          let updatedArr = res?.data?.map(({ qtyPlaced,exchangeOrderId,marketSymbol,timeLastUpdated,instruction,priceSubmitted,orderStatus }: any) => {
+          let updatedArr = res?.data?.map(({ qtyFilled,exchangeOrderId,marketSymbol,timeLastUpdated,instruction,priceSubmitted,orderStatus }: any) => {
             return {
-              filledQty: String(qtyPlaced),
+              filledQty: String(qtyFilled),
               id:exchangeOrderId,
               symbol:marketSymbol,
               transactTime:timeFormated(timeLastUpdated),
@@ -246,8 +246,7 @@ export default function SpotRFQPage() {
             };
         });
         console.log("res=>",res)
-        let reverseArr = updatedArr?.reverse();
-          setRows(reverseArr);
+            setRows(updatedArr);
         }else{
             setRows([])
           }
@@ -269,9 +268,9 @@ export default function SpotRFQPage() {
       try{
       const res = await axios.get(`${backendApiUrl}/customer/orderhistory?accountNumber=${accountNumber}&startDate=${formatedFromDate}&endDate=${formatedToDate}`);
       if(res?.data?.length > 0){
-        let updatedArr = res?.data?.map(({ qtyPlaced,exchangeOrderId,marketSymbol,timeLastUpdated,instruction,priceSubmitted,orderStatus }: any) => {
+        let updatedArr = res?.data?.map(({ qtyFilled,exchangeOrderId,marketSymbol,timeLastUpdated,instruction,priceSubmitted,orderStatus }: any) => {
           return {
-            filledQty: String(qtyPlaced),
+            filledQty: String(qtyFilled),
             id:exchangeOrderId,
             symbol:marketSymbol,
             transactTime:timeFormated(timeLastUpdated),
@@ -280,8 +279,7 @@ export default function SpotRFQPage() {
             status:orderStatus
           };
       });
-      let reverseArr = updatedArr?.reverse();
-      setRows(reverseArr);
+          setRows(updatedArr);
       }else{
           setRows([])
       }
