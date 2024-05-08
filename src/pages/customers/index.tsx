@@ -21,6 +21,10 @@ import {
   GridRowModel,
   GridRowEditStopReasons,
 } from '@mui/x-data-grid';
+import moment from "moment/moment";
+import axios from "axios";
+import {accountNumber, timeFormated} from "@/components/utils/userData";
+import {useEffect} from "react";
 // import {
 //   randomCreatedDate,
 //   randomTraderName,
@@ -32,7 +36,8 @@ const roles = ['Market', 'Finance', 'Development'];
 // const randomRole = () => {
 //   return randomArrayItem(roles);
 // };
-
+const backendApiUrl = process.env.BACKEND_API_URL ?? 'http://localhost:5000'
+const backendApiToken = process.env.BACKEND_API_TOKEN ?? 'set-your-token-in-the-.env-file'
 const initialRows: GridRowsProp = [
   {
     id: 1,
@@ -93,7 +98,29 @@ export default function CustomerPage() {
   const handleEditClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
+  useEffect(() => {
+    handleCustomerList();
+  }, []);
+  const handleCustomerList = async()=>{
+    
+    try{
+      const res = await axios.get(`${backendApiUrl}/customer/list`);
+      if(res?.data?.length > 0){
+        let updatedArr = res?.data?.map((d: any) => {
+          console.log("data",d)
+          return d;
+        });
+        // let reverseArr = updatedArr?.reverse();
+        // setRows(reverseArr);
+      }else{
+        setRows([])
+      }
+    }catch(e){
+      setRows([])
+    }
 
+
+  }
   const handleSaveClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
