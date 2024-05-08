@@ -6,6 +6,8 @@
     background-color: white;
 }  
 
+
+
 /* Define a custom scrollbar */
 ::-webkit-scrollbar {
     width: 12px; /* Width of the scrollbar */
@@ -42,16 +44,48 @@
     .runHistoryBtn{
       display: none;
     }
+    .tableCustomerHeading{
+      font-size: 1.5rem;
+    }
+
+
+   
   }
   @media screen and (min-width: 500px) {
    .runHistoryIconBtn{
     display: none;    
    }
+
   }
   @media screen and (max-width: 450px) {
    .tableContainer{
     width: 24rem !important;    
    }
+
+   .css-196n7va-MuiSvgIcon-root{
+    width: 1.3rem;
+    height: 1.3rem;
+   }
+
+    .customerTableContainer{
+    margin-left: -1rem;
+    }
+    .css-11ceysh-MuiTablePagination-displayedRows{
+      font-size: 1rem !important;
+    }
+
+    .MuiInputBase-input{
+      font-size: 1rem !important;
+    }
+
+  .MuiDataGrid-columnHeaderTitle{
+    font-size: 1.1rem !important;
+  }
+  .MuiDataGrid-cellContent{
+    font-size: 1.1rem !important;
+  }
+  
+   
   }
   @media screen and (max-width: 420px) {
    .tableContainer{
@@ -143,3 +177,6 @@ table {
   border-spacing: 0;
 }
 
+.customertableRow:hover{
+  background-color: #4A4A53 !important;
+}
