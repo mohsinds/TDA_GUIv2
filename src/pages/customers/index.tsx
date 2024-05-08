@@ -41,17 +41,17 @@ const backendApiToken = process.env.BACKEND_API_TOKEN ?? 'set-your-token-in-the-
 const initialRows: GridRowsProp = [
   {
     id: 1,
-    customer: "Sam Pena",
+    Name: "Sam Pena",
     login: "User 1",
   },
   {
     id: 2,
-    customer: "Norman Sandoval",
+    Name: "Norman Sandoval",
     login: "User 2",
   },
   {
     id: 3,
-    customer: "Maude Collier",
+    Name: "Maude Collier",
     login: "User 3",
   },
  
@@ -98,20 +98,22 @@ export default function CustomerPage() {
   const handleEditClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
-  useEffect(() => {
-    handleCustomerList();
-  }, []);
+  // useEffect(() => {
+  //   handleCustomerList();
+  // }, []);
   const handleCustomerList = async()=>{
     
     try{
       const res = await axios.get(`${backendApiUrl}/customer/list`);
       if(res?.data?.length > 0){
-        let updatedArr = res?.data?.map((d: any) => {
-          console.log("data",d)
-          return d;
+        let updatedArr = res?.data?.map(({Name,CounterpartyID}: any) => {
+          return {
+            id:CounterpartyID,
+            Name:Name,
+            login:""
+          };
         });
-        // let reverseArr = updatedArr?.reverse();
-        // setRows(reverseArr);
+        setRows(updatedArr);
       }else{
         setRows([])
       }
@@ -152,7 +154,7 @@ export default function CustomerPage() {
   };
 
   const columns: GridColDef[] = [
-    { field: 'customer', headerName: 'Customer', width: 210, editable: false },
+    { field: 'Name', headerName: 'Customer', width: 210, editable: false },
     { field: 'login', headerName: 'Login', width: 210, editable: true },
     {
       field: 'actions',
