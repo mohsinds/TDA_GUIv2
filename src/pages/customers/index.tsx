@@ -94,11 +94,18 @@ function EditToolbar(props: EditToolbarProps) {
               if(res?.data?.length > 0){
                   let updatedArr = res?.data?.map(({Name,CounterpartyID}: any) => {
                       return {
-                          id:CounterpartyID,
+                          id: CounterpartyID,
                           name:Name,
-                          login:"User 1"                      
+                          login:""                      
                         };
                   });
+                  // let updatedArr = res?.data?.map(({name,exchangeCustomerId}: any) => {
+                  //     return {
+                  //         id: parseInt(exchangeCustomerId),
+                  //         name:name,
+                  //         login:""                      
+                  //       };
+                  // });
                   setRows(updatedArr);
               }else{
                 setRows([])
