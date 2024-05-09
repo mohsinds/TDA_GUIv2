@@ -28,24 +28,7 @@ import {accountNumber, timeFormated} from "@/components/utils/userData";
 
 const backendApiUrl = process.env.BACKEND_API_URL ?? 'http://localhost:5000'
 const backendApiToken = process.env.BACKEND_API_TOKEN ?? 'set-your-token-in-the-.env-file'
-const initialRows: GridRowsProp = [
-  {
-    id: 1,
-    name: "Sam Pena",
-    login: "User 1",
-  },
-  {
-    id: 2,
-    name: "Norman Sandoval",
-    login: "User 2",
-  },
-  {
-    id: 3,
-    name: "Maude Collier",
-    login: "User 3",
-  },
- 
-];
+const initialRows: GridRowsProp = [];
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -75,14 +58,10 @@ function EditToolbar(props: EditToolbarProps) {
   );
 }
 
-interface Customer {
-  id: number;
-  name: string;
-  login: string;
-}
+
 
   const CustomersPage: React.FC = () => {
-    const [rows, setRows] = React.useState<Customer[]>([]);
+    const [rows, setRows] = React.useState(initialRows);
     const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
     const themes = React.useContext(CustomThemeContext);
     const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
