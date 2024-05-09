@@ -96,7 +96,7 @@ function EditToolbar(props: EditToolbarProps) {
                       return {
                           id:CounterpartyID,
                           name:Name,
-                          login:"User 1"                      
+                          login:""                      
                         };
                   });
                   setRows(updatedArr);
