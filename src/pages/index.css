@@ -37,7 +37,7 @@
 
   @media screen and (max-width:590px){
     .customerTableContainer{
-      margin-left: -1rem !important;
+      margin-left: -1.3rem !important;
     }
   }
 
@@ -58,6 +58,20 @@
    .tableContainer{
     width: 24rem !important;    
    }
+   .customerTableContainer{
+    width: 29rem !important;
+   }
+   .headContent{
+    font-size: 0.9rem;
+   }
+   .tHeading{
+    font-size: 0.9rem;
+   }
+
+   input.MuiInputBase-input {
+    font-size: 0.9rem; /* Adjust the font size as needed */
+  }
+   
   }
   @media screen and (max-width: 420px) {
    .tableContainer{

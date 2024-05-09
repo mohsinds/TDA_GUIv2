@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import { CustomThemeContext } from "@/themes/CustomThemeContext";
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
+import { useMediaQuery } from '@mui/material';
 import {
   GridRowsProp,
   GridRowModesModel,
@@ -27,7 +28,23 @@ import {accountNumber, timeFormated} from "@/components/utils/userData";
 
 const backendApiUrl = process.env.BACKEND_API_URL ?? 'http://localhost:5000'
 const backendApiToken = process.env.BACKEND_API_TOKEN ?? 'set-your-token-in-the-.env-file'
-const initialRows: GridRowsProp = [];
+const initialRows: GridRowsProp = [
+  {
+    id: 1,
+    name: "Sam Pena",
+    login: "User 1",
+  },
+  {
+    id: 2,
+    name: "Norman Sandoval",
+    login: "User 2",
+  },
+  {
+    id: 3,
+    name: "Maude Collier",
+    login: "User 3",
+  },
+];
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -63,6 +80,7 @@ function EditToolbar(props: EditToolbarProps) {
     const [rows, setRows] = React.useState(initialRows);
     const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
     const themes = React.useContext(CustomThemeContext);
+    const isSmallScreen = useMediaQuery('(max-width:450px)');
     const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
       if (params.reason === GridRowEditStopReasons.rowFocusOut) {
         event.defaultMuiPrevented = true;
@@ -73,9 +91,11 @@ function EditToolbar(props: EditToolbarProps) {
       setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
     };
 
+
+
    
       React.useEffect(() => {
-          handleCustomerList();
+          // handleCustomerList();
       }, []);
       const handleCustomerList = async()=>{
           const source = axios?.CancelToken?.source();
@@ -92,7 +112,8 @@ function EditToolbar(props: EditToolbarProps) {
                       return {
                           id:CounterpartyID,
                           name:Name,
-                          login:""                      };
+                          login:"User 1"                      
+                        };
                   });
                   setRows(updatedArr);
               }else{
@@ -135,13 +156,15 @@ function EditToolbar(props: EditToolbarProps) {
         setRowModesModel(newRowModesModel);
       };
 
+      const columnWidth = isSmallScreen ? 160 : 210;
       const columns: GridColDef[] = [
-        { field: 'name', headerName: 'Customer', width: 210, editable: false },
-        { field: 'login', headerName: 'Login', width: 210, editable: true },
+        { field: 'name', headerName: 'Customer', width: columnWidth, editable: false,headerClassName:"tHeading",cellClassName:"headContent" },
+        { field: 'login', headerName: 'Login', width: columnWidth, editable: true,headerClassName:"tHeading",cellClassName:"headContent" },
         {
           field: 'actions',
           type: 'actions',
           headerName: 'Edit Login',
+          headerClassName:"tHeading",
           width: 100,
           cellClassName: 'actions',
           getActions: ({ id }) => {
@@ -152,7 +175,6 @@ function EditToolbar(props: EditToolbarProps) {
                 <GridActionsCellItem
                   icon={<SaveIcon />}
                   label="Save"
-                  className='iconSize'
                   sx={{
                     color: 'primary.main',
                   }}
@@ -175,6 +197,7 @@ function EditToolbar(props: EditToolbarProps) {
                 className="textPrimary"
                 onClick={handleEditClick(id)}
                 color="inherit"
+               
               />,
             
             ];
