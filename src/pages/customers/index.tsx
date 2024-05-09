@@ -25,7 +25,6 @@ import moment from "moment/moment";
 import axios from "axios";
 import {accountNumber, timeFormated} from "@/components/utils/userData";
 
-
 const backendApiUrl = process.env.BACKEND_API_URL ?? 'http://localhost:5000'
 const backendApiToken = process.env.BACKEND_API_TOKEN ?? 'set-your-token-in-the-.env-file'
 const initialRows: GridRowsProp = [];
@@ -198,7 +197,6 @@ function EditToolbar(props: EditToolbarProps) {
           <Typography
               variant="h5"
               sx={{ paddingBottom: 1 }}
-              className="tableCustomerHeading"
             >
               Customers
             </Typography>
