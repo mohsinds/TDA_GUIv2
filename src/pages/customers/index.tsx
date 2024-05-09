@@ -95,7 +95,7 @@ function EditToolbar(props: EditToolbarProps) {
 
    
       React.useEffect(() => {
-          // handleCustomerList();
+          handleCustomerList();
       }, []);
       const handleCustomerList = async()=>{
           const source = axios?.CancelToken?.source();
