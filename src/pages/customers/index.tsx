@@ -91,7 +91,7 @@ function EditToolbar(props: EditToolbarProps) {
                           Authorization: `Bearer ${backendApiToken}`,
                       },
                   });
-                  console.log("res==>",res)
+                  console.log("customer table res==>",res)
               if(res?.data?.length > 0){
                   let updatedArr = res?.data?.map(({name,exchangeCustomerId}: any) => {
                       return {
@@ -100,7 +100,7 @@ function EditToolbar(props: EditToolbarProps) {
                           login:""                      
                         };
                   });
-                  
+
                   setRows(updatedArr);
               }else{
                 setRows([])
