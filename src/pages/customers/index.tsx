@@ -91,21 +91,15 @@ function EditToolbar(props: EditToolbarProps) {
                           Authorization: `Bearer ${backendApiToken}`,
                       },
                   });
+                  console.log("res==>",res)
               if(res?.data?.length > 0){
-                  let updatedArr = res?.data?.map(({Name,CounterpartyID}: any) => {
+                  let updatedArr = res?.data?.map(({name,exchangeCustomerId}: any) => {
                       return {
-                          id: CounterpartyID,
-                          name:Name,
+                          id: parseInt(exchangeCustomerId),
+                          name:name,
                           login:""                      
                         };
                   });
-                  // let updatedArr = res?.data?.map(({name,exchangeCustomerId}: any) => {
-                  //     return {
-                  //         id: parseInt(exchangeCustomerId),
-                  //         name:name,
-                  //         login:""                      
-                  //       };
-                  // });
                   setRows(updatedArr);
               }else{
                 setRows([])
