@@ -16,6 +16,9 @@ import {accountNumber} from '../utils/userData'
 import axios from "axios";
 import { RfqQuote } from "@/components/RFQ Tile/RfqQuote";
 import { fail } from "assert";
+import Snackbar from '@mui/material/Snackbar';
+import SnackbarContent from '@mui/material/SnackbarContent';
+
 
 interface TileProps {
   symbol1: string;
@@ -58,6 +61,13 @@ const Tile: React.FC<TileProps> = ({
   const [symbolName, setSymbol] = React.useState("");
   const [currencyType, setCurrencyType] = React.useState("USDT");
   const notificationsRef = React.useRef<any>(null);
+  const [snackbarMessage, setSnackbarMessage] = React.useState<string>("!! ORDER REQUEST HAS BEEN REJECTED !!");
+  const [obj, setObj] = React.useState<any>({
+    vertical: 'top',
+    horizontal: 'center',
+  });
+  const { vertical, horizontal } = obj;
+  const [open, setOpen] = React.useState<boolean>(false);
 
   const formatNumber = (value: string) => {
     // console.log('value', value);
@@ -117,6 +127,14 @@ const Tile: React.FC<TileProps> = ({
       </>
     );
   };
+
+  const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
+
 
   const handleReject = () => {
     setShowSellConfirmationPopup(false);
@@ -320,22 +338,27 @@ const Tile: React.FC<TileProps> = ({
         if (response.data?.length > 0) {
           console.log("response =>", response);
           let obj = response?.data[0];
-          console.log("obj==>", obj);
+          if(obj?.QuoteStatus=='Rejected'){
+            console.log("rejected")
+            setInitRq(false)
+            setOpen(true)
+        }else{
           setBuyValue(obj?.OfferPx ? obj?.OfferPx : "0.00000"),
-            setSellValue(obj?.BidPx ? obj?.BidPx : "0.00000"),
-            setSecCounter(100);
+          setSellValue(obj?.BidPx ? obj?.BidPx : "0.00000"),
+          setSecCounter(100);
           setSymbol(obj?.Symbol);
           setCurrencyType(obj?.Currency);
           setStatus(obj?.QuoteStatus);
           setQuoteId(obj?.QuoteID);
           setRefId(obj?.RFQID);
           handleCurrenyUpdateForSecondDropdown(obj?.AmountCurrency);
-
           setInputValue(true);
           setText(obj?.OrderQty);
           setInitRq(false);
           setHideRq(true);
           progBar();
+        }
+
         } else {
           alert("request failed");
           setTimeout(() => {
@@ -345,7 +368,6 @@ const Tile: React.FC<TileProps> = ({
         }
       } catch (error) {
         if (axios.isCancel(error)) {
-          // Request was canceled
           console.log("Request canceled:", error);
         } else {
           console.error("Error:", error);
@@ -635,6 +657,32 @@ const Tile: React.FC<TileProps> = ({
       {showBuyConfirmationPopup && <BuyConfirmationPopup />}
 
       {showSellConfirmationPopup && <SellConfirmationPopup />}
+
+      <div>
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        autoHideDuration={5000}
+        onClose={handleClose}
+        key={vertical + horizontal}
+       
+      >
+         <SnackbarContent style={{
+          backgroundColor: '#FFC000',
+          color:'#000000',
+          fontWeight:800,
+          fontSize:14,
+          padding:0,
+          width: '38vw',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          
+          }}
+          message={<span id="client-snackbar">{snackbarMessage}</span>}
+        />
+      </Snackbar>
+      </div>
 
       <Card
         sx={{
